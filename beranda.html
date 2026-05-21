@@ -557,7 +557,7 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
           <div class="stat-value" id="sv-dinas"><div class="skel skel-stat-val"></div></div>
         </div>
         <div class="stat-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
         </div>
       </div>
       <div class="stat-sub" id="sv-dinas-sub"><div class="skel skel-stat-sub"></div></div>
@@ -636,11 +636,16 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
     </div>
     <div class="table-filters">
       <input class="search-input" id="berandaSearch" type="text" placeholder="Cari nama sekolah / NPSN..." oninput="filterBerandaTable()">
-      <select class="filter-select" id="berandaProvFilter" onchange="filterBerandaTable()"><option value="">Semua Provinsi</option></select>
       <select class="filter-select" id="berandaUsulanFilter" onchange="filterBerandaTable()">
         <option value="">Semua Pengusul</option>
         <option value="Dinas Pendidikan">Dinas Pendidikan</option>
         <option value="Mitra">Mitra</option>
+      </select>
+      <select class="filter-select" id="berandaProvFilter" onchange="filterBerandaTable()"><option value="">Semua Provinsi</option></select>
+      <select class="filter-select" id="berandaKkaFilter" onchange="filterBerandaTable()">
+        <option value="">Semua Mapel KKA</option>
+        <option value="Ya">Sudah Ada</option>
+        <option value="Tidak">Belum Ada</option>
       </select>
       <button class="btn-reset-filter" onclick="resetBerandaFilter()" title="Reset filter">&#8635; Reset</button>
     </div>
@@ -655,6 +660,7 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
             <th>Pengusul</th>
             <th>Provinsi</th>
             <th>Kabupaten/Kota</th>
+            <th>Mapel KKA</th>
           </tr>
         </thead>
         <tbody id="berandaTbody">
@@ -903,10 +909,12 @@ function getBerandaFiltered() {
   const q       = (document.getElementById('berandaSearch')?.value || '').toLowerCase();
   const prov    = document.getElementById('berandaProvFilter')?.value  || '';
   const pengusul= document.getElementById('berandaUsulanFilter')?.value || '';
+  const kka     = document.getElementById('berandaKkaFilter')?.value   || '';
   return ALL_SCHOOLS.filter(r =>
     (!q       || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
     (!prov    || r.provinsi === prov)  &&
-    (!pengusul|| r.pengusul === pengusul)
+    (!pengusul|| r.pengusul === pengusul) &&
+    (!kka     || r.kka === kka)
   );
 }
 
@@ -921,7 +929,7 @@ function renderBerandaTable() {
   if (!tbody) return;
 
   if (slice.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
   } else {
     tbody.innerHTML = slice.map((r, i) => {
       const no = (berandaPage-1)*PAGE_SIZE + i + 1;
@@ -933,6 +941,7 @@ function renderBerandaTable() {
         <td>${pengusul_tag(r.pengusul)}</td>
         <td>${r.provinsi || '—'}</td>
         <td>${r.kabkota || '—'}</td>
+        <td>${r.kka === 'Ya' ? '<span class="badge-ada">Sudah</span>' : '<span class="badge-belum">Belum</span>'}</td>
       </tr>`;
     }).join('');
   }
@@ -1004,6 +1013,7 @@ function resetBerandaFilter() {
   document.getElementById('berandaSearch').value = '';
   document.getElementById('berandaProvFilter').value = '';
   document.getElementById('berandaUsulanFilter').value = '';
+  document.getElementById('berandaKkaFilter').value = '';
   berandaPage = 1;
   renderBerandaTable();
 }
