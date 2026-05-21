@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intervensi Direktorat SMA — Sekolah Model 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:      #0a1f3c;
+  --navy-mid:  #0e2d57;
+  --blue:      #1a56a0;
+  --blue-lt:   #2b72d8;
+  --accent:    #f0a500;
+  --accent-lt: #ffc840;
+  --bg:        #f2f6fb;
+  --surface:   #ffffff;
+  --border:    #dce6f5;
+  --text:      #0d1f38;
+  --muted:     #6b83a4;
+  --sidebar-w: 220px;
+}
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  font-size: 13.5px;
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar-w);
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 200;
+  transition: transform 0.25s ease;
+}
+.sidebar-logo {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sidebar-logo img {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+.sidebar-close {
+  display: none;
+  background: none; border: none;
+  color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px;
+  flex-shrink: 0; margin-left: 8px;
+}
+nav {
+  flex: 1; padding: 14px 10px;
+  display: flex; flex-direction: column; gap: 2px;
+  overflow-y: auto;
+}
+nav a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none; font-size: 12.5px; font-weight: 500;
+  transition: background 0.15s, color 0.15s; cursor: pointer;
+}
+nav a svg { flex-shrink: 0; opacity: 0.65; }
+nav a:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
+nav a.active { background: var(--blue-lt); color: #fff; }
+nav a.active svg { opacity: 1; }
+.nav-divider {
+  padding: 10px 12px 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.22);
+}
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6;
+}
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4); z-index: 150;
+}
+.sidebar-overlay.show { display: block; }
+
+/* ── MOBILE TOPBAR ── */
+.mobile-topbar {
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0; height: 52px;
+  background: var(--navy); z-index: 100;
+  align-items: center; padding: 0 16px; gap: 12px;
+}
+.hamburger {
+  background: none; border: none; color: #fff;
+  cursor: pointer; padding: 4px; display: flex; align-items: center;
+}
+.mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+
+/* ── MAIN ── */
+main {
+  margin-left: var(--sidebar-w);
+  flex: 1; padding: 26px 28px 40px;
+  overflow-x: hidden; transition: margin-left 0.25s;
+}
+
+/* TOPBAR */
+.topbar { display: flex; align-items: flex-end; margin-bottom: 20px; }
+.topbar-left h1 {
+  font-size: 22px; font-weight: 800; color: var(--navy);
+  letter-spacing: -0.03em; line-height: 1.2;
+}
+.topbar-left p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
+  border-radius: 14px; padding: 20px 24px;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 16px; align-items: center;
+  margin-bottom: 18px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; right: -50px; top: -50px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: rgba(255,255,255,0.04); pointer-events: none;
+}
+.hero-text h2 { font-size: 13.5px; font-weight: 700; color: var(--accent-lt); margin-bottom: 5px; }
+.hero-text p { font-size: 12px; color: rgba(255,255,255,0.72); line-height: 1.65; max-width: 560px; }
+.hero-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.hero-btn {
+  text-decoration: none; padding: 7px 14px; border-radius: 8px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: none; font-family: inherit; transition: all 0.2s ease;
+}
+.hero-btn-primary { background: var(--accent); color: var(--navy); }
+.hero-btn-primary:hover {
+  background: var(--accent-lt);
+  box-shadow: 0 0 16px rgba(240,165,0,0.5), 0 0 30px rgba(240,165,0,0.18);
+  transform: translateY(-1px);
+}
+.hero-btn-ghost { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+.hero-btn-ghost:hover {
+  background: rgba(255,255,255,0.18);
+  box-shadow: 0 0 16px rgba(255,255,255,0.14), 0 0 28px rgba(100,160,255,0.18);
+  border-color: rgba(255,255,255,0.4); transform: translateY(-1px);
+}
+.hero-visual { z-index: 1; }
+
+/* STATS */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--surface); border-radius: 12px;
+  padding: 15px 16px; border: 1px solid var(--border);
+  transition: border-color 0.15s; animation: fadeUp 0.35s ease both;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.stat-card:hover { border-color: var(--blue-lt); }
+.stat-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.stat-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: #eef4ff; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0;
+}
+.stat-icon svg { color: var(--blue-lt); }
+.stat-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.stat-value { font-size: 26px; font-weight: 800; color: var(--blue-lt); letter-spacing: -0.03em; line-height: 1; }
+.stat-sub { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.dot-neg { background: #2b72d8; }
+.dot-swa { background: var(--accent); }
+
+/* ANALYTICS ROW */
+.analytics-row {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 14px; margin-bottom: 16px;
+  align-items: stretch;
+}
+.analytics-left { display: flex; flex-direction: column; gap: 14px; }
+
+.panel {
+  background: var(--surface); border-radius: 12px;
+  border: 1px solid var(--border); overflow: hidden;
+  animation: fadeUp 0.35s ease both;
+  transition: border-color 0.15s;
+}
+.panel:hover { border-color: var(--blue-lt); }
+.panel-header { padding: 14px 16px 0; }
+.panel-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.panel-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.panel-body { padding: 12px 16px 16px; }
+
+/* DONUT */
+.donut-wrap { display: flex; align-items: center; gap: 14px; }
+.legend { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.leg-item { display: flex; align-items: flex-start; gap: 7px; }
+.leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.leg-pct { font-weight: 700; color: var(--navy); min-width: 34px; font-size: 11.5px; }
+.leg-label { color: var(--muted); font-size: 11px; line-height: 1.3; }
+
+/* MAP */
+.map-panel { display: flex; flex-direction: column; }
+.map-panel .panel-body { padding: 10px 14px 12px; display: flex; flex-direction: column; flex: 1; }
+#map {
+  flex: 1; min-height: 0;
+  border-radius: 8px; z-index: 1;
+}
+.map-legend {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 8px; font-size: 10.5px; color: var(--muted); flex-shrink: 0;
+}
+.map-legend-bar {
+  flex: 1; height: 5px; border-radius: 99px;
+  background: linear-gradient(90deg, #d6e8ff, #2b72d8, #0a1f3c);
+}
+
+/* TABLE */
+.table-filters {
+  padding: 12px 16px; display: flex; gap: 10px;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.search-input { flex: 1.5; min-width: 160px; }
+.filter-select { flex: 1; min-width: 120px; }
+select, input {
+  width: 100%; padding: 7px 10px; border-radius: 7px;
+  border: 1.5px solid var(--border); font-size: 12px;
+  font-family: inherit; color: var(--text); background: var(--bg);
+  appearance: none; outline: none; transition: border-color 0.15s;
+}
+select:focus, input:focus { border-color: var(--blue-lt); }
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 2px solid var(--border); }
+thead th {
+  padding: 10px 14px; text-align: left;
+  font-size: 10.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:hover { background: var(--bg); }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 9px 14px; font-size: 12.5px; }
+td.npsn { font-family: monospace; font-size: 11.5px; color: var(--muted); }
+td.nama { font-weight: 600; color: var(--navy); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+/* Kolom Profil KKA & PM — pastikan tidak wrap di semua tabel */
+#baselineTable th:nth-child(6),
+#baselineTable th:nth-child(7),
+#baselineTable td:nth-child(6),
+#baselineTable td:nth-child(7),
+#berandaTbody td:nth-child(9),
+#berandaTbody td:nth-child(10),
+#suratTable td:nth-last-child(2),
+#suratTable td:nth-last-child(1) { min-width: 140px; white-space: nowrap; }
+.tag-maju { background: #e0f0e9; color: #1a6b3e; }
+.tag-berk { background: #e8f0fb; color: #1a4a8a; }
+.tag-ung  { background: #fef3d7; color: #8a5c00; }
+.tag-tt   { background: #f0f2f5; color: #556; }
+.table-footer {
+  padding: 11px 14px; display: flex; align-items: center;
+  justify-content: space-between; border-top: 1px solid var(--border);
+}
+.table-footer .info { font-size: 12px; color: var(--muted); }
+.btn-reset-filter {
+  padding: 7px 12px; border-radius: 7px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--border); background: var(--surface);
+  color: var(--muted); cursor: pointer; font-family: inherit;
+  white-space: nowrap; transition: all 0.15s;
+  flex-shrink: 0;
+}
+.btn-reset-filter:hover { border-color: var(--blue-lt); color: var(--blue-lt); background: #eef4ff; }
+.pager { display: flex; gap: 4px; }
+.pager button {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1.5px solid var(--border); background: var(--surface);
+  font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text); transition: background 0.1s, border-color 0.1s;
+  font-family: inherit;
+}
+.pager button:hover { background: var(--bg); border-color: var(--blue-lt); }
+.pager button.cur { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* Leaflet overrides */
+.leaflet-container { font-family: 'Plus Jakarta Sans', sans-serif !important; background: #f2f6fb !important; }
+.leaflet-control-zoom a { font-family: 'Plus Jakarta Sans', sans-serif !important; border-radius: 6px !important; }
+.leaflet-control-zoom { border: 1px solid var(--border) !important; border-radius: 7px !important; box-shadow: none !important; }
+.map-tip {
+  background: var(--navy) !important; color: #fff !important;
+  padding: 6px 10px !important; border-radius: 7px !important;
+  font-size: 11.5px !important; font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border: none !important; box-shadow: none !important; white-space: nowrap !important;
+}
+.map-tip::before { display: none !important; }
+.leaflet-attribution { display: none !important; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PAGE SECTIONS ── */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* SURAT DUKUNGAN - CHART ROW */
+.chart-row-2 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; margin-bottom: 16px;
+}
+/* 4-chart row: 2 groups of 2 */
+.chart-section { margin-bottom: 16px; }
+.chart-group-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+  padding: 0 2px 8px; display: flex; align-items: center; gap: 8px;
+}
+.chart-group-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.chart-row-4 {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 12px; margin-bottom: 16px;
+}
+/* filter tab pills */
+.filter-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  padding: 0 0 14px;
+}
+.filter-tab {
+  padding: 5px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--muted);
+  font-family: inherit; transition: all 0.15s;
+}
+.filter-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+.filter-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
+/* compact donut for 4-grid */
+.donut-wrap-sm { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.legend-sm { display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.leg-item-sm { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+.leg-item-sm .leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.chart-label { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.4; padding: 0 4px; }
+/* two-line table header */
+th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
+/* fix wide table scroll */
+.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tbl-scroll table { min-width: 900px; }
+.pie-legend-grid { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
+@media (max-width: 1024px) {
+  .chart-row-4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .chart-row-2 { grid-template-columns: 1fr; }
+  .chart-row-4 { grid-template-columns: 1fr 1fr; }
+}
+.btn-lihat {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 7px;
+  background: var(--blue-lt); color: #fff;
+  font-size: 11.5px; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  font-family: inherit; transition: all 0.15s ease;
+}
+.btn-lihat:hover {
+  background: var(--blue);
+  box-shadow: 0 0 12px rgba(43,114,216,0.35);
+  transform: translateY(-1px);
+}
+.btn-lihat svg { flex-shrink: 0; }
+
+/* STATUS BADGE */
+.badge-ada { background: #e0f0e9; color: #1a6b3e; display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-belum { background: #fef3d7; color: #8a5c00; display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
+
+@media (max-width: 768px) {
+  .chart-row-2 { grid-template-columns: 1fr; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .analytics-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  aside { transform: translateX(-100%); }
+  aside.open { transform: translateX(0); }
+  .sidebar-close { display: flex; }
+  .mobile-topbar { display: flex; }
+  main { margin-left: 0; padding: 70px 14px 40px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-value { font-size: 22px; }
+  .topbar { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 16px 18px; }
+  .hero-visual { display: none; }
+  #map { min-height: 240px; }
+  .table-filters { flex-direction: column; }
+  thead th:nth-child(4), thead th:nth-child(5), td:nth-child(4), td:nth-child(5) { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-actions { flex-direction: column; }
+  .hero-btn { text-align: center; }
+}
+
+/* ── SKELETON LOADING ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skel {
+  background: linear-gradient(90deg, #e8f0fb 25%, #dce6f5 50%, #e8f0fb 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+.skel-circle {
+  border-radius: 50%;
+}
+.skel-stat-val  { height: 32px; width: 80px; margin-bottom: 8px; }
+.skel-stat-sub  { height: 12px; width: 120px; }
+.skel-donut     { width: 90px; height: 90px; flex-shrink: 0; }
+.skel-donut-sm  { width: 100px; height: 100px; }
+.skel-leg       { height: 11px; border-radius: 4px; margin-bottom: 5px; }
+.skel-tbl-row td { padding: 9px 14px; }
+.skel-tbl-cell  { height: 14px; border-radius: 4px; }
+.skel-panel-title { height: 16px; width: 160px; border-radius: 4px; margin-bottom: 6px; }
+.skel-panel-sub   { height: 11px; width: 100px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="mobile-topbar">
+  <button class="hamburger" onclick="openSidebar()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <span class="mobile-topbar-title">Daftar Sekolah Model SMA 2026</span>
+</div>
+
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo Kemendikdasmen">
+    <button class="sidebar-close" onclick="closeSidebar()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav>
+
+    <div class="nav-divider">Program</div>
+    <a href="beranda.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Beranda
+    </a>
+    <a href="surat-dukungan.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Surat Dukungan
+    </a>
+    <a href="baseline.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Baseline Sekolah
+    </a>
+    <div class="nav-divider">Intervensi</div>
+    <a href="intervensi-direktorat.html" class="active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Direktorat SMA
+    </a>
+    <a href="intervensi-upt.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      BBPMP/BPMP
+    </a>
+    <a href="intervensi-dinas.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
+      Dinas Pendidikan
+    </a>
+  </nav>
+  <div class="sidebar-footer">Data diperbarui<br>30 Mei 2026 · 20:05</div>
+</aside>
+
+<main>
+  <div id="intervensi-direktorat">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Intervensi Direktorat SMA</h1>
+        <p>Sekolah Model Implementasi Pembelajaran Mendalam &amp; KKA</p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:0; margin-top: 12px;">
+      <div class="panel-body" style="padding: 60px 24px; text-align: center;">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 20px; display: block;">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <div style="font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px;">Sedang Dalam Pengembangan</div>
+        <div style="font-size: 13px; color: var(--muted); max-width: 420px; margin: 0 auto; line-height: 1.7;">
+          Halaman <strong>Direktorat SMA</strong> sedang dalam tahap pengembangan. Fitur ini akan segera tersedia.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+</script>
+</body>
+</html>
