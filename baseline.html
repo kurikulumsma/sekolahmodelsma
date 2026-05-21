@@ -417,6 +417,122 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
   .hero-btn { text-align: center; }
 }
 
+/* ── CODEBOOK ── */
+.codebook-wrap {
+  margin-bottom: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+.codebook-toggle {
+  width: 100%;
+  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
+  border: none; cursor: pointer;
+  font-family: inherit; text-align: left;
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px;
+  position: relative; overflow: hidden;
+  transition: filter 0.2s;
+}
+.codebook-toggle::before {
+  content: ''; position: absolute; right: -40px; top: -40px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: rgba(255,255,255,0.04); pointer-events: none;
+}
+.codebook-toggle:hover { filter: brightness(1.08); }
+.codebook-toggle-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.codebook-toggle-icon svg { color: rgba(255,255,255,0.9); }
+.codebook-toggle-label { flex: 1; }
+.codebook-toggle-label strong {
+  display: block; font-size: 13px; font-weight: 700; color: var(--accent-lt);
+}
+.codebook-toggle-label span {
+  font-size: 11.5px; color: rgba(255,255,255,0.65);
+}
+.codebook-chevron {
+  color: rgba(255,255,255,0.7);
+  transition: transform 0.28s ease;
+  flex-shrink: 0;
+}
+.codebook-wrap.open .codebook-chevron { transform: rotate(180deg); }
+
+.codebook-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.38s ease;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+}
+.codebook-wrap.open .codebook-body { max-height: 1400px; }
+
+.codebook-inner { padding: 14px 16px 16px; }
+
+/* Tab pills */
+.codebook-tabs {
+  display: flex; gap: 6px; margin-bottom: 14px;
+}
+.codebook-tab {
+  padding: 5px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--muted);
+  font-family: inherit; transition: all 0.15s;
+}
+.codebook-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+.codebook-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
+.codebook-tab-pane { display: none; }
+.codebook-tab-pane.active { display: block; }
+
+/* Tabel codebook */
+.cb-table-wrap { overflow-x: auto; }
+.cb-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.cb-table th {
+  padding: 7px 12px;
+  text-align: left; font-size: 10.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+  border-bottom: 2px solid var(--border); white-space: nowrap;
+  border-right: 1px solid var(--border);
+}
+.cb-table th:last-child { border-right: none; }
+.cb-table td {
+  padding: 7px 12px; border-bottom: 1px solid var(--border);
+  vertical-align: middle; line-height: 1.4;
+  border-right: 1px solid var(--border);
+}
+.cb-table td:last-child { border-right: none; }
+.cb-table tr:last-child td { border-bottom: none; }
+.cb-table tr:hover td { background: var(--bg); }
+/* Grouping zebra per L1 */
+.cb-table tr.l1-row td {
+  padding-top: 10px; padding-bottom: 4px;
+  background: var(--bg); border-bottom: none;
+}
+.cb-l1-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 6px;
+  font-size: 11px; font-weight: 800;
+}
+.l1-murid { background: #e8f0fb; color: #1a4a8a; }
+.l1-guru  { background: #e0f0e9; color: #1a6b3e; }
+.l1-kasek { background: #fef3d7; color: #8a5c00; }
+.cb-l1-name { font-weight: 700; font-size: 12.5px; color: var(--navy); }
+.cb-l2-code, .cb-l3-code {
+  font-family: monospace; font-size: 10.5px; font-weight: 700;
+  color: var(--blue-lt); white-space: nowrap;
+}
+.cb-l2-name { font-weight: 600; color: var(--navy); }
+.cb-l3-name { color: var(--text); }
+
 /* ── SKELETON LOADING ── */
 @keyframes shimmer {
   0%   { background-position: -600px 0; }
@@ -500,6 +616,137 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
         <p>Data profil awal sekolah model — KKA &amp; Pembelajaran Mendalam</p>
       </div>
     </div>
+
+    <!-- ── CODEBOOK ── -->
+    <div class="codebook-wrap" id="codebookWrap">
+      <button class="codebook-toggle" onclick="toggleCodebook()">
+        <div class="codebook-toggle-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <div class="codebook-toggle-label">
+          <strong>Panduan Codebook</strong>
+          <span>Referensi kode indikator PM &amp; KKA</span>
+        </div>
+        <svg class="codebook-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <div class="codebook-body" id="codebookBody">
+        <div class="codebook-inner">
+          <div class="codebook-tabs">
+            <button class="codebook-tab active" onclick="switchCodebookTab('pm', this)">Pembelajaran Mendalam (PM)</button>
+            <button class="codebook-tab" onclick="switchCodebookTab('kka', this)">Koding &amp; Kecerdasan Artifisial (KKA)</button>
+          </div>
+
+          <!-- TAB PM -->
+          <div class="codebook-tab-pane active" id="cb-tab-pm">
+            <div class="cb-table-wrap">
+              <table class="cb-table">
+                <colgroup>
+                  <col style="width:90px">
+                  <col>
+                  <col style="width:90px">
+                  <col>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Kode L2</th>
+                    <th>Level 2</th>
+                    <th>Kode L3</th>
+                    <th>Level 3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Murid -->
+                  <tr class="l1-row">
+                    <td colspan="4"><span class="cb-l1-badge l1-murid">1</span> <span class="cb-l1-name">Murid</span></td>
+                  </tr>
+                  <tr><td class="cb-l2-code" rowspan="6">1.1</td><td class="cb-l2-name" rowspan="6">Budaya Belajar</td><td class="cb-l3-code">1.1.1</td><td class="cb-l3-name">Memuliakan</td></tr>
+                  <tr><td class="cb-l3-code">1.1.2</td><td class="cb-l3-name">Berkesadaran</td></tr>
+                  <tr><td class="cb-l3-code">1.1.3</td><td class="cb-l3-name">Bermakna</td></tr>
+                  <tr><td class="cb-l3-code">1.1.4</td><td class="cb-l3-name">Menggembirakan</td></tr>
+                  <tr><td class="cb-l3-code">1.1.5</td><td class="cb-l3-name">Otonomi Belajar</td></tr>
+                  <tr><td class="cb-l3-code">1.1.6</td><td class="cb-l3-name">Refleksi</td></tr>
+                  <!-- Guru -->
+                  <tr class="l1-row">
+                    <td colspan="4"><span class="cb-l1-badge l1-guru">2</span> <span class="cb-l1-name">Guru</span></td>
+                  </tr>
+                  <tr><td class="cb-l2-code" rowspan="3">2.1</td><td class="cb-l2-name" rowspan="3">Mengajar secara Efektif</td><td class="cb-l3-code">2.1.1</td><td class="cb-l3-name">Memuliakan</td></tr>
+                  <tr><td class="cb-l3-code">2.1.2</td><td class="cb-l3-name">Pengelolaan Pembelajaran</td></tr>
+                  <tr><td class="cb-l3-code">2.1.3</td><td class="cb-l3-name">Refleksi</td></tr>
+                  <tr><td class="cb-l2-code" rowspan="2">2.2</td><td class="cb-l2-name" rowspan="2">Asesmen Otentik &amp; Berkeadilan</td><td class="cb-l3-code">2.2.1</td><td class="cb-l3-name">Formatif</td></tr>
+                  <tr><td class="cb-l3-code">2.2.2</td><td class="cb-l3-name">Sumatif</td></tr>
+                  <tr><td class="cb-l2-code" rowspan="2">2.3</td><td class="cb-l2-name" rowspan="2">Pengembangan Diri</td><td class="cb-l3-code">2.3.1</td><td class="cb-l3-name">Belajar secara Mandiri</td></tr>
+                  <tr><td class="cb-l3-code">2.3.2</td><td class="cb-l3-name">Belajar bersama Komunitas</td></tr>
+                  <!-- Kepala Satpen -->
+                  <tr class="l1-row">
+                    <td colspan="4"><span class="cb-l1-badge l1-kasek">3</span> <span class="cb-l1-name">Kepala Satpen</span></td>
+                  </tr>
+                  <tr><td class="cb-l2-code" rowspan="4">3.1</td><td class="cb-l2-name" rowspan="4">Kepemimpinan Pembelajaran Mendalam</td><td class="cb-l3-code">3.1.1</td><td class="cb-l3-name">Memimpin Implementasi PM</td></tr>
+                  <tr><td class="cb-l3-code">3.1.2</td><td class="cb-l3-name">Menyelaraskan Visi Misi Sekolah</td></tr>
+                  <tr><td class="cb-l3-code">3.1.3</td><td class="cb-l3-name">Melakukan Supervisi Instruksional</td></tr>
+                  <tr><td class="cb-l3-code">3.1.4</td><td class="cb-l3-name">Memimpin Refleksi</td></tr>
+                  <tr><td class="cb-l2-code" rowspan="3">3.2</td><td class="cb-l2-name" rowspan="3">Pengelolaan Sumber Daya</td><td class="cb-l3-code">3.2.1</td><td class="cb-l3-name">Mengembangkan dan Menguatkan</td></tr>
+                  <tr><td class="cb-l3-code">3.2.2</td><td class="cb-l3-name">Mengoptimalisasi Sumber Daya</td></tr>
+                  <tr><td class="cb-l3-code">3.2.3</td><td class="cb-l3-name">Manajemen Sekolah</td></tr>
+                  <tr><td class="cb-l2-code" rowspan="2">3.3</td><td class="cb-l2-name" rowspan="2">Kemitraan dan Ekosistem</td><td class="cb-l3-code">3.3.1</td><td class="cb-l3-name">Mengembangkan Kemitraan</td></tr>
+                  <tr><td class="cb-l3-code">3.3.2</td><td class="cb-l3-name">Lingkungan Belajar yang Saling</td></tr>
+                  <tr><td class="cb-l2-code" rowspan="2">3.4</td><td class="cb-l2-name" rowspan="2">Pemanfaatan Teknologi Digital</td><td class="cb-l3-code">3.4.1</td><td class="cb-l3-name">Mengembangkan Infrastruktur</td></tr>
+                  <tr><td class="cb-l3-code">3.4.2</td><td class="cb-l3-name">Meningkatkan Kapasitas Pendidik</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB KKA -->
+          <div class="codebook-tab-pane" id="cb-tab-kka">
+            <div class="cb-table-wrap">
+              <table class="cb-table">
+                <colgroup>
+                  <col style="width:90px">
+                  <col>
+                  <col style="width:90px">
+                  <col>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Kode L2</th>
+                    <th>Level 2</th>
+                    <th>Kode L3</th>
+                    <th>Level 3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Murid -->
+                  <tr class="l1-row">
+                    <td colspan="4"><span class="cb-l1-badge l1-murid">1</span> <span class="cb-l1-name">Murid</span></td>
+                  </tr>
+                  <tr><td class="cb-l2-code">1.1</td><td class="cb-l2-name">Budaya Belajar</td><td class="cb-l3-code">1.1.1</td><td class="cb-l3-name">Projek Koding dan KA yang dikembangkan murid</td></tr>
+                  <!-- Guru -->
+                  <tr class="l1-row">
+                    <td colspan="4"><span class="cb-l1-badge l1-guru">2</span> <span class="cb-l1-name">Guru</span></td>
+                  </tr>
+                  <tr><td class="cb-l2-code" rowspan="2">2.1</td><td class="cb-l2-name" rowspan="2">Mengajar secara Efektif</td><td class="cb-l3-code">2.1.1</td><td class="cb-l3-name">Literasi digital guru</td></tr>
+                  <tr><td class="cb-l3-code">2.1.2</td><td class="cb-l3-name">Pemanfaatan teknologi secara kontekstual dalam pelaksanaan/pengelolaan pembelajaran</td></tr>
+                  <tr><td class="cb-l2-code">2.2</td><td class="cb-l2-name">Asesmen Otentik</td><td class="cb-l3-code">2.2.1</td><td class="cb-l3-name">Pemanfaatan teknologi secara kontekstual dalam penilaian pembelajaran</td></tr>
+                  <!-- Kepala Satpen -->
+                  <tr class="l1-row">
+                    <td colspan="4"><span class="cb-l1-badge l1-kasek">3</span> <span class="cb-l1-name">Kepala Satpen</span></td>
+                  </tr>
+                  <tr><td class="cb-l2-code" rowspan="2">3.1</td><td class="cb-l2-name" rowspan="2">Kepemimpinan Pembelajaran Mendalam</td><td class="cb-l3-code">3.1.1</td><td class="cb-l3-name">Memimpin implementasi Koding dan Kecerdasan Artifisial</td></tr>
+                  <tr><td class="cb-l3-code">3.1.2</td><td class="cb-l3-name">Supervisi pembelajaran Koding dan Kecerdasan Artifisial</td></tr>
+                  <tr><td class="cb-l2-code" rowspan="2">3.2</td><td class="cb-l2-name" rowspan="2">Pengelolaan Sumber Daya</td><td class="cb-l3-code">3.2.1</td><td class="cb-l3-name">Penguatan kapasitas dan aktivasi komunitas belajar pendidik pengampu Koding dan KA</td></tr>
+                  <tr><td class="cb-l3-code">3.2.2</td><td class="cb-l3-name">Penyediaan sumber belajar Koding dan KA</td></tr>
+                  <tr><td class="cb-l2-code">3.3</td><td class="cb-l2-name">Kemitraan dan Ekosistem</td><td class="cb-l3-code">3.3.1</td><td class="cb-l3-name">Pengembangan kemitraan untuk mendukung pembelajaran Koding dan KA</td></tr>
+                  <tr><td class="cb-l2-code" rowspan="2">3.4</td><td class="cb-l2-name" rowspan="2">Pemanfaatan Teknologi Digital</td><td class="cb-l3-code">3.4.1</td><td class="cb-l3-name">Penyediaan sarana dan prasarana digital yang mendukung pembelajaran Koding dan KA</td></tr>
+                  <tr><td class="cb-l3-code">3.4.2</td><td class="cb-l3-name">Mendorong pemanfaatan teknologi digital secara kontekstual untuk mendukung pelaksanaan</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /codebook-inner -->
+      </div><!-- /codebook-body -->
+    </div><!-- /codebook-wrap -->
 
     <div class="panel" style="margin-bottom:0">
       <div class="panel-header" style="padding:14px 16px 12px; border-bottom:1px solid var(--border)">
@@ -787,6 +1034,17 @@ function resetBaselineFilter() {
   document.getElementById('baselineUsulanFilter').value = '';
   baselinePage = 1;
   renderBaselineTable();
+}
+
+// ─── CODEBOOK ──────────────────────────────────────────────────────────────
+function toggleCodebook() {
+  document.getElementById('codebookWrap').classList.toggle('open');
+}
+function switchCodebookTab(tab, btn) {
+  document.querySelectorAll('.codebook-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.codebook-tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cb-tab-' + tab).classList.add('active');
 }
 
 window.addEventListener('load', () => { loadData(); });
