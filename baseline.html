@@ -24,7 +24,7 @@
 body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; font-size: 13.5px; }
 
 /* ── SIDEBAR ── */
-aside { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform 0.25s ease; }
+aside { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 10001; transition: transform 0.25s ease; }
 .sidebar-logo { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; }
 .sidebar-logo img { width: 100%; max-width: 160px; height: auto; object-fit: contain; display: block; }
 .sidebar-close { display: none; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px; flex-shrink: 0; margin-left: 8px; }
@@ -36,11 +36,11 @@ nav a.active { background: var(--blue-lt); color: #fff; }
 nav a.active svg { opacity: 1; }
 .nav-divider { padding: 10px 12px 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.22); }
 .sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6; }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 150; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 10000; }
 .sidebar-overlay.show { display: block; }
 
 /* ── MOBILE TOPBAR ── */
-.mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 52px; background: var(--navy); z-index: 100; align-items: center; padding: 0 16px; gap: 12px; }
+.mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 52px; background: var(--navy); z-index: 10002; align-items: center; padding: 0 16px; gap: 12px; }
 .hamburger { background: none; border: none; color: #fff; cursor: pointer; padding: 4px; display: flex; align-items: center; }
 .mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
 
@@ -207,11 +207,210 @@ td.td-nama { font-weight: 600; color: var(--navy); }
   .modal { border-radius: 16px 16px 0 0; max-width: 100%; }
   .radar-wrap { max-width: 100%; }
 }
+
+/* ── AUTH OVERLAY — hanya blur area main, sidebar tidak tersentuh ── */
+#authScreen {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  left: var(--sidebar-w); /* mulai dari kanan sidebar */
+  z-index: 9999;
+  background: rgba(242,246,251,0.72);
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+/* Mobile: overlay mulai dari top 52px (tinggi mobile topbar), left 0 */
+@media (max-width: 768px) {
+  #authScreen {
+    left: 0;
+    top: 52px;
+  }
+}
+#authScreen.hidden { display: none; }
+.auth-card {
+  background: var(--surface); border-radius: 20px;
+  width: 100%; max-width: 400px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  overflow: hidden; animation: fadeUp 0.3s ease both;
+}
+.auth-card-head {
+  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
+  padding: 28px 28px 24px; text-align: center;
+}
+.auth-card-head img { width: 120px; height: auto; margin-bottom: 14px; display: block; margin-left: auto; margin-right: auto; }
+.auth-card-head h2 { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.3; }
+.auth-card-head p  { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+.auth-card-body { padding: 24px 28px 28px; }
+.auth-field { margin-bottom: 14px; }
+.auth-field label { display: block; font-size: 11.5px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+.auth-field input {
+  width: 100%; padding: 9px 12px; border-radius: 8px;
+  border: 1.5px solid var(--border); font-size: 13px;
+  font-family: inherit; color: var(--text); background: var(--bg);
+  outline: none; transition: border-color 0.15s;
+}
+.auth-field input:focus { border-color: var(--blue-lt); background: #fff; }
+.auth-error {
+  background: #fde8d8; border: 1px solid #f5b89a; border-radius: 8px;
+  padding: 9px 12px; font-size: 12px; color: #8a3000;
+  margin-bottom: 14px; display: none;
+}
+.auth-error.show { display: block; }
+.btn-login {
+  width: 100%; padding: 11px; border-radius: 9px;
+  background: var(--blue-lt); color: #fff; border: none;
+  font-size: 13.5px; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.01em;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-login:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.35); }
+.btn-login:disabled { opacity: 0.6; cursor: default; transform: none; box-shadow: none; }
+.btn-login-spinner {
+  display: none; width: 16px; height: 16px; flex-shrink: 0;
+  animation: spin 0.8s linear infinite;
+}
+.btn-login.loading .btn-login-spinner { display: block; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.auth-forgot {
+  text-align: center; margin-top: 16px;
+  font-size: 11px; color: var(--muted); line-height: 1.6;
+}
+.auth-forgot a { color: var(--blue-lt); text-decoration: none; font-weight: 600; }
+.auth-forgot a:hover { text-decoration: underline; }
+
+/* ── CHANGE PASSWORD MODAL ── */
+#changePwModal {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(10,31,60,0.65);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+#changePwModal.hidden { display: none; }
+.changepw-card {
+  background: var(--surface); border-radius: 16px;
+  width: 100%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  overflow: hidden; animation: fadeUp 0.2s ease both;
+}
+.changepw-head {
+  background: linear-gradient(115deg, #1a4a8f, #1e5fbb);
+  padding: 20px 22px; display: flex; align-items: center; gap: 12px;
+}
+.changepw-head-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.changepw-head-icon svg { color: #fff; }
+.changepw-head-text strong { display: block; font-size: 13.5px; font-weight: 800; color: #fff; }
+.changepw-head-text span  { font-size: 11px; color: rgba(255,255,255,0.65); }
+.changepw-body { padding: 20px 22px 24px; }
+.changepw-notice {
+  background: #fef3d7; border: 1px solid #f0d080; border-radius: 8px;
+  padding: 10px 12px; font-size: 12px; color: #6b4400;
+  margin-bottom: 16px; line-height: 1.5;
+}
+.changepw-error {
+  background: #fde8d8; border: 1px solid #f5b89a; border-radius: 8px;
+  padding: 9px 12px; font-size: 12px; color: #8a3000;
+  margin-bottom: 12px; display: none;
+}
+.changepw-error.show { display: block; }
+
+/* ── USER INFO — kanan atas topbar (desktop), baris sendiri (mobile) ── */
+.topbar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
+.user-topbadge { display: none !important; }
+.user-topbadge-info { text-align: right; }
+.user-topbadge-email { font-size: 12px; font-weight: 700; color: var(--navy); line-height: 1.3; }
+.user-topbadge-role  { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.btn-logout {
+  padding: 4px 10px; border-radius: 6px;
+  background: transparent; border: 1.5px solid var(--border);
+  color: var(--muted); font-size: 11px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.btn-logout:hover { background: #fde8d8; color: #8a3000; border-color: #f5b89a; }
+
+/* Mobile: user info jadi baris terpisah di atas codebook */
+.user-mobile-bar {
+  display: none;
+  align-items: center; justify-content: space-between;
+  padding: 10px 14px; margin-bottom: 12px;
+  background: var(--surface); border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.user-mobile-bar.show { display: flex; }
+.user-mobile-bar-info { display: flex; flex-direction: column; gap: 1px; }
+.user-mobile-bar-email { font-size: 12px; font-weight: 700; color: var(--navy); }
+.user-mobile-bar-role  { font-size: 10.5px; color: var(--muted); }
+@media (max-width: 768px) {
+  .user-topbadge.show { display: none !important; }
+}
 </style>
 </head>
 <body>
 
 <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ── AUTH SCREEN ── -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-card-head">
+      <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo Kemendikdasmen">
+      <h2>Masuk untuk Melihat Data Baseline</h2>
+      <p>Gunakan email yang sudah didaftarkan<br>oleh tim Direktorat SMA</p>
+    </div>
+    <div class="auth-card-body">
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-field">
+        <label for="authEmail">Email</label>
+        <input type="email" id="authEmail" placeholder="Masukkan email Anda" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label for="authPassword">Password</label>
+        <input type="password" id="authPassword" placeholder="Masukkan password" autocomplete="current-password">
+      </div>
+      <button class="btn-login" id="btnLogin" onclick="doLoginSubmit()">
+        <svg class="btn-login-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        <span id="btnLoginText">Masuk</span>
+      </button>
+      <div class="auth-forgot">
+        Lupa password? Hubungi tim kami di<br>
+        <a href="mailto:sekolahmodel@kemdikbud.go.id">Direktorat SMA Kemendikdasmen</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHANGE PASSWORD MODAL ── -->
+<div id="changePwModal" class="hidden">
+  <div class="changepw-card">
+    <div class="changepw-head">
+      <div class="changepw-head-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="changepw-head-text">
+        <strong>Buat Password Baru</strong>
+        <span>Wajib dilakukan saat pertama login</span>
+      </div>
+    </div>
+    <div class="changepw-body">
+      <div class="changepw-notice">
+        Anda masih menggunakan password default. Silakan buat password baru untuk melanjutkan akses.
+      </div>
+      <div class="changepw-error" id="changePwError"></div>
+      <div class="auth-field">
+        <label for="newPw1">Password Baru</label>
+        <input type="password" id="newPw1" placeholder="Minimal 6 karakter">
+      </div>
+      <div class="auth-field" style="margin-bottom:18px">
+        <label for="newPw2">Konfirmasi Password</label>
+        <input type="password" id="newPw2" placeholder="Ulangi password baru">
+      </div>
+      <button class="btn-login" id="btnChangePw" onclick="doChangePwSubmit()">Simpan Password</button>
+    </div>
+  </div>
+</div>
 <div class="mobile-topbar">
   <button class="hamburger" onclick="openSidebar()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -263,6 +462,22 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       <h1>Baseline Sekolah</h1>
       <p>Data profil awal sekolah model — KKA &amp; Pembelajaran Mendalam</p>
     </div>
+    <div class="user-topbadge" id="userTopBadge">
+      <div class="user-topbadge-info">
+        <div class="user-topbadge-email" id="userTopEmail">—</div>
+        <div class="user-topbadge-role" id="userTopRole">—</div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <!-- USER INFO MOBILE — muncul di atas codebook saat login -->
+  <div class="user-mobile-bar" id="userMobileBar">
+    <div class="user-mobile-bar-info">
+      <div class="user-mobile-bar-email" id="userMobileEmail">—</div>
+      <div class="user-mobile-bar-role" id="userMobileRole">—</div>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Keluar</button>
   </div>
 
   <!-- CODEBOOK -->
@@ -272,7 +487,7 @@ td.td-nama { font-weight: 600; color: var(--navy); }
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       </div>
       <div class="codebook-toggle-label">
-        <strong>Panduan Indikator</strong>
+        <strong>Panduan Codebook</strong>
         <span>Referensi kode indikator PM &amp; KKA</span>
       </div>
       <svg class="codebook-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -519,11 +734,150 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const GAS_URL   = 'https://script.google.com/macros/s/AKfycbyuuGDDqP51ZjqIlwRmDlecyx6iB3k8wOJOD2DFLWx1OOqnGXqiUgbm3nRhJmOzFQgqiA/exec?action=all';
+const GAS_URL   = 'https://script.google.com/macros/s/AKfycbzMYVmecr4FcaODB7gn9JfVgitygGw0JExzkzqNJ-txvURw21JDifCyVD-C4lM9N64_/exec';
 const PAGE_SIZE = 20;
 let ALL_SCHOOLS = [];
 let baselinePage = 1;
 let activeCharts = {};
+
+// ── UPT multi-provinsi mapping ─────────────────────────────────────────────────
+const UPT_PROVINSI_MAP = {
+  'upt_papua'      : ['Papua','Papua Pegunungan','Papua Selatan','Papua Tengah'],
+  'upt_papuabarat' : ['Papua Barat','Papua Barat Daya'],
+};
+
+// ── Role labels ────────────────────────────────────────────────────────────────
+const ROLE_LABEL = { nasional: 'Nasional', upt: 'BBPMP/BPMP', provinsi: 'Dinas Pendidikan', sekolah: 'Sekolah' };
+
+// ── Session helpers ────────────────────────────────────────────────────────────
+function getSession() {
+  try { return JSON.parse(localStorage.getItem('auth') || 'null'); } catch { return null; }
+}
+function setSession(data) { localStorage.setItem('auth', JSON.stringify(data)); }
+function clearSession()   { localStorage.removeItem('auth'); }
+
+// ── Auth: Login submit ─────────────────────────────────────────────────────────
+async function doLoginSubmit() {
+  const email    = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errEl    = document.getElementById('authError');
+  const btn      = document.getElementById('btnLogin');
+
+  errEl.classList.remove('show');
+  if (!email || !password) { showAuthError('Email dan password wajib diisi.'); return; }
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  document.getElementById('btnLoginText').textContent = 'Memeriksa...';
+
+  try {
+    const url = `${GAS_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
+    const res  = await fetch(url);
+    const json = await res.json();
+
+    if (!json.ok) { showAuthError(json.error || 'Login gagal.'); return; }
+
+    // Simpan session sementara (belum full login kalau mustChange)
+    setSession({ email, role: json.role, provinsi: json.provinsi, npsn: json.npsn, mustChange: json.mustChange });
+
+    if (json.mustChange) {
+      // Tampilkan modal ganti password
+      document.getElementById('changePwModal').classList.remove('hidden');
+    } else {
+      finishLogin();
+    }
+  } catch (e) {
+    showAuthError('Gagal terhubung ke server. Coba lagi.');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    document.getElementById('btnLoginText').textContent = 'Masuk';
+  }
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+// ── Auth: Change password submit ───────────────────────────────────────────────
+async function doChangePwSubmit() {
+  const pw1  = document.getElementById('newPw1').value;
+  const pw2  = document.getElementById('newPw2').value;
+  const errEl = document.getElementById('changePwError');
+  const btn   = document.getElementById('btnChangePw');
+
+  errEl.classList.remove('show');
+  if (pw1.length < 6) { showChangePwError('Password minimal 6 karakter.'); return; }
+  if (pw1 !== pw2)    { showChangePwError('Konfirmasi password tidak cocok.'); return; }
+
+  const sess = getSession();
+  if (!sess) { showChangePwError('Sesi tidak valid, silakan login ulang.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Menyimpan...';
+
+  try {
+    const url = `${GAS_URL}?action=changePassword&email=${encodeURIComponent(sess.email)}&oldPassword=${encodeURIComponent('sekolahmodel123')}&newPassword=${encodeURIComponent(pw1)}`;
+    const res  = await fetch(url);
+    const json = await res.json();
+
+    if (!json.ok) { showChangePwError(json.error || 'Gagal menyimpan password.'); return; }
+
+    // Update session, hilangkan mustChange
+    setSession({ ...sess, mustChange: false });
+    document.getElementById('changePwModal').classList.add('hidden');
+    finishLogin();
+  } catch (e) {
+    showChangePwError('Gagal terhubung ke server. Coba lagi.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Simpan Password';
+  }
+}
+
+function showChangePwError(msg) {
+  const el = document.getElementById('changePwError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+// ── Selesai login: tampilkan app ───────────────────────────────────────────────
+function finishLogin() {
+  const sess = getSession();
+  document.getElementById('authScreen').classList.add('hidden');
+
+  // Desktop: user badge kanan atas
+  const badge = document.getElementById('userTopBadge');
+  document.getElementById('userTopEmail').textContent = sess.email;
+  document.getElementById('userTopRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
+  badge.classList.add('show');
+
+  // Mobile: user bar di atas codebook
+  document.getElementById('userMobileEmail').textContent = sess.email;
+  document.getElementById('userMobileRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
+  document.getElementById('userMobileBar').classList.add('show');
+
+  loadData();
+}
+
+// ── Logout ─────────────────────────────────────────────────────────────────────
+function doLogout() {
+  clearSession();
+  location.reload();
+}
+
+// ── Enter key support ──────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (!document.getElementById('changePwModal').classList.contains('hidden')) {
+      doChangePwSubmit();
+    } else if (!document.getElementById('authScreen').classList.contains('hidden')) {
+      doLoginSubmit();
+    }
+  }
+});
 
 // ── Nilai ─────────────────────────────────────────────────────────────────────
 function toScore(v) {
@@ -700,10 +1054,25 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 // ── Data ──────────────────────────────────────────────────────────────────────
 async function loadData() {
   try {
-    const res  = await fetch(GAS_URL);
+    const res  = await fetch(GAS_URL + '?action=all');
     const json = await res.json();
     if (!json.ok) throw new Error(json.error || 'API error');
-    ALL_SCHOOLS = json.schools || [];
+
+    const sess = getSession();
+    let schools = json.schools || [];
+
+    // Filter berdasarkan role
+    if (sess) {
+      if (sess.role === 'upt' || sess.role === 'provinsi') {
+        const provList = sess.provinsi || [];
+        schools = schools.filter(r => provList.includes(r.provinsi));
+      } else if (sess.role === 'sekolah') {
+        schools = schools.filter(r => String(r.npsn) === String(sess.npsn));
+      }
+      // role nasional: tampilkan semua, tidak difilter
+    }
+
+    ALL_SCHOOLS = schools;
     populateFilters();
     renderBaselineTable();
   } catch (e) {
@@ -714,10 +1083,29 @@ async function loadData() {
 }
 
 function populateFilters() {
-  const provs = [...new Set(ALL_SCHOOLS.map(r => r.provinsi).filter(Boolean))].sort();
-  const sel = document.getElementById('baselineProvFilter');
-  sel.innerHTML = '<option value="">Semua Provinsi</option>' +
-    provs.map(v => `<option value="${v}">${v}</option>`).join('');
+  const sess = getSession();
+  const role = sess ? sess.role : 'nasional';
+
+  // Role sekolah: sembunyikan semua filter
+  if (role === 'sekolah') {
+    document.getElementById('baselineSearch').closest('.table-filters').style.display = 'none';
+    return;
+  }
+
+  // Role upt/provinsi: sembunyikan filter provinsi (sudah otomatis terfilter)
+  const provFilterWrap = document.getElementById('baselineProvFilter');
+  if (role === 'upt' || role === 'provinsi') {
+    provFilterWrap.style.display = 'none';
+    document.querySelector('.btn-reset-filter') && (document.querySelector('.btn-reset-filter').style.display = 'none');
+  }
+
+  // Hanya populate provinsi untuk nasional
+  if (role === 'nasional') {
+    const provs = [...new Set(ALL_SCHOOLS.map(r => r.provinsi).filter(Boolean))].sort();
+    const sel = document.getElementById('baselineProvFilter');
+    sel.innerHTML = '<option value="">Semua Provinsi</option>' +
+      provs.map(v => `<option value="${v}">${v}</option>`).join('');
+  }
 }
 
 function getBaselineFiltered() {
@@ -795,7 +1183,13 @@ function renderPager(containerId, current, total, onClick) {
   el.innerHTML=btns;
 }
 
-window.addEventListener('load', () => { loadData(); });
+window.addEventListener('load', () => {
+  const sess = getSession();
+  if (sess && !sess.mustChange) {
+    finishLogin();
+  }
+  // Kalau belum login, authScreen sudah tampil by default
+});
 </script>
 </body>
 </html>
