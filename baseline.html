@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Baseline Sekolah — Sekolah Model 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -23,711 +21,202 @@
   --muted:     #6b83a4;
   --sidebar-w: 220px;
 }
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  display: flex;
-  min-height: 100vh;
-  font-size: 13.5px;
-}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; font-size: 13.5px; }
 
 /* ── SIDEBAR ── */
-aside {
-  width: var(--sidebar-w);
-  background: var(--navy);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 200;
-  transition: transform 0.25s ease;
-}
-.sidebar-logo {
-  padding: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.sidebar-logo img {
-  width: 100%;
-  max-width: 160px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-.sidebar-close {
-  display: none;
-  background: none; border: none;
-  color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px;
-  flex-shrink: 0; margin-left: 8px;
-}
-nav {
-  flex: 1; padding: 14px 10px;
-  display: flex; flex-direction: column; gap: 2px;
-  overflow-y: auto;
-}
-nav a {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px; border-radius: 8px;
-  color: rgba(255,255,255,0.55);
-  text-decoration: none; font-size: 12.5px; font-weight: 500;
-  transition: background 0.15s, color 0.15s; cursor: pointer;
-}
+aside { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform 0.25s ease; }
+.sidebar-logo { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; }
+.sidebar-logo img { width: 100%; max-width: 160px; height: auto; object-fit: contain; display: block; }
+.sidebar-close { display: none; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px; flex-shrink: 0; margin-left: 8px; }
+nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+nav a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 12.5px; font-weight: 500; transition: background 0.15s, color 0.15s; cursor: pointer; }
 nav a svg { flex-shrink: 0; opacity: 0.65; }
 nav a:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
 nav a.active { background: var(--blue-lt); color: #fff; }
 nav a.active svg { opacity: 1; }
-.nav-divider {
-  padding: 10px 12px 4px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: rgba(255,255,255,0.22);
-}
-.sidebar-footer {
-  padding: 14px 16px;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6;
-}
-.sidebar-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 150;
-}
+.nav-divider { padding: 10px 12px 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.22); }
+.sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 150; }
 .sidebar-overlay.show { display: block; }
 
 /* ── MOBILE TOPBAR ── */
-.mobile-topbar {
-  display: none; position: fixed;
-  top: 0; left: 0; right: 0; height: 52px;
-  background: var(--navy); z-index: 100;
-  align-items: center; padding: 0 16px; gap: 12px;
-}
-.hamburger {
-  background: none; border: none; color: #fff;
-  cursor: pointer; padding: 4px; display: flex; align-items: center;
-}
+.mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 52px; background: var(--navy); z-index: 100; align-items: center; padding: 0 16px; gap: 12px; }
+.hamburger { background: none; border: none; color: #fff; cursor: pointer; padding: 4px; display: flex; align-items: center; }
 .mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
 
 /* ── MAIN ── */
-main {
-  margin-left: var(--sidebar-w);
-  flex: 1; padding: 26px 28px 40px;
-  overflow-x: hidden; transition: margin-left 0.25s;
-}
-
-/* TOPBAR */
+main { margin-left: var(--sidebar-w); flex: 1; padding: 26px 28px 40px; overflow-x: hidden; }
 .topbar { display: flex; align-items: flex-end; margin-bottom: 20px; }
-.topbar-left h1 {
-  font-size: 22px; font-weight: 800; color: var(--navy);
-  letter-spacing: -0.03em; line-height: 1.2;
-}
+.topbar-left h1 { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -0.03em; line-height: 1.2; }
 .topbar-left p { font-size: 12px; color: var(--muted); margin-top: 3px; }
 
-/* HERO */
-.hero {
-  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
-  border-radius: 14px; padding: 20px 24px;
-  display: grid; grid-template-columns: 1fr auto;
-  gap: 16px; align-items: center;
-  margin-bottom: 18px; position: relative; overflow: hidden;
-}
-.hero::before {
-  content: ''; position: absolute; right: -50px; top: -50px;
-  width: 220px; height: 220px; border-radius: 50%;
-  background: rgba(255,255,255,0.04); pointer-events: none;
-}
-.hero-text h2 { font-size: 13.5px; font-weight: 700; color: var(--accent-lt); margin-bottom: 5px; }
-.hero-text p { font-size: 12px; color: rgba(255,255,255,0.72); line-height: 1.65; max-width: 560px; }
-.hero-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-.hero-btn {
-  text-decoration: none; padding: 7px 14px; border-radius: 8px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  border: none; font-family: inherit; transition: all 0.2s ease;
-}
-.hero-btn-primary { background: var(--accent); color: var(--navy); }
-.hero-btn-primary:hover {
-  background: var(--accent-lt);
-  box-shadow: 0 0 16px rgba(240,165,0,0.5), 0 0 30px rgba(240,165,0,0.18);
-  transform: translateY(-1px);
-}
-.hero-btn-ghost { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
-.hero-btn-ghost:hover {
-  background: rgba(255,255,255,0.18);
-  box-shadow: 0 0 16px rgba(255,255,255,0.14), 0 0 28px rgba(100,160,255,0.18);
-  border-color: rgba(255,255,255,0.4); transform: translateY(-1px);
-}
-.hero-visual { z-index: 1; }
+/* ── CODEBOOK ── */
+.codebook-wrap { margin-bottom: 14px; border-radius: 14px; overflow: hidden; }
+.codebook-toggle { width: 100%; background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%); border: none; cursor: pointer; font-family: inherit; text-align: left; padding: 16px 20px; display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; transition: filter 0.2s; }
+.codebook-toggle::before { content: ''; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none; }
+.codebook-toggle:hover { filter: brightness(1.08); }
+.codebook-toggle-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.codebook-toggle-icon svg { color: rgba(255,255,255,0.9); }
+.codebook-toggle-label { flex: 1; }
+.codebook-toggle-label strong { display: block; font-size: 13px; font-weight: 700; color: var(--accent-lt); }
+.codebook-toggle-label span { font-size: 11.5px; color: rgba(255,255,255,0.65); }
+.codebook-chevron { color: rgba(255,255,255,0.7); transition: transform 0.28s ease; flex-shrink: 0; }
+.codebook-wrap.open .codebook-chevron { transform: rotate(180deg); }
+.codebook-body { max-height: 0; overflow: hidden; transition: max-height 0.38s ease; background: var(--surface); border: 1.5px solid var(--border); border-top: none; border-radius: 0 0 14px 14px; }
+.codebook-wrap.open .codebook-body { max-height: 1400px; }
+.codebook-inner { padding: 14px 16px 16px; }
+.codebook-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.codebook-tab { padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); font-family: inherit; transition: all 0.15s; }
+.codebook-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+.codebook-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
+.codebook-tab-pane { display: none; }
+.codebook-tab-pane.active { display: block; }
+.cb-table-wrap { overflow-x: auto; }
+.cb-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; border: 1px solid var(--border); min-width: 560px; }
+.cb-table th { padding: 7px 12px; text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); border-bottom: 2px solid var(--border); white-space: nowrap; border-right: 1px solid var(--border); }
+.cb-table th:last-child { border-right: none; }
+.cb-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; line-height: 1.4; border-right: 1px solid var(--border); }
+.cb-table td:last-child { border-right: none; }
+.cb-table tr:last-child td { border-bottom: none; }
+.cb-table tr:hover td { background: var(--bg); }
+.cb-l1-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; font-size: 11px; font-weight: 800; }
+.l1-murid { background: #e8f0fb; color: #1a4a8a; }
+.l1-guru  { background: #e0f0e9; color: #1a6b3e; }
+.l1-kasek { background: #fef3d7; color: #8a5c00; }
+.cb-l1-name { font-weight: 700; font-size: 12.5px; color: var(--navy); }
+.cb-l2-code, .cb-l3-code { font-family: monospace; font-size: 10.5px; font-weight: 700; color: var(--blue-lt); white-space: nowrap; }
+.cb-l2-name { font-weight: 600; color: var(--navy); }
 
-/* STATS */
-.stats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 12px; margin-bottom: 16px;
-}
-.stat-card {
-  background: var(--surface); border-radius: 12px;
-  padding: 15px 16px; border: 1px solid var(--border);
-  transition: border-color 0.15s; animation: fadeUp 0.35s ease both;
-  display: flex; flex-direction: column; gap: 4px;
-}
-.stat-card:hover { border-color: var(--blue-lt); }
-.stat-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.stat-icon {
-  width: 34px; height: 34px; border-radius: 8px;
-  background: #eef4ff; display: flex; align-items: center;
-  justify-content: center; flex-shrink: 0;
-}
-.stat-icon svg { color: var(--blue-lt); }
-.stat-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.stat-value { font-size: 26px; font-weight: 800; color: var(--blue-lt); letter-spacing: -0.03em; line-height: 1; }
-.stat-sub { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
-.dot-neg { background: #2b72d8; }
-.dot-swa { background: var(--accent); }
-
-/* ANALYTICS ROW */
-.analytics-row {
-  display: grid; grid-template-columns: 1fr 2fr;
-  gap: 14px; margin-bottom: 16px;
-  align-items: stretch;
-}
-.analytics-left { display: flex; flex-direction: column; gap: 14px; }
-
-.panel {
-  background: var(--surface); border-radius: 12px;
-  border: 1px solid var(--border); overflow: hidden;
-  animation: fadeUp 0.35s ease both;
-  transition: border-color 0.15s;
-}
-.panel:hover { border-color: var(--blue-lt); }
+/* ── MAIN TABLE ── */
+.panel { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; animation: fadeUp 0.35s ease both; }
 .panel-header { padding: 14px 16px 0; }
 .panel-title { font-size: 13px; font-weight: 700; color: var(--navy); }
 .panel-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.panel-body { padding: 12px 16px 16px; }
-
-/* DONUT */
-.donut-wrap { display: flex; align-items: center; gap: 14px; }
-.legend { display: flex; flex-direction: column; gap: 6px; flex: 1; }
-.leg-item { display: flex; align-items: flex-start; gap: 7px; }
-.leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
-.leg-pct { font-weight: 700; color: var(--navy); min-width: 34px; font-size: 11.5px; }
-.leg-label { color: var(--muted); font-size: 11px; line-height: 1.3; }
-
-/* MAP */
-.map-panel { display: flex; flex-direction: column; }
-.map-panel .panel-body { padding: 10px 14px 12px; display: flex; flex-direction: column; flex: 1; }
-#map {
-  flex: 1; min-height: 0;
-  border-radius: 8px; z-index: 1;
-}
-.map-legend {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 8px; font-size: 10.5px; color: var(--muted); flex-shrink: 0;
-}
-.map-legend-bar {
-  flex: 1; height: 5px; border-radius: 99px;
-  background: linear-gradient(90deg, #d6e8ff, #2b72d8, #0a1f3c);
-}
-
-/* TABLE */
-.table-filters {
-  padding: 12px 16px; display: flex; gap: 10px;
-  border-bottom: 1px solid var(--border); flex-wrap: wrap;
-}
-.search-input { flex: 1.5; min-width: 160px; }
-.filter-select { flex: 1; min-width: 120px; }
-select, input {
-  width: 100%; padding: 7px 10px; border-radius: 7px;
-  border: 1.5px solid var(--border); font-size: 12px;
-  font-family: inherit; color: var(--text); background: var(--bg);
-  appearance: none; outline: none; transition: border-color 0.15s;
-}
+.table-filters { padding: 12px 16px; display: flex; gap: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+.search-input { flex: 2; min-width: 180px; }
+.filter-select { flex: 1; min-width: 140px; }
+select, input { width: 100%; padding: 7px 10px; border-radius: 7px; border: 1.5px solid var(--border); font-size: 12px; font-family: inherit; color: var(--text); background: var(--bg); appearance: none; outline: none; transition: border-color 0.15s; }
 select:focus, input:focus { border-color: var(--blue-lt); }
 table { width: 100%; border-collapse: collapse; }
 thead tr { border-bottom: 2px solid var(--border); }
-thead th {
-  padding: 10px 14px; text-align: left;
-  font-size: 10.5px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
-}
-tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-tbody tr:hover { background: var(--bg); }
+thead th { padding: 10px 14px; text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+tbody tr:hover { background: #eef4ff; }
 tbody tr:last-child { border-bottom: none; }
 td { padding: 9px 14px; font-size: 12.5px; }
-td.npsn { font-family: monospace; font-size: 11.5px; color: var(--muted); }
-td.nama { font-weight: 600; color: var(--navy); }
-.tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-/* Kolom Profil KKA & PM — pastikan tidak wrap di semua tabel */
-#baselineTable th:nth-child(6),
-#baselineTable th:nth-child(7),
-#baselineTable td:nth-child(6),
-#baselineTable td:nth-child(7),
-#berandaTbody td:nth-child(9),
-#berandaTbody td:nth-child(10),
-#suratTable td:nth-last-child(2),
-#suratTable td:nth-last-child(1) { min-width: 140px; white-space: nowrap; }
+td.td-no   { color: var(--muted); font-size: 11px; text-align: center; width: 36px; }
+td.td-npsn { font-family: monospace; font-size: 11.5px; color: var(--muted); }
+td.td-nama { font-weight: 600; color: var(--navy); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.tag-ung  { background: #fef3d7; color: #8a5c00; }
 .tag-maju { background: #e0f0e9; color: #1a6b3e; }
 .tag-berk { background: #e8f0fb; color: #1a4a8a; }
-.tag-ung  { background: #fef3d7; color: #8a5c00; }
-.tag-tt   { background: #f0f2f5; color: #556; }
-.table-footer {
-  padding: 11px 14px; display: flex; align-items: center;
-  justify-content: space-between; border-top: 1px solid var(--border);
-}
+.tag-pra  { background: #fde8d8; color: #8a3000; }
+.tag-tt   { background: #f0f2f5; color: #8896a8; }
+.btn-detail { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; background: var(--blue-lt); color: #fff; font-size: 11px; font-weight: 600; border: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.btn-detail:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(43,114,216,0.3); }
+.table-footer { padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
 .table-footer .info { font-size: 12px; color: var(--muted); }
-.btn-reset-filter {
-  padding: 7px 12px; border-radius: 7px; font-size: 12px; font-weight: 600;
-  border: 1.5px solid var(--border); background: var(--surface);
-  color: var(--muted); cursor: pointer; font-family: inherit;
-  white-space: nowrap; transition: all 0.15s;
-  flex-shrink: 0;
-}
+.btn-reset-filter { padding: 7px 12px; border-radius: 7px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
 .btn-reset-filter:hover { border-color: var(--blue-lt); color: var(--blue-lt); background: #eef4ff; }
 .pager { display: flex; gap: 4px; }
-.pager button {
-  width: 28px; height: 28px; border-radius: 6px;
-  border: 1.5px solid var(--border); background: var(--surface);
-  font-size: 12px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text); transition: background 0.1s, border-color 0.1s;
-  font-family: inherit;
-}
+.pager button { width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--surface); font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); transition: background 0.1s, border-color 0.1s; font-family: inherit; }
 .pager button:hover { background: var(--bg); border-color: var(--blue-lt); }
 .pager button.cur { background: var(--blue); color: #fff; border-color: var(--blue); }
+.pager button:disabled { opacity: 0.35; cursor: default; }
 
-/* Leaflet overrides */
-.leaflet-container { font-family: 'Plus Jakarta Sans', sans-serif !important; background: #f2f6fb !important; }
-.leaflet-control-zoom a { font-family: 'Plus Jakarta Sans', sans-serif !important; border-radius: 6px !important; }
-.leaflet-control-zoom { border: 1px solid var(--border) !important; border-radius: 7px !important; box-shadow: none !important; }
-.map-tip {
-  background: var(--navy) !important; color: #fff !important;
-  padding: 6px 10px !important; border-radius: 7px !important;
-  font-size: 11.5px !important; font-family: 'Plus Jakarta Sans', sans-serif !important;
-  border: none !important; box-shadow: none !important; white-space: nowrap !important;
-}
-.map-tip::before { display: none !important; }
-.leaflet-attribution { display: none !important; }
+/* ── MODAL ── */
+.modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(10,31,60,0.55); z-index: 500; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+.modal-backdrop.open { display: flex; }
+.modal { background: var(--surface); border-radius: 16px; width: 100%; max-width: 860px; box-shadow: 0 20px 60px rgba(10,31,60,0.25); animation: fadeUp 0.2s ease both; margin: auto; }
+.modal-head { background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%); border-radius: 16px 16px 0 0; padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.modal-head-info { flex: 1; }
+.modal-head-npsn { font-size: 11px; font-family: monospace; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
+.modal-head-nama { font-size: 16px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 6px; }
+.modal-head-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.modal-meta-tag { font-size: 11px; padding: 2px 10px; border-radius: 20px; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); font-weight: 500; }
+.modal-close { background: rgba(255,255,255,0.12); border: none; border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; flex-shrink: 0; transition: background 0.15s; }
+.modal-close:hover { background: rgba(255,255,255,0.22); }
+.modal-body { padding: 20px 24px 24px; }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* Profil cards */
+.skor-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.skor-card { border-radius: 10px; padding: 16px 18px; border: 1.5px solid var(--border); }
+.skor-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+.skor-card-profil { margin-bottom: 8px; }
+.skor-card-profil .tag { font-size: 14px; padding: 5px 14px; border-radius: 8px; }
+.skor-card-skor-wrap { display: flex; align-items: center; gap: 6px; }
+.skor-card-skor-label { font-size: 10px; color: var(--muted); font-weight: 600; }
+.skor-card-skor-val { font-size: 13px; font-weight: 800; color: var(--blue-lt); }
 
-/* ── PAGE SECTIONS ── */
-.page-section { display: none; }
-.page-section.active { display: block; }
+/* Modal tabs */
+.modal-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.modal-tab { padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); font-family: inherit; transition: all 0.15s; }
+.modal-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+.modal-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
+.modal-pane { display: none; }
+.modal-pane.active { display: block; }
 
-/* SURAT DUKUNGAN - CHART ROW */
-.chart-row-2 {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 14px; margin-bottom: 16px;
-}
-/* 4-chart row: 2 groups of 2 */
-.chart-section { margin-bottom: 16px; }
-.chart-group-label {
-  font-size: 11px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--muted);
-  padding: 0 2px 8px; display: flex; align-items: center; gap: 8px;
-}
-.chart-group-label::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-.chart-row-4 {
-  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 12px; margin-bottom: 16px;
-}
-/* filter tab pills */
-.filter-tabs {
-  display: flex; gap: 6px; flex-wrap: wrap;
-  padding: 0 0 14px;
-}
-.filter-tab {
-  padding: 5px 14px; border-radius: 20px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  border: 1.5px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  font-family: inherit; transition: all 0.15s;
-}
-.filter-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
-.filter-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
-/* compact donut for 4-grid */
-.donut-wrap-sm { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.legend-sm { display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.leg-item-sm { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
-.leg-item-sm .leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.chart-label { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.4; padding: 0 4px; }
-/* two-line table header */
-th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
-/* fix wide table scroll */
-.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.tbl-scroll table { min-width: 900px; }
-.pie-legend-grid { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+/* L1 section — sama kayak versi sebelumnya */
+.l1-section { margin-bottom: 20px; }
+.l1-header { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; }
+.l1-header-murid { background: #e8f0fb; }
+.l1-header-guru  { background: #e0f0e9; }
+.l1-header-kasek { background: #fef3d7; }
+.l1-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 6px; font-size: 10px; font-weight: 800; flex-shrink: 0; }
+.l1-badge-murid { background: #1a4a8a; color: #fff; }
+.l1-badge-guru  { background: #1a6b3e; color: #fff; }
+.l1-badge-kasek { background: #8a5c00; color: #fff; }
+.l1-title { font-size: 12px; font-weight: 700; }
+.l1-title-murid { color: #1a4a8a; }
+.l1-title-guru  { color: #1a6b3e; }
+.l1-title-kasek { color: #8a5c00; }
 
-@media (max-width: 1024px) {
-  .chart-row-4 { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 768px) {
-  .chart-row-2 { grid-template-columns: 1fr; }
-  .chart-row-4 { grid-template-columns: 1fr 1fr; }
-}
-.btn-lihat {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 11px; border-radius: 7px;
-  background: var(--blue-lt); color: #fff;
-  font-size: 11.5px; font-weight: 600;
-  text-decoration: none; border: none; cursor: pointer;
-  font-family: inherit; transition: all 0.15s ease;
-}
-.btn-lihat:hover {
-  background: var(--blue);
-  box-shadow: 0 0 12px rgba(43,114,216,0.35);
-  transform: translateY(-1px);
-}
-.btn-lihat svg { flex-shrink: 0; }
+/* L2 label — tetap ada untuk konteks */
+.l2-labels { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.l2-label-pill { font-size: 10px; font-weight: 600; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; text-transform: uppercase; letter-spacing: 0.05em; }
 
-/* STATUS BADGE */
-.badge-ada { background: #e0f0e9; color: #1a6b3e; display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
-.badge-belum { background: #fef3d7; color: #8a5c00; display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
+/* Radar canvas — satu per L1, lumayan besar */
+.radar-wrap { width: 100%; max-width: 420px; margin: 0 auto; aspect-ratio: 1; position: relative; }
+.radar-wrap canvas { width: 100% !important; height: 100% !important; }
 
-@media (max-width: 768px) {
-  .chart-row-2 { grid-template-columns: 1fr; }
-}
+/* KKA Murid single box */
+.single-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; display: inline-block; }
+.single-box .l3-code { font-size: 9.5px; font-family: monospace; color: var(--muted); margin-bottom: 3px; }
+.single-box .l3-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 1024px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .analytics-row { grid-template-columns: 1fr; }
-}
+/* Radar legend */
+.radar-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; font-size: 10px; color: var(--muted); }
+.radar-legend-item { display: flex; align-items: center; gap: 4px; }
+.radar-legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+.skel { background: linear-gradient(90deg, #e8f0fb 25%, #dce6f5 50%, #e8f0fb 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite linear; border-radius: 6px; }
+
 @media (max-width: 768px) {
   aside { transform: translateX(-100%); }
   aside.open { transform: translateX(0); }
   .sidebar-close { display: flex; }
   .mobile-topbar { display: flex; }
   main { margin-left: 0; padding: 70px 14px 40px; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .stat-value { font-size: 22px; }
   .topbar { display: none; }
-  .hero { grid-template-columns: 1fr; padding: 16px 18px; }
-  .hero-visual { display: none; }
-  #map { min-height: 240px; }
   .table-filters { flex-direction: column; }
-  :not(.cb-table) > thead th:nth-child(4), :not(.cb-table) > thead th:nth-child(5),
-  :not(.cb-table) > tbody td:nth-child(4), :not(.cb-table) > tbody td:nth-child(5) { display: none; }
+  .skor-row { grid-template-columns: 1fr; }
+  .modal-backdrop { padding: 0; align-items: flex-end; }
+  .modal { border-radius: 16px 16px 0 0; max-width: 100%; }
+  .radar-wrap { max-width: 100%; }
 }
-@media (max-width: 480px) {
-  .hero-actions { flex-direction: column; }
-  .hero-btn { text-align: center; }
-}
-
-/* ── CODEBOOK ── */
-.codebook-wrap {
-  margin-bottom: 14px;
-  border-radius: 14px;
-  overflow: hidden;
-  position: relative;
-}
-.codebook-toggle {
-  width: 100%;
-  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
-  border: none; cursor: pointer;
-  font-family: inherit; text-align: left;
-  padding: 16px 20px;
-  display: flex; align-items: center; gap: 12px;
-  position: relative; overflow: hidden;
-  transition: filter 0.2s;
-}
-.codebook-toggle::before {
-  content: ''; position: absolute; right: -40px; top: -40px;
-  width: 160px; height: 160px; border-radius: 50%;
-  background: rgba(255,255,255,0.04); pointer-events: none;
-}
-.codebook-toggle:hover { filter: brightness(1.08); }
-.codebook-toggle-icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: rgba(255,255,255,0.12);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.codebook-toggle-icon svg { color: rgba(255,255,255,0.9); }
-.codebook-toggle-label { flex: 1; }
-.codebook-toggle-label strong {
-  display: block; font-size: 13px; font-weight: 700; color: var(--accent-lt);
-}
-.codebook-toggle-label span {
-  font-size: 11.5px; color: rgba(255,255,255,0.65);
-}
-.codebook-chevron {
-  color: rgba(255,255,255,0.7);
-  transition: transform 0.28s ease;
-  flex-shrink: 0;
-}
-.codebook-wrap.open .codebook-chevron { transform: rotate(180deg); }
-
-.codebook-body {
-  max-height: 0; overflow: hidden;
-  transition: max-height 0.38s ease;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 14px 14px;
-}
-.codebook-wrap.open .codebook-body { max-height: 1400px; }
-
-.codebook-inner { padding: 14px 16px 16px; }
-
-/* Tab pills */
-.codebook-tabs {
-  display: flex; gap: 6px; margin-bottom: 14px;
-}
-.codebook-tab {
-  padding: 5px 16px; border-radius: 20px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  border: 1.5px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  font-family: inherit; transition: all 0.15s;
-}
-.codebook-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
-.codebook-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
-.codebook-tab-pane { display: none; }
-.codebook-tab-pane.active { display: block; }
-
-/* Tabel codebook */
-.cb-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.cb-table {
-  width: 100%; border-collapse: collapse;
-  font-size: 12px;
-  table-layout: fixed;
-  border: 1px solid var(--border);
-  min-width: 560px;
-}
-.cb-table th {
-  padding: 7px 12px;
-  text-align: left; font-size: 10.5px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
-  border-bottom: 2px solid var(--border); white-space: nowrap;
-  border-right: 1px solid var(--border);
-}
-.cb-table th:last-child { border-right: none; }
-.cb-table td {
-  padding: 7px 12px; border-bottom: 1px solid var(--border);
-  vertical-align: middle; line-height: 1.4;
-  border-right: 1px solid var(--border);
-}
-.cb-table td:last-child { border-right: none; }
-.cb-table tr:last-child td { border-bottom: none; }
-.cb-table tr:hover td { background: var(--bg); }
-/* Level 1 column cell */
-.cb-table td[rowspan] { border-bottom: 1px solid var(--border); }
-.cb-l1-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; border-radius: 6px;
-  font-size: 11px; font-weight: 800;
-}
-.l1-murid { background: #e8f0fb; color: #1a4a8a; }
-.l1-guru  { background: #e0f0e9; color: #1a6b3e; }
-.l1-kasek { background: #fef3d7; color: #8a5c00; }
-.cb-l1-name { font-weight: 700; font-size: 12.5px; color: var(--navy); }
-.cb-l2-code, .cb-l3-code {
-  font-family: monospace; font-size: 10.5px; font-weight: 700;
-  color: var(--blue-lt); white-space: nowrap;
-}
-.cb-l2-name { font-weight: 600; color: var(--navy); }
-.cb-l3-name { color: var(--text); }
-
-/* ── ROW CLICKABLE ── */
-.row-clickable { cursor: pointer; }
-.row-clickable:hover td { background: #eef4ff !important; }
-.td-detail-btn { color: var(--muted); text-align: center; }
-.row-clickable:hover .td-detail-btn { color: var(--blue-lt); }
-
-/* ── MODAL DETAIL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,31,60,0.55); z-index: 500;
-  align-items: center; justify-content: center;
-  padding: 16px;
-}
-.modal-overlay.open { display: flex; }
-.modal-box {
-  background: var(--surface); border-radius: 16px;
-  width: 100%; max-width: 820px; max-height: 90vh;
-  overflow-y: auto; box-shadow: 0 20px 60px rgba(10,31,60,0.25);
-  animation: modalIn 0.22s ease;
-  display: flex; flex-direction: column;
-}
-@keyframes modalIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to   { opacity: 1; transform: none; }
-}
-.modal-header {
-  padding: 18px 20px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: flex-start; gap: 12px;
-  position: sticky; top: 0; background: var(--surface); z-index: 1;
-}
-.modal-header-info { flex: 1; min-width: 0; }
-.modal-header-info h2 {
-  font-size: 15px; font-weight: 800; color: var(--navy);
-  margin-bottom: 4px; line-height: 1.3;
-}
-.modal-header-meta {
-  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
-  font-size: 11.5px; color: var(--muted);
-}
-.modal-header-meta span { display: flex; align-items: center; gap: 4px; }
-.modal-close {
-  background: none; border: none; cursor: pointer;
-  color: var(--muted); padding: 4px; flex-shrink: 0;
-  border-radius: 6px; transition: background 0.15s;
-}
-.modal-close:hover { background: var(--bg); color: var(--text); }
-.modal-body { padding: 18px 20px 24px; }
-
-/* Tabs dalam modal */
-.modal-tabs {
-  display: flex; gap: 6px; margin-bottom: 18px;
-}
-.modal-tab {
-  padding: 6px 18px; border-radius: 20px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  border: 1.5px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  font-family: inherit; transition: all 0.15s;
-}
-.modal-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
-.modal-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
-.modal-pane { display: none; }
-.modal-pane.active { display: block; }
-
-/* Profil overview card */
-.profil-overview {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px; margin-bottom: 18px;
-}
-.profil-card {
-  background: var(--bg); border-radius: 10px;
-  padding: 12px 14px; border: 1.5px solid var(--border);
-}
-.profil-card-label {
-  font-size: 10px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--muted); margin-bottom: 5px;
-}
-.profil-card-val {
-  font-size: 13.5px; font-weight: 700; color: var(--navy);
-}
-
-/* Section header dalam modal */
-.modal-section-title {
-  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--muted);
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 12px;
-}
-.modal-section-title::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-
-/* Grid level cards */
-.level-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px; margin-bottom: 20px;
-}
-.level-card {
-  background: var(--bg); border-radius: 8px;
-  padding: 10px 12px; border-left: 3px solid var(--border);
-}
-.level-card-code {
-  font-family: monospace; font-size: 10px; font-weight: 700;
-  color: var(--blue-lt); margin-bottom: 3px;
-}
-.level-card-name {
-  font-size: 10.5px; color: var(--muted); margin-bottom: 5px;
-  line-height: 1.3;
-}
-.level-card-val {
-  font-size: 11.5px; font-weight: 700;
-}
-
-/* Warna border & nilai per profil */
-.lv-unggul    { border-color: #f0a500; }
-.lv-unggul .level-card-val    { color: #8a5c00; }
-.lv-maju      { border-color: #1a6b3e; }
-.lv-maju .level-card-val      { color: #1a6b3e; }
-.lv-berkembang { border-color: #1a4a8a; }
-.lv-berkembang .level-card-val { color: #1a4a8a; }
-.lv-pra       { border-color: #c0392b; }
-.lv-pra .level-card-val       { color: #c0392b; }
-.lv-na        { border-color: var(--border); }
-.lv-na .level-card-val        { color: var(--muted); }
-
-/* Radar chart wrapper */
-.radar-wrap {
-  display: flex; justify-content: center;
-  margin-bottom: 20px;
-}
-.radar-legend {
-  display: flex; flex-wrap: wrap; gap: 8px 16px;
-  justify-content: center; margin-top: 8px; margin-bottom: 20px;
-}
-.radar-leg-item {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 11px; color: var(--muted);
-}
-.radar-leg-dot {
-  width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
-}
-
-/* Modal loading state */
-.modal-loading {
-  display: flex; align-items: center; justify-content: center;
-  padding: 60px 20px; gap: 12px; color: var(--muted); font-size: 13px;
-}
-.spinner {
-  width: 20px; height: 20px; border-radius: 50%;
-  border: 2.5px solid var(--border);
-  border-top-color: var(--blue-lt);
-  animation: spin 0.7s linear infinite; flex-shrink: 0;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-@media (max-width: 600px) {
-  .profil-overview { grid-template-columns: 1fr 1fr; }
-  .level-grid { grid-template-columns: 1fr 1fr; }
-  .modal-box { border-radius: 12px; }
-}
-
-@keyframes shimmer {
-  0%   { background-position: -600px 0; }
-  100% { background-position:  600px 0; }
-}
-.skel {
-  background: linear-gradient(90deg, #e8f0fb 25%, #dce6f5 50%, #e8f0fb 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-  border-radius: 6px;
-}
-.skel-circle {
-  border-radius: 50%;
-}
-.skel-stat-val  { height: 32px; width: 80px; margin-bottom: 8px; }
-.skel-stat-sub  { height: 12px; width: 120px; }
-.skel-donut     { width: 90px; height: 90px; flex-shrink: 0; }
-.skel-donut-sm  { width: 100px; height: 100px; }
-.skel-leg       { height: 11px; border-radius: 4px; margin-bottom: 5px; }
-.skel-tbl-row td { padding: 9px 14px; }
-.skel-tbl-cell  { height: 14px; border-radius: 4px; }
-.skel-panel-title { height: 16px; width: 160px; border-radius: 4px; margin-bottom: 6px; }
-.skel-panel-sub   { height: 11px; width: 100px; border-radius: 4px; }
 </style>
 </head>
 <body>
 
 <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
-
 <div class="mobile-topbar">
   <button class="hamburger" onclick="openSidebar()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
-  <span class="mobile-topbar-title">Daftar Sekolah Model SMA 2026</span>
+  <span class="mobile-topbar-title">Baseline Sekolah Model 2026</span>
 </div>
 
 <aside id="sidebar">
@@ -738,7 +227,6 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
     </button>
   </div>
   <nav>
-
     <div class="nav-divider">Program</div>
     <a href="beranda.html">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -770,478 +258,474 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
 </aside>
 
 <main>
-  <div id="page-baseline">
-    <div class="topbar">
-      <div class="topbar-left">
-        <h1>Baseline Sekolah</h1>
-        <p>Data profil awal sekolah model — KKA &amp; Pembelajaran Mendalam</p>
-      </div>
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Baseline Sekolah</h1>
+      <p>Data profil awal sekolah model — KKA &amp; Pembelajaran Mendalam</p>
     </div>
+  </div>
 
-    <!-- ── CODEBOOK ── -->
-    <div class="codebook-wrap" id="codebookWrap">
-      <button class="codebook-toggle" onclick="toggleCodebook()">
-        <div class="codebook-toggle-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  <!-- CODEBOOK -->
+  <div class="codebook-wrap" id="codebookWrap">
+    <button class="codebook-toggle" onclick="toggleCodebook()">
+      <div class="codebook-toggle-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <div class="codebook-toggle-label">
+        <strong>Panduan Codebook</strong>
+        <span>Referensi kode indikator PM &amp; KKA</span>
+      </div>
+      <svg class="codebook-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="codebook-body">
+      <div class="codebook-inner">
+        <div class="codebook-tabs">
+          <button class="codebook-tab active" onclick="switchCodebookTab('pm', this)">Pembelajaran Mendalam (PM)</button>
+          <button class="codebook-tab" onclick="switchCodebookTab('kka', this)">Koding &amp; Kecerdasan Artifisial (KKA)</button>
         </div>
-        <div class="codebook-toggle-label">
-          <strong>Panduan Codebook</strong>
-          <span>Referensi kode indikator PM &amp; KKA</span>
-        </div>
-        <svg class="codebook-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-
-      <div class="codebook-body" id="codebookBody">
-        <div class="codebook-inner">
-          <div class="codebook-tabs">
-            <button class="codebook-tab active" onclick="switchCodebookTab('pm', this)">Pembelajaran Mendalam (PM)</button>
-            <button class="codebook-tab" onclick="switchCodebookTab('kka', this)">Koding &amp; Kecerdasan Artifisial (KKA)</button>
-          </div>
-
-          <!-- TAB PM -->
-          <div class="codebook-tab-pane active" id="cb-tab-pm">
-            <div class="cb-table-wrap">
-              <table class="cb-table">
-                <colgroup>
-                  <col style="width:80px">
-                  <col style="width:90px">
-                  <col>
-                  <col style="width:90px">
-                  <col>
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th>Level 1</th>
-                    <th>Kode L2</th>
-                    <th>Level 2</th>
-                    <th>Kode L3</th>
-                    <th>Level 3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Murid: 6 baris data -->
-                  <tr><td class="cb-l1-name" rowspan="6" style="text-align:center;vertical-align:middle;background:#f4f8ff;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-murid" style="display:block;margin:0 auto 4px">1</span>Murid</td><td class="cb-l2-code" rowspan="6">1.1</td><td class="cb-l2-name" rowspan="6">Budaya Belajar</td><td class="cb-l3-code">1.1.1</td><td class="cb-l3-name">Memuliakan</td></tr>
-                  <tr><td class="cb-l3-code">1.1.2</td><td class="cb-l3-name">Berkesadaran</td></tr>
-                  <tr><td class="cb-l3-code">1.1.3</td><td class="cb-l3-name">Bermakna</td></tr>
-                  <tr><td class="cb-l3-code">1.1.4</td><td class="cb-l3-name">Menggembirakan</td></tr>
-                  <tr><td class="cb-l3-code">1.1.5</td><td class="cb-l3-name">Otonomi Belajar</td></tr>
-                  <tr><td class="cb-l3-code">1.1.6</td><td class="cb-l3-name">Refleksi</td></tr>
-                  <!-- Guru: 7 baris data -->
-                  <tr><td class="cb-l1-name" rowspan="7" style="text-align:center;vertical-align:middle;background:#f0f8f4;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-guru" style="display:block;margin:0 auto 4px">2</span>Guru</td><td class="cb-l2-code" rowspan="3">2.1</td><td class="cb-l2-name" rowspan="3">Mengajar secara Efektif</td><td class="cb-l3-code">2.1.1</td><td class="cb-l3-name">Memuliakan</td></tr>
-                  <tr><td class="cb-l3-code">2.1.2</td><td class="cb-l3-name">Pengelolaan Pembelajaran</td></tr>
-                  <tr><td class="cb-l3-code">2.1.3</td><td class="cb-l3-name">Refleksi</td></tr>
-                  <tr><td class="cb-l2-code" rowspan="2">2.2</td><td class="cb-l2-name" rowspan="2">Asesmen Otentik &amp; Berkeadilan</td><td class="cb-l3-code">2.2.1</td><td class="cb-l3-name">Formatif</td></tr>
-                  <tr><td class="cb-l3-code">2.2.2</td><td class="cb-l3-name">Sumatif</td></tr>
-                  <tr><td class="cb-l2-code" rowspan="2">2.3</td><td class="cb-l2-name" rowspan="2">Pengembangan Diri</td><td class="cb-l3-code">2.3.1</td><td class="cb-l3-name">Belajar secara Mandiri</td></tr>
-                  <tr><td class="cb-l3-code">2.3.2</td><td class="cb-l3-name">Belajar bersama Komunitas</td></tr>
-                  <!-- Kepala Satpen: 13 baris data -->
-                  <tr><td class="cb-l1-name" rowspan="13" style="text-align:center;vertical-align:middle;background:#fffaf0;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-kasek" style="display:block;margin:0 auto 4px">3</span>Kepala Satpen</td><td class="cb-l2-code" rowspan="4">3.1</td><td class="cb-l2-name" rowspan="4">Kepemimpinan Pembelajaran Mendalam</td><td class="cb-l3-code">3.1.1</td><td class="cb-l3-name">Memimpin Implementasi PM</td></tr>
-                  <tr><td class="cb-l3-code">3.1.2</td><td class="cb-l3-name">Menyelaraskan Visi Misi Sekolah</td></tr>
-                  <tr><td class="cb-l3-code">3.1.3</td><td class="cb-l3-name">Melakukan Supervisi Instruksional</td></tr>
-                  <tr><td class="cb-l3-code">3.1.4</td><td class="cb-l3-name">Memimpin Refleksi</td></tr>
-                  <tr><td class="cb-l2-code" rowspan="3">3.2</td><td class="cb-l2-name" rowspan="3">Pengelolaan Sumber Daya</td><td class="cb-l3-code">3.2.1</td><td class="cb-l3-name">Mengembangkan dan Menguatkan</td></tr>
-                  <tr><td class="cb-l3-code">3.2.2</td><td class="cb-l3-name">Mengoptimalisasi Sumber Daya</td></tr>
-                  <tr><td class="cb-l3-code">3.2.3</td><td class="cb-l3-name">Manajemen Sekolah</td></tr>
-                  <tr><td class="cb-l2-code" rowspan="2">3.3</td><td class="cb-l2-name" rowspan="2">Kemitraan dan Ekosistem</td><td class="cb-l3-code">3.3.1</td><td class="cb-l3-name">Mengembangkan Kemitraan</td></tr>
-                  <tr><td class="cb-l3-code">3.3.2</td><td class="cb-l3-name">Lingkungan Belajar yang Saling</td></tr>
-                  <tr><td class="cb-l2-code" rowspan="2">3.4</td><td class="cb-l2-name" rowspan="2">Pemanfaatan Teknologi Digital</td><td class="cb-l3-code">3.4.1</td><td class="cb-l3-name">Mengembangkan Infrastruktur</td></tr>
-                  <tr><td class="cb-l3-code">3.4.2</td><td class="cb-l3-name">Meningkatkan Kapasitas Pendidik</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- TAB KKA -->
-          <div class="codebook-tab-pane" id="cb-tab-kka">
-            <div class="cb-table-wrap">
-              <table class="cb-table">
-                <colgroup>
-                  <col style="width:80px">
-                  <col style="width:90px">
-                  <col>
-                  <col style="width:90px">
-                  <col>
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th>Level 1</th>
-                    <th>Kode L2</th>
-                    <th>Level 2</th>
-                    <th>Kode L3</th>
-                    <th>Level 3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Murid: 1 baris -->
-                  <tr><td class="cb-l1-name" rowspan="1" style="text-align:center;vertical-align:middle;background:#f4f8ff;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-murid" style="display:block;margin:0 auto 4px">1</span>Murid</td><td class="cb-l2-code">1.1</td><td class="cb-l2-name">Budaya Belajar</td><td class="cb-l3-code">1.1.1</td><td class="cb-l3-name">Projek Koding dan KA yang dikembangkan murid</td></tr>
-                  <!-- Guru: 3 baris -->
-                  <tr><td class="cb-l1-name" rowspan="3" style="text-align:center;vertical-align:middle;background:#f0f8f4;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-guru" style="display:block;margin:0 auto 4px">2</span>Guru</td><td class="cb-l2-code" rowspan="2">2.1</td><td class="cb-l2-name" rowspan="2">Mengajar secara Efektif</td><td class="cb-l3-code">2.1.1</td><td class="cb-l3-name">Literasi digital guru</td></tr>
-                  <tr><td class="cb-l3-code">2.1.2</td><td class="cb-l3-name">Pemanfaatan teknologi secara kontekstual dalam pelaksanaan/pengelolaan pembelajaran</td></tr>
-                  <tr><td class="cb-l2-code">2.2</td><td class="cb-l2-name">Asesmen Otentik</td><td class="cb-l3-code">2.2.1</td><td class="cb-l3-name">Pemanfaatan teknologi secara kontekstual dalam penilaian pembelajaran</td></tr>
-                  <!-- Kepala Satpen: 8 baris -->
-                  <tr><td class="cb-l1-name" rowspan="8" style="text-align:center;vertical-align:middle;background:#fffaf0;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-kasek" style="display:block;margin:0 auto 4px">3</span>Kepala Satpen</td><td class="cb-l2-code" rowspan="2">3.1</td><td class="cb-l2-name" rowspan="2">Kepemimpinan Pembelajaran Mendalam</td><td class="cb-l3-code">3.1.1</td><td class="cb-l3-name">Memimpin implementasi Koding dan Kecerdasan Artifisial</td></tr>
-                  <tr><td class="cb-l3-code">3.1.2</td><td class="cb-l3-name">Supervisi pembelajaran Koding dan Kecerdasan Artifisial</td></tr>
-                  <tr><td class="cb-l2-code" rowspan="2">3.2</td><td class="cb-l2-name" rowspan="2">Pengelolaan Sumber Daya</td><td class="cb-l3-code">3.2.1</td><td class="cb-l3-name">Penguatan kapasitas dan aktivasi komunitas belajar pendidik pengampu Koding dan KA</td></tr>
-                  <tr><td class="cb-l3-code">3.2.2</td><td class="cb-l3-name">Penyediaan sumber belajar Koding dan KA</td></tr>
-                  <tr><td class="cb-l2-code">3.3</td><td class="cb-l2-name">Kemitraan dan Ekosistem</td><td class="cb-l3-code">3.3.1</td><td class="cb-l3-name">Pengembangan kemitraan untuk mendukung pembelajaran Koding dan KA</td></tr>
-                  <tr><td class="cb-l2-code" rowspan="2">3.4</td><td class="cb-l2-name" rowspan="2">Pemanfaatan Teknologi Digital</td><td class="cb-l3-code">3.4.1</td><td class="cb-l3-name">Penyediaan sarana dan prasarana digital yang mendukung pembelajaran Koding dan KA</td></tr>
-                  <tr><td class="cb-l3-code">3.4.2</td><td class="cb-l3-name">Mendorong pemanfaatan teknologi digital secara kontekstual untuk mendukung pelaksanaan</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </div><!-- /codebook-inner -->
-      </div><!-- /codebook-body -->
-    </div><!-- /codebook-wrap -->
-
-    <div class="panel" style="margin-bottom:0">
-      <div class="panel-header" style="padding:14px 16px 12px; border-bottom:1px solid var(--border)">
-        <div class="panel-title">Daftar Sekolah Model — Data Baseline</div>
-        <div class="panel-sub" id="baselineCount">Memuat data...</div>
-      </div>
-      <div class="table-filters">
-        <input type="text" class="search-input" id="baselineSearch" placeholder="Cari nama sekolah / NPSN..." oninput="filterBaseline()">
-        <select class="filter-select" onchange="filterBaseline()" id="baselineProvFilter">
-          <option value="">Semua Provinsi</option>
-        </select>
-        <select class="filter-select" id="baselineUsulanFilter" onchange="filterBaseline()">
-          <option value="">Semua Pengusul</option>
-          <option value="Dinas Pendidikan">Dinas Pendidikan</option>
-          <option value="Mitra">Mitra</option>
-        </select>
-        <button class="btn-reset-filter" onclick="resetBaselineFilter()" title="Reset filter">&#8635; Reset</button>
-      </div>
-      <div style="overflow-x:auto">
-        <table id="baselineTable">
-          <thead>
-            <tr>
-              <th style="width:32px">#</th>
-              <th>NPSN</th>
-              <th>Nama Sekolah</th>
-              <th>Provinsi</th>
-              <th>Kab/Kota</th>
-              <th>Profil KKA</th>
-              <th>Profil PM</th>
-              <th style="width:32px"></th>
-            </tr>
-          </thead>
-          <tbody id="baselineTbody">
-            <tr class="skel-tbl-row"><td colspan="7" style="padding:0"><div style="display:flex;flex-direction:column;gap:1px"><div style="display:grid;grid-template-columns:32px 90px 1fr 90px 120px 110px 110px;gap:14px;padding:10px 14px"><div class="skel skel-tbl-cell" style="width:20px"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell" style="width:100px"></div><div class="skel skel-tbl-cell" style="width:90px"></div><div class="skel skel-tbl-cell" style="width:90px"></div></div><div style="display:grid;grid-template-columns:32px 90px 1fr 90px 120px 110px 110px;gap:14px;padding:10px 14px;background:var(--bg)"><div class="skel skel-tbl-cell" style="width:20px"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell" style="width:100px"></div><div class="skel skel-tbl-cell" style="width:90px"></div><div class="skel skel-tbl-cell" style="width:90px"></div></div><div style="display:grid;grid-template-columns:32px 90px 1fr 90px 120px 110px 110px;gap:14px;padding:10px 14px"><div class="skel skel-tbl-cell" style="width:20px"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell" style="width:100px"></div><div class="skel skel-tbl-cell" style="width:90px"></div><div class="skel skel-tbl-cell" style="width:90px"></div></div><div style="display:grid;grid-template-columns:32px 90px 1fr 90px 120px 110px 110px;gap:14px;padding:10px 14px;background:var(--bg)"><div class="skel skel-tbl-cell" style="width:20px"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell" style="width:100px"></div><div class="skel skel-tbl-cell" style="width:90px"></div><div class="skel skel-tbl-cell" style="width:90px"></div></div><div style="display:grid;grid-template-columns:32px 90px 1fr 90px 120px 110px 110px;gap:14px;padding:10px 14px"><div class="skel skel-tbl-cell" style="width:20px"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell" style="width:100px"></div><div class="skel skel-tbl-cell" style="width:90px"></div><div class="skel skel-tbl-cell" style="width:90px"></div></div><div style="display:grid;grid-template-columns:32px 90px 1fr 90px 120px 110px 110px;gap:14px;padding:10px 14px;background:var(--bg)"><div class="skel skel-tbl-cell" style="width:20px"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell"></div><div class="skel skel-tbl-cell" style="width:70px"></div><div class="skel skel-tbl-cell" style="width:100px"></div><div class="skel skel-tbl-cell" style="width:90px"></div><div class="skel skel-tbl-cell" style="width:90px"></div></div></div></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="table-footer">
-        <div class="info" id="baselineInfo">Memuat...</div>
-        <div class="pager" id="baselinePager"></div>
-      </div>
-    </div>
-  </div> <!-- end page-baseline -->
-
-
-</main>
-
-<!-- ── MODAL DETAIL SEKOLAH ── -->
-<div class="modal-overlay" id="detailModal" onclick="closeDetail(event)">
-  <div class="modal-box" id="detailBox">
-    <div class="modal-loading" id="detailLoading">
-      <div class="spinner"></div> Memuat data sekolah…
-    </div>
-    <div id="detailContent" style="display:none">
-      <div class="modal-header">
-        <div class="modal-header-info">
-          <h2 id="det-nama">—</h2>
-          <div class="modal-header-meta">
-            <span id="det-npsn"></span>
-            <span>·</span>
-            <span id="det-lokasi"></span>
-            <span>·</span>
-            <span id="det-status"></span>
-            <span id="det-kka-pel-wrap">· <span id="det-kka-pel"></span></span>
+        <div class="codebook-tab-pane active" id="cb-tab-pm">
+          <div class="cb-table-wrap">
+            <table class="cb-table">
+              <colgroup><col style="width:80px"><col style="width:90px"><col><col style="width:90px"><col></colgroup>
+              <thead><tr><th>Level 1</th><th>Kode L2</th><th>Level 2</th><th>Kode L3</th><th>Level 3</th></tr></thead>
+              <tbody>
+                <tr><td class="cb-l1-name" rowspan="6" style="text-align:center;vertical-align:middle;background:#f4f8ff;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-murid" style="display:block;margin:0 auto 4px">1</span>Murid</td><td class="cb-l2-code" rowspan="6">1.1</td><td style="font-weight:600;color:var(--navy)" rowspan="6">Budaya Belajar</td><td class="cb-l3-code">1.1.1</td><td>Memuliakan</td></tr>
+                <tr><td class="cb-l3-code">1.1.2</td><td>Berkesadaran</td></tr>
+                <tr><td class="cb-l3-code">1.1.3</td><td>Bermakna</td></tr>
+                <tr><td class="cb-l3-code">1.1.4</td><td>Menggembirakan</td></tr>
+                <tr><td class="cb-l3-code">1.1.5</td><td>Otonomi Belajar</td></tr>
+                <tr><td class="cb-l3-code">1.1.6</td><td>Refleksi</td></tr>
+                <tr><td class="cb-l1-name" rowspan="7" style="text-align:center;vertical-align:middle;background:#f0f8f4;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-guru" style="display:block;margin:0 auto 4px">2</span>Guru</td><td class="cb-l2-code" rowspan="3">2.1</td><td style="font-weight:600;color:var(--navy)" rowspan="3">Mengajar secara Efektif</td><td class="cb-l3-code">2.1.1</td><td>Memuliakan</td></tr>
+                <tr><td class="cb-l3-code">2.1.2</td><td>Pengelolaan Pembelajaran</td></tr>
+                <tr><td class="cb-l3-code">2.1.3</td><td>Refleksi</td></tr>
+                <tr><td class="cb-l2-code" rowspan="2">2.2</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Asesmen Otentik &amp; Berkeadilan</td><td class="cb-l3-code">2.2.1</td><td>Formatif</td></tr>
+                <tr><td class="cb-l3-code">2.2.2</td><td>Sumatif</td></tr>
+                <tr><td class="cb-l2-code" rowspan="2">2.3</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Pengembangan Diri</td><td class="cb-l3-code">2.3.1</td><td>Belajar secara Mandiri</td></tr>
+                <tr><td class="cb-l3-code">2.3.2</td><td>Belajar bersama Komunitas</td></tr>
+                <tr><td class="cb-l1-name" rowspan="13" style="text-align:center;vertical-align:middle;background:#fffaf0;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-kasek" style="display:block;margin:0 auto 4px">3</span>Kepala Satpen</td><td class="cb-l2-code" rowspan="4">3.1</td><td style="font-weight:600;color:var(--navy)" rowspan="4">Kepemimpinan Pembelajaran Mendalam</td><td class="cb-l3-code">3.1.1</td><td>Memimpin Implementasi PM</td></tr>
+                <tr><td class="cb-l3-code">3.1.2</td><td>Menyelaraskan Visi Misi Sekolah</td></tr>
+                <tr><td class="cb-l3-code">3.1.3</td><td>Melakukan Supervisi Instruksional</td></tr>
+                <tr><td class="cb-l3-code">3.1.4</td><td>Memimpin Refleksi</td></tr>
+                <tr><td class="cb-l2-code" rowspan="3">3.2</td><td style="font-weight:600;color:var(--navy)" rowspan="3">Pengelolaan Sumber Daya</td><td class="cb-l3-code">3.2.1</td><td>Mengembangkan dan Menguatkan</td></tr>
+                <tr><td class="cb-l3-code">3.2.2</td><td>Mengoptimalisasi Sumber Daya</td></tr>
+                <tr><td class="cb-l3-code">3.2.3</td><td>Manajemen Sekolah</td></tr>
+                <tr><td class="cb-l2-code" rowspan="2">3.3</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Kemitraan dan Ekosistem</td><td class="cb-l3-code">3.3.1</td><td>Mengembangkan Kemitraan</td></tr>
+                <tr><td class="cb-l3-code">3.3.2</td><td>Lingkungan Belajar yang Saling</td></tr>
+                <tr><td class="cb-l2-code" rowspan="2">3.4</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Pemanfaatan Teknologi Digital</td><td class="cb-l3-code">3.4.1</td><td>Mengembangkan Infrastruktur</td></tr>
+                <tr><td class="cb-l3-code">3.4.2</td><td>Meningkatkan Kapasitas Pendidik</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <button class="modal-close" onclick="closeDetailBtn()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-tabs">
-          <button class="modal-tab active" onclick="switchModalTab('pm', this)">Pembelajaran Mendalam (PM)</button>
-          <button class="modal-tab" onclick="switchModalTab('kka', this)">Koding &amp; KA</button>
-        </div>
-
-        <!-- TAB PM -->
-        <div class="modal-pane active" id="modal-tab-pm">
-          <div class="profil-overview">
-            <div class="profil-card">
-              <div class="profil-card-label">Profil Keseluruhan</div>
-              <div class="profil-card-val" id="det-pm-profil">—</div>
-            </div>
-            <div class="profil-card">
-              <div class="profil-card-label">Skor PM</div>
-              <div class="profil-card-val" id="det-pm-skor">—</div>
-            </div>
-            <div class="profil-card">
-              <div class="profil-card-label">Status Pelaksana KKA</div>
-              <div class="profil-card-val" id="det-pm-kka-pel2">—</div>
-            </div>
+        <div class="codebook-tab-pane" id="cb-tab-kka">
+          <div class="cb-table-wrap">
+            <table class="cb-table">
+              <colgroup><col style="width:80px"><col style="width:90px"><col><col style="width:90px"><col></colgroup>
+              <thead><tr><th>Level 1</th><th>Kode L2</th><th>Level 2</th><th>Kode L3</th><th>Level 3</th></tr></thead>
+              <tbody>
+                <tr><td class="cb-l1-name" rowspan="1" style="text-align:center;vertical-align:middle;background:#f4f8ff;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-murid" style="display:block;margin:0 auto 4px">1</span>Murid</td><td class="cb-l2-code">1.1</td><td style="font-weight:600;color:var(--navy)">Budaya Belajar</td><td class="cb-l3-code">1.1.1</td><td>Projek Koding dan KA yang dikembangkan murid</td></tr>
+                <tr><td class="cb-l1-name" rowspan="3" style="text-align:center;vertical-align:middle;background:#f0f8f4;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-guru" style="display:block;margin:0 auto 4px">2</span>Guru</td><td class="cb-l2-code" rowspan="2">2.1</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Mengajar secara Efektif</td><td class="cb-l3-code">2.1.1</td><td>Literasi digital guru</td></tr>
+                <tr><td class="cb-l3-code">2.1.2</td><td>Pemanfaatan teknologi kontekstual dalam pembelajaran</td></tr>
+                <tr><td class="cb-l2-code">2.2</td><td style="font-weight:600;color:var(--navy)">Asesmen Otentik</td><td class="cb-l3-code">2.2.1</td><td>Pemanfaatan teknologi kontekstual dalam penilaian</td></tr>
+                <tr><td class="cb-l1-name" rowspan="7" style="text-align:center;vertical-align:middle;background:#fffaf0;border-right:1px solid var(--border)"><span class="cb-l1-badge l1-kasek" style="display:block;margin:0 auto 4px">3</span>Kepala Satpen</td><td class="cb-l2-code" rowspan="2">3.1</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Kepemimpinan Pembelajaran Mendalam</td><td class="cb-l3-code">3.1.1</td><td>Memimpin implementasi Koding dan KA</td></tr>
+                <tr><td class="cb-l3-code">3.1.2</td><td>Supervisi pembelajaran Koding dan KA</td></tr>
+                <tr><td class="cb-l2-code" rowspan="2">3.2</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Pengelolaan Sumber Daya</td><td class="cb-l3-code">3.2.1</td><td>Penguatan kapasitas komunitas belajar Koding dan KA</td></tr>
+                <tr><td class="cb-l3-code">3.2.2</td><td>Penyediaan sumber belajar Koding dan KA</td></tr>
+                <tr><td class="cb-l2-code">3.3</td><td style="font-weight:600;color:var(--navy)">Kemitraan dan Ekosistem</td><td class="cb-l3-code">3.3.1</td><td>Pengembangan kemitraan Koding dan KA</td></tr>
+                <tr><td class="cb-l2-code" rowspan="2">3.4</td><td style="font-weight:600;color:var(--navy)" rowspan="2">Pemanfaatan Teknologi Digital</td><td class="cb-l3-code">3.4.1</td><td>Penyediaan sarpras digital Koding dan KA</td></tr>
+                <tr><td class="cb-l3-code">3.4.2</td><td>Mendorong pemanfaatan teknologi digital</td></tr>
+              </tbody>
+            </table>
           </div>
-
-          <div class="modal-section-title">Radar Level 2 — PM</div>
-          <div class="radar-wrap">
-            <svg id="radar-pm-l2" width="300" height="300" viewBox="0 0 300 300"></svg>
-          </div>
-          <div class="radar-legend" id="radar-pm-l2-legend"></div>
-
-          <div class="modal-section-title">Profil per Level 1</div>
-          <div class="level-grid" id="pm-l1-grid"></div>
-
-          <div class="modal-section-title">Rincian Level 2</div>
-          <div class="level-grid" id="pm-l2-grid"></div>
-
-          <div class="modal-section-title">Rincian Level 3</div>
-          <div class="level-grid" id="pm-l3-grid"></div>
-        </div>
-
-        <!-- TAB KKA -->
-        <div class="modal-pane" id="modal-tab-kka">
-          <div class="profil-overview">
-            <div class="profil-card">
-              <div class="profil-card-label">Profil Keseluruhan</div>
-              <div class="profil-card-val" id="det-kka-profil">—</div>
-            </div>
-            <div class="profil-card">
-              <div class="profil-card-label">Skor KKA</div>
-              <div class="profil-card-val" id="det-kka-skor">—</div>
-            </div>
-            <div class="profil-card">
-              <div class="profil-card-label">Status Pelaksana</div>
-              <div class="profil-card-val" id="det-kka-pel3">—</div>
-            </div>
-          </div>
-
-          <div class="modal-section-title">Radar Level 2 — KKA</div>
-          <div class="radar-wrap">
-            <svg id="radar-kka-l2" width="300" height="300" viewBox="0 0 300 300"></svg>
-          </div>
-          <div class="radar-legend" id="radar-kka-l2-legend"></div>
-
-          <div class="modal-section-title">Profil per Level 1</div>
-          <div class="level-grid" id="kka-l1-grid"></div>
-
-          <div class="modal-section-title">Rincian Level 2</div>
-          <div class="level-grid" id="kka-l2-grid"></div>
-
-          <div class="modal-section-title">Rincian Level 3</div>
-          <div class="level-grid" id="kka-l3-grid"></div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- TABLE -->
+  <div class="panel">
+    <div class="panel-header" style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
+      <div class="panel-title">Daftar Sekolah Model — Data Baseline</div>
+      <div class="panel-sub" id="baselineCount">Memuat data...</div>
+    </div>
+    <div class="table-filters">
+      <input type="text" class="search-input" id="baselineSearch" placeholder="Cari nama sekolah / NPSN..." oninput="filterBaseline()">
+      <select class="filter-select" id="baselineProvFilter" onchange="filterBaseline()">
+        <option value="">Semua Provinsi</option>
+      </select>
+      <button class="btn-reset-filter" onclick="resetBaselineFilter()">&#8635; Reset</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table id="baselineTable">
+        <thead>
+          <tr>
+            <th style="width:36px">#</th>
+            <th>NPSN</th>
+            <th>Nama Sekolah</th>
+            <th>Provinsi</th>
+            <th>Kab/Kota</th>
+            <th>Status</th>
+            <th>Profil PM</th>
+            <th>Profil KKA</th>
+            <th style="width:80px"></th>
+          </tr>
+        </thead>
+        <tbody id="baselineTbody">
+          <tr><td colspan="9" style="padding:32px;text-align:center;color:var(--muted)">
+            <div class="skel" style="width:200px;height:14px;display:inline-block"></div>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <div class="info" id="baselineInfo">Memuat...</div>
+      <div class="pager" id="baselinePager"></div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <div class="modal-head-info">
+        <div class="modal-head-npsn" id="mNpsn"></div>
+        <div class="modal-head-nama" id="mNama"></div>
+        <div class="modal-head-meta" id="mMeta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Profil highlight -->
+      <div class="skor-row">
+        <div class="skor-card">
+          <div class="skor-card-label">Profil PM</div>
+          <div class="skor-card-profil" id="mProfilPM"></div>
+          <div class="skor-card-skor-wrap"><span class="skor-card-skor-label">Skor:</span><span class="skor-card-skor-val" id="mSkorPM">—</span></div>
+        </div>
+        <div class="skor-card">
+          <div class="skor-card-label">Profil KKA</div>
+          <div class="skor-card-profil" id="mProfilKKA"></div>
+          <div class="skor-card-skor-wrap"><span class="skor-card-skor-label">Skor:</span><span class="skor-card-skor-val" id="mSkorKKA">—</span></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchModalTab('pm',this)">Pembelajaran Mendalam (PM)</button>
+        <button class="modal-tab" onclick="switchModalTab('kka',this)">Koding &amp; KA (KKA)</button>
+      </div>
+
+      <!-- PM pane -->
+      <div class="modal-pane active" id="mpane-pm">
+        <!-- PM Murid -->
+        <div class="l1-section">
+          <div class="l1-header l1-header-murid">
+            <span class="l1-badge l1-badge-murid">1</span>
+            <span class="l1-title l1-title-murid">Murid</span>
+          </div>
+          <div class="l2-labels">
+            <span class="l2-label-pill">1.1 — Budaya Belajar</span>
+          </div>
+          <div class="radar-wrap"><canvas id="rc-pm-murid"></canvas></div>
+        </div>
+        <!-- PM Guru -->
+        <div class="l1-section">
+          <div class="l1-header l1-header-guru">
+            <span class="l1-badge l1-badge-guru">2</span>
+            <span class="l1-title l1-title-guru">Guru</span>
+          </div>
+          <div class="l2-labels">
+            <span class="l2-label-pill">2.1 — Mengajar secara Efektif</span>
+            <span class="l2-label-pill">2.2 — Asesmen Otentik</span>
+            <span class="l2-label-pill">2.3 — Pengembangan Diri</span>
+          </div>
+          <div class="radar-wrap"><canvas id="rc-pm-guru"></canvas></div>
+        </div>
+        <!-- PM Kepsek -->
+        <div class="l1-section">
+          <div class="l1-header l1-header-kasek">
+            <span class="l1-badge l1-badge-kasek">3</span>
+            <span class="l1-title l1-title-kasek">Kepala Satpen</span>
+          </div>
+          <div class="l2-labels">
+            <span class="l2-label-pill">3.1 — Kepemimpinan PM</span>
+            <span class="l2-label-pill">3.2 — Pengelolaan SDM</span>
+            <span class="l2-label-pill">3.3 — Kemitraan</span>
+            <span class="l2-label-pill">3.4 — Pemanfaatan Teknologi</span>
+          </div>
+          <div class="radar-wrap"><canvas id="rc-pm-kasek"></canvas></div>
+        </div>
+        <div class="radar-legend">
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8896a8"></div>Tidak Terkategori (0)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#d97706"></div>Pra Berkembang (1)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#2b72d8"></div>Berkembang (2)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#1a6b3e"></div>Maju (3)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8a5c00"></div>Unggul (4)</div>
+        </div>
+      </div>
+
+      <!-- KKA pane -->
+      <div class="modal-pane" id="mpane-kka">
+        <!-- KKA Murid: kotak -->
+        <div class="l1-section">
+          <div class="l1-header l1-header-murid">
+            <span class="l1-badge l1-badge-murid">1</span>
+            <span class="l1-title l1-title-murid">Murid</span>
+          </div>
+          <div class="l2-labels"><span class="l2-label-pill">1.1 — Budaya Belajar</span></div>
+          <div id="kka-murid-box"></div>
+        </div>
+        <!-- KKA Guru -->
+        <div class="l1-section">
+          <div class="l1-header l1-header-guru">
+            <span class="l1-badge l1-badge-guru">2</span>
+            <span class="l1-title l1-title-guru">Guru</span>
+          </div>
+          <div class="l2-labels">
+            <span class="l2-label-pill">2.1 — Mengajar secara Efektif</span>
+            <span class="l2-label-pill">2.2 — Asesmen Otentik</span>
+          </div>
+          <div class="radar-wrap"><canvas id="rc-kka-guru"></canvas></div>
+        </div>
+        <!-- KKA Kepsek -->
+        <div class="l1-section">
+          <div class="l1-header l1-header-kasek">
+            <span class="l1-badge l1-badge-kasek">3</span>
+            <span class="l1-title l1-title-kasek">Kepala Satpen</span>
+          </div>
+          <div class="l2-labels">
+            <span class="l2-label-pill">3.1 — Kepemimpinan KKA</span>
+            <span class="l2-label-pill">3.2 — Pengelolaan SDM</span>
+            <span class="l2-label-pill">3.3 — Kemitraan</span>
+            <span class="l2-label-pill">3.4 — Pemanfaatan Teknologi</span>
+          </div>
+          <div class="radar-wrap"><canvas id="rc-kka-kasek"></canvas></div>
+        </div>
+        <div class="radar-legend">
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8896a8"></div>Tidak Terkategori (0)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#d97706"></div>Pra Berkembang (1)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#2b72d8"></div>Berkembang (2)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#1a6b3e"></div>Maju (3)</div>
+          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8a5c00"></div>Unggul (4)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const GAS_URL    = 'https://script.google.com/macros/s/AKfycbxU5CJKfuRn207x29Yh7Giy0HUHZeo6v_1cZEq-f6ZKuK0clCDGmQnk7VtAmFZW-KWo9w/exec';
-const GAS_LIST   = GAS_URL + '?action=list';
-const GAS_DETAIL = (npsn) => GAS_URL + '?action=detail&npsn=' + npsn;
-const PAGE_SIZE = 15;
-
+const GAS_URL   = 'https://script.google.com/macros/s/AKfycbyuuGDDqP51ZjqIlwRmDlecyx6iB3k8wOJOD2DFLWx1OOqnGXqiUgbm3nRhJmOzFQgqiA/exec?action=all';
+const PAGE_SIZE = 20;
 let ALL_SCHOOLS = [];
-let suratPage   = 1;
 let baselinePage = 1;
+let activeCharts = {};
 
-function fmt(n) {
-  if (n === undefined || n === null) return '—';
-  return Number(n).toLocaleString('id-ID');
+// ── Nilai ─────────────────────────────────────────────────────────────────────
+function toScore(v) {
+  if (!v || v.trim() === '') return 0;
+  const l = v.toLowerCase().trim();
+  if (l.startsWith('pra'))       return 1;
+  if (l.includes('unggul'))      return 4;
+  if (l.includes('maju'))        return 3;
+  if (l.includes('berkembang'))  return 2;
+  return 0;
 }
+const SCORE_LABEL = ['—','Pra Berkembang','Berkembang','Maju','Unggul'];
 
+// ── Tag ───────────────────────────────────────────────────────────────────────
 function profil_tag(v) {
-  if (!v || v === '') return '<span class="tag tag-tt">—</span>';
+  if (!v || v.trim() === '') return '<span class="tag tag-tt">Tidak Terkategori</span>';
   const l = v.toLowerCase();
-  if (l.includes('unggul'))     return `<span class="tag tag-ung">${v}</span>`;
-  if (l.includes('maju'))       return `<span class="tag tag-maju">${v}</span>`;
-  if (l.includes('berkembang') && !l.includes('pra')) return `<span class="tag tag-berk">${v}</span>`;
-  if (l.includes('pra'))        return `<span class="tag tag-tt" style="background:#fef3d7;color:#8a5c00">${v}</span>`;
-  return `<span class="tag tag-tt">${v}</span>`;
+  if (l.includes('unggul'))                       return `<span class="tag tag-ung">${v}</span>`;
+  if (l.includes('maju'))                         return `<span class="tag tag-maju">${v}</span>`;
+  if (l.startsWith('pra') || l.includes('pra-')) return `<span class="tag tag-pra">${v}</span>`;
+  if (l.includes('berkembang'))                   return `<span class="tag tag-berk">${v}</span>`;
+  return '<span class="tag tag-tt">Tidak Terkategori</span>';
 }
 
-function pengusul_tag(p) {
-  if (p === 'Dinas Pendidikan') return '<span class="tag" style="background:#e8f0fb;color:#1a4a8a;font-size:11px">Dinas</span>';
-  return '<span class="tag" style="background:#e0f0e9;color:#1a6b3e;font-size:11px">Mitra</span>';
+// ── Radar ─────────────────────────────────────────────────────────────────────
+function drawRadar(canvasId, labels, rawVals, color) {
+  if (activeCharts[canvasId]) { activeCharts[canvasId].destroy(); delete activeCharts[canvasId]; }
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  const values = rawVals.map(toScore);
+  const short  = labels.map(l => l.length > 18 ? l.substring(0,17)+'…' : l);
+  activeCharts[canvasId] = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: short,
+      datasets: [{
+        data: values,
+        backgroundColor: color + '28',
+        borderColor: color,
+        borderWidth: 2,
+        pointBackgroundColor: color,
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          min: 0, max: 4,
+          ticks: {
+            stepSize: 1,
+            font: { size: 8.5, family: 'Plus Jakarta Sans' },
+            color: '#6b83a4',
+            backdropColor: 'transparent',
+            callback: v => ['','Pra','Berk','Maju','Unggul'][v] || ''
+          },
+          pointLabels: {
+            font: { size: 9.5, family: 'Plus Jakarta Sans' },
+            color: '#0d1f38'
+          },
+          grid: { color: '#dce6f5' },
+          angleLines: { color: '#dce6f5' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => labels[ctx[0].dataIndex],
+            label: ctx => ' ' + (SCORE_LABEL[ctx.raw] || '—')
+          },
+          titleFont: { size: 11, family: 'Plus Jakarta Sans' },
+          bodyFont:  { size: 11, family: 'Plus Jakarta Sans' }
+        }
+      }
+    }
+  });
 }
 
-function btn_lihat(url, label) {
-  if (!url) return '<span class="badge-belum">Belum Ada</span>';
-  return `<a href="${url}" target="_blank" class="btn-lihat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${label}</a>`;
-}
-
-function dasharray(pct, circ) {
-  const filled = (pct / 100) * circ;
-  return `${filled.toFixed(1)} ${(circ - filled).toFixed(1)}`;
-}
-
+// ── Sidebar / Codebook ────────────────────────────────────────────────────────
 function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function toggleCodebook() { document.getElementById('codebookWrap').classList.toggle('open'); }
+function switchCodebookTab(tab, btn) {
+  document.querySelectorAll('.codebook-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.codebook-tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cb-tab-' + tab).classList.add('active');
+}
 
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function switchModalTab(tab, btn) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mpane-' + tab).classList.add('active');
+}
+
+function fill(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
+
+function openModal(r) {
+  fill('mNpsn', r.npsn);
+  fill('mNama', r.nama);
+  fill('mMeta',
+    `<span class="modal-meta-tag">${r.provinsi||'—'}</span>` +
+    `<span class="modal-meta-tag">${r.kabkota||'—'}</span>` +
+    `<span class="modal-meta-tag">${r.status_sek||'—'}</span>` +
+    `<span class="modal-meta-tag">${r.status_pel||'—'}</span>`
+  );
+  fill('mProfilPM',  profil_tag(r.profil_pm));
+  fill('mProfilKKA', profil_tag(r.profil_kka));
+  fill('mSkorPM',  r.skor_pm  || '—');
+  fill('mSkorKKA', r.skor_kka || '—');
+
+  // KKA Murid kotak
+  fill('kka-murid-box', `<div class="single-box">
+    <div class="l3-code">1.1.1</div>
+    <div class="l3-name">Projek Koding dan KA yang dikembangkan murid</div>
+    ${profil_tag(r.kka_1_1_1)}
+  </div>`);
+
+  // Reset ke tab PM
+  document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+  document.querySelectorAll('.modal-pane').forEach((p,i) => p.classList.toggle('active', i===0));
+
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  requestAnimationFrame(() => {
+    // PM Murid — 6 sumbu
+    drawRadar('rc-pm-murid',
+      ['Memuliakan','Berkesadaran','Bermakna','Menggembirakan','Otonomi Belajar','Refleksi'],
+      [r.pm_1_1_1,r.pm_1_1_2,r.pm_1_1_3,r.pm_1_1_4,r.pm_1_1_5,r.pm_1_1_6],
+      '#2b72d8'
+    );
+    // PM Guru — 7 sumbu
+    drawRadar('rc-pm-guru',
+      ['Memuliakan','Pengelolaan Pembelajaran','Refleksi','Formatif','Sumatif','Belajar Mandiri','Belajar Komunitas'],
+      [r.pm_2_1_1,r.pm_2_1_2,r.pm_2_1_3,r.pm_2_2_1,r.pm_2_2_2,r.pm_2_3_1,r.pm_2_3_2],
+      '#1a6b3e'
+    );
+    // PM Kepsek — 11 sumbu
+    drawRadar('rc-pm-kasek',
+      ['Memimpin Impl. PM','Visi Misi','Supervisi','Memimpin Refleksi','Kembangkan & Kuatkan','Optimalisasi SDM','Manajemen Sekolah','Kembangkan Kemitraan','Lingk. Belajar Saling','Kembangkan Infrastruktur','Kapasitas Pendidik'],
+      [r.pm_3_1_1,r.pm_3_1_2,r.pm_3_1_3,r.pm_3_1_4,r.pm_3_2_1,r.pm_3_2_2,r.pm_3_2_3,r.pm_3_3_1,r.pm_3_3_2,r.pm_3_4_1,r.pm_3_4_2],
+      '#8a5c00'
+    );
+    // KKA Guru — 3 sumbu (segitiga)
+    drawRadar('rc-kka-guru',
+      ['Literasi Digital','Teknologi Pembelajaran','Teknologi Penilaian'],
+      [r.kka_2_1_1,r.kka_2_1_2,r.kka_2_2_1],
+      '#1a6b3e'
+    );
+    // KKA Kepsek — 7 sumbu
+    drawRadar('rc-kka-kasek',
+      ['Memimpin Impl. KKA','Supervisi KKA','Kapasitas Komunitas','Sumber Belajar KKA','Kemitraan KKA','Sarpras Digital','Pemanfaatan Teknologi'],
+      [r.kka_3_1_1,r.kka_3_1_2,r.kka_3_2_1,r.kka_3_2_2,r.kka_3_3_1,r.kka_3_4_1,r.kka_3_4_2],
+      '#8a5c00'
+    );
+  });
+}
+
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) { if (e.target === document.getElementById('modalBackdrop')) closeModal(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Data ──────────────────────────────────────────────────────────────────────
 async function loadData() {
   try {
-    const res  = await fetch(GAS_LIST);
+    const res  = await fetch(GAS_URL);
     const json = await res.json();
-    if (json.error) throw new Error(json.error);
-    ALL_SCHOOLS = Array.isArray(json) ? json : (json.schools || []);
+    if (!json.ok) throw new Error(json.error || 'API error');
+    ALL_SCHOOLS = json.schools || [];
     populateFilters();
     renderBaselineTable();
   } catch (e) {
-    console.error('GAS fetch error:', e);
+    document.getElementById('baselineTbody').innerHTML =
+      `<tr><td colspan="9" style="padding:32px;text-align:center;color:#c0392b">Gagal memuat data: ${e.message}</td></tr>`;
+    document.getElementById('baselineCount').textContent = 'Gagal memuat';
   }
 }
 
 function populateFilters() {
   const provs = [...new Set(ALL_SCHOOLS.map(r => r.provinsi).filter(Boolean))].sort();
-  function fillSelect(id, items, allLabel) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.innerHTML = `<option value="">${allLabel}</option>` +
-      items.map(v => `<option value="${v}">${v}</option>`).join('');
-  }
-  fillSelect('suratProvFilter',    provs, 'Semua Provinsi');
-  fillSelect('baselineProvFilter', provs, 'Semua Provinsi');
+  const sel = document.getElementById('baselineProvFilter');
+  sel.innerHTML = '<option value="">Semua Provinsi</option>' +
+    provs.map(v => `<option value="${v}">${v}</option>`).join('');
 }
 
-function renderPager(containerId, current, total, onClick) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  if (total <= 1) { el.innerHTML = ''; return; }
-  let btns = `<button onclick="(${onClick.toString()})(${current-1})" ${current===1?'disabled':''}>
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>`;
-  const pages = [];
-  if (total <= 7) {
-    for (let i=1; i<=total; i++) pages.push(i);
-  } else {
-    pages.push(1);
-    if (current > 3) pages.push('…');
-    for (let i=Math.max(2,current-1); i<=Math.min(total-1,current+1); i++) pages.push(i);
-    if (current < total-2) pages.push('…');
-    pages.push(total);
-  }
-  pages.forEach(p => {
-    if (p === '…') {
-      btns += `<button disabled style="cursor:default">…</button>`;
-    } else {
-      btns += `<button class="${p===current?'cur':''}" onclick="(${onClick.toString()})(${p})">${p}</button>`;
-    }
-  });
-  btns += `<button onclick="(${onClick.toString()})(${current+1})" ${current===total?'disabled':''}>
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>`;
-  el.innerHTML = btns;
-}
-
-// ─── SURAT DUKUNGAN ────────────────────────────────────────────────────────
-function renderPieCharts(s) {
-  const ct = s.charts;
-  const configs = [
-    { id: 'pie1', usulan: 'Usulan Dinas Pendidikan', label: 'Surat Rekomendasi dan Dukungan Dinas Pendidikan',     ada_pct: ct.dinas_rek_ada_pct,    ada_n: s.dinas_link_rek_ada,      total: s.dinas_total  },
-    { id: 'pie2', usulan: 'Usulan Dinas Pendidikan', label: 'Surat Kesiapan dan Komitmen Satuan Pendidikan',       ada_pct: ct.dinas_kes_ada_pct,    ada_n: s.dinas_link_kesiapan_ada, total: s.dinas_total  },
-    { id: 'pie3', usulan: 'Usulan Mitra',             label: 'Surat Rekomendasi dan Dukungan Mitra Pembangunan',   ada_pct: ct.mitra_rek_ada_pct,    ada_n: s.mitra_link_rek_ada,      total: s.mitra_total  },
-    { id: 'pie4', usulan: 'Usulan Mitra',             label: 'Surat Kesiapan dan Komitmen Satuan Pendidikan',      ada_pct: ct.mitra_kes_ada_pct,    ada_n: s.mitra_link_kesiapan_ada, total: s.mitra_total  },
-  ];
-  const C = 238.76;
-  const usulanColor = { 'Usulan Dinas Pendidikan': 'var(--blue-lt)', 'Usulan Mitra': '#1a6b3e' };
-  configs.forEach(cfg => {
-    const belum_pct = +(100 - cfg.ada_pct).toFixed(1);
-    const belum_n   = cfg.total - cfg.ada_n;
-    const da_ada    = dasharray(cfg.ada_pct, C);
-    const da_belum  = dasharray(belum_pct, C);
-    const offset    = -(cfg.ada_pct / 100) * C;
-    const cirAda   = `<circle cx="50" cy="50" r="38" fill="none" stroke="#2b72d8" stroke-width="16" stroke-dasharray="${da_ada}" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>`;
-    const cirBelum = `<circle cx="50" cy="50" r="38" fill="none" stroke="#f0a500" stroke-width="16" stroke-dasharray="${da_belum}" stroke-dashoffset="${offset.toFixed(1)}" transform="rotate(-90 50 50)"/>`;
-    const displayPct = cfg.ada_pct > 0 ? cfg.ada_pct + '%' : '0%';
-    const el = document.getElementById(cfg.id);
-    if (!el) return;
-    el.innerHTML = `
-      <div class="panel-body" style="padding:16px 14px 14px">
-        <div class="donut-wrap-sm">
-          <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${usulanColor[cfg.usulan]};margin-bottom:6px">${cfg.usulan}</div>
-          <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="38" fill="none" stroke="#e8f0fb" stroke-width="16"/>
-            ${cirAda}${belum_pct > 0 ? cirBelum : ''}
-            <circle cx="50" cy="50" r="26" fill="white"/>
-            <text x="50" y="47" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="13" font-weight="800" fill="#0a1f3c">${displayPct}</text>
-            <text x="50" y="58" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="7" fill="#6b83a4">Sudah Ada</text>
-          </svg>
-          <div class="legend-sm">
-            <div class="leg-item-sm"><div class="leg-dot" style="background:#2b72d8"></div>Sudah Ada (${cfg.ada_n})</div>
-            <div class="leg-item-sm"><div class="leg-dot" style="background:#f0a500"></div>Belum Ada (${belum_n})</div>
-          </div>
-          <div class="chart-label">${cfg.label}</div>
-        </div>
-      </div>`;
-  });
-}
-
-function getSuratFiltered() {
-  const q       = (document.getElementById('suratSearch')?.value || '').toLowerCase();
-  const prov    = document.getElementById('suratProvFilter')?.value    || '';
-  const pengusul= document.getElementById('suratUsulanFilter')?.value  || '';
-  return ALL_SCHOOLS.filter(r =>
-    (!q        || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
-    (!prov     || r.provinsi === prov)   &&
-    (!pengusul || r.pengusul === pengusul)
-  );
-}
-
-function renderSuratTable() {
-  const filtered = getSuratFiltered();
-  const total    = filtered.length;
-  const pages    = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  suratPage      = Math.min(suratPage, pages);
-  const slice    = filtered.slice((suratPage-1)*PAGE_SIZE, suratPage*PAGE_SIZE);
-  const tbody = document.getElementById('suratTbody');
-  if (!tbody) return;
-  if (slice.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
-  } else {
-    tbody.innerHTML = slice.map((r, i) => {
-      const no = (suratPage-1)*PAGE_SIZE + i + 1;
-      return `<tr data-usulan="${r.pengusul}">
-        <td>${r.no || no}</td>
-        <td class="npsn">${r.npsn}</td>
-        <td class="nama">${r.nama}</td>
-        <td>${r.provinsi}</td>
-        <td>${r.kabkota}</td>
-        <td>${pengusul_tag(r.pengusul)}</td>
-        <td>${btn_lihat(r.link_rekomendasi, 'Lihat')}</td>
-        <td>${btn_lihat(r.link_kesiapan,    'Lihat')}</td>
-      </tr>`;
-    }).join('');
-  }
-  const from = total === 0 ? 0 : (suratPage-1)*PAGE_SIZE + 1;
-  const to   = Math.min(suratPage*PAGE_SIZE, total);
-  document.getElementById('suratTableSub').textContent = `Klik tombol "Lihat" untuk membuka dokumen di Google Drive`;
-  document.getElementById('suratInfo').textContent     = `${from} – ${to} dari ${total} sekolah`;
-  renderPager('suratPager', suratPage, pages, (p) => { suratPage = p; renderSuratTable(); });
-}
-
-function filterSuratTable() { suratPage = 1; renderSuratTable(); }
-function resetSuratFilter() {
-  document.getElementById('suratSearch').value = '';
-  document.getElementById('suratProvFilter').value = '';
-  document.getElementById('suratUsulanFilter').value = '';
-  suratPage = 1;
-  renderSuratTable();
-}
-
-// ─── BASELINE ────────────────────────────────────────────────────────────────
 function getBaselineFiltered() {
-  const q       = (document.getElementById('baselineSearch')?.value || '').toLowerCase();
-  const prov    = document.getElementById('baselineProvFilter')?.value || '';
-  const pengusul= document.getElementById('baselineUsulanFilter')?.value || '';
+  const q    = (document.getElementById('baselineSearch')?.value || '').toLowerCase();
+  const prov = document.getElementById('baselineProvFilter')?.value || '';
   return ALL_SCHOOLS.filter(r =>
-    (!q       || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
-    (!prov    || r.provinsi === prov) &&
-    (!pengusul|| r.pengusul === pengusul)
+    (!q    || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
+    (!prov || r.provinsi === prov)
   );
 }
 
@@ -1251,286 +735,67 @@ function renderBaselineTable() {
   const pages    = Math.max(1, Math.ceil(total / PAGE_SIZE));
   baselinePage   = Math.min(baselinePage, pages);
   const slice    = filtered.slice((baselinePage-1)*PAGE_SIZE, baselinePage*PAGE_SIZE);
-  const tbody = document.getElementById('baselineTbody');
+  const tbody    = document.getElementById('baselineTbody');
   if (!tbody) return;
   if (slice.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
   } else {
     tbody.innerHTML = slice.map((r, i) => {
-      const no = (baselinePage-1)*PAGE_SIZE + i + 1;
-      return `<tr class="row-clickable" onclick="openDetail('${r.npsn}')">
-        <td>${r.no || no}</td>
-        <td class="npsn">${r.npsn}</td>
-        <td class="nama">${r.nama}</td>
-        <td>${r.provinsi}</td>
-        <td>${r.kabkota}</td>
-        <td>${profil_tag(r.kka_profil)}</td>
-        <td>${profil_tag(r.pm_profil)}</td>
-        <td class="td-detail-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></td>
+      const no  = (baselinePage-1)*PAGE_SIZE + i + 1;
+      const idx = ALL_SCHOOLS.indexOf(r);
+      return `<tr onclick="openModal(ALL_SCHOOLS[${idx}])">
+        <td class="td-no">${r.no||no}</td>
+        <td class="td-npsn">${r.npsn}</td>
+        <td class="td-nama">${r.nama}</td>
+        <td>${r.provinsi||'—'}</td>
+        <td>${r.kabkota||'—'}</td>
+        <td>${r.status_sek||'—'}</td>
+        <td>${profil_tag(r.profil_pm)}</td>
+        <td>${profil_tag(r.profil_kka)}</td>
+        <td><button class="btn-detail" onclick="event.stopPropagation();openModal(ALL_SCHOOLS[${idx}])">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Detail
+        </button></td>
       </tr>`;
     }).join('');
   }
-  const from = total === 0 ? 0 : (baselinePage-1)*PAGE_SIZE + 1;
+  const from = total===0 ? 0 : (baselinePage-1)*PAGE_SIZE+1;
   const to   = Math.min(baselinePage*PAGE_SIZE, total);
-  document.getElementById('baselineCount').textContent = `${from}–${to} dari ${total} sekolah`;
-  document.getElementById('baselineInfo').textContent  = `${from} – ${to} dari ${total} sekolah`;
-  renderPager('baselinePager', baselinePage, pages, (p) => { baselinePage = p; renderBaselineTable(); });
+  document.getElementById('baselineCount').textContent = `${total} sekolah`;
+  document.getElementById('baselineInfo').textContent  = `${from}–${to} dari ${total} sekolah`;
+  renderPager('baselinePager', baselinePage, pages, p => { baselinePage=p; renderBaselineTable(); });
 }
 
-function filterBaseline() { baselinePage = 1; renderBaselineTable(); }
+function filterBaseline()      { baselinePage=1; renderBaselineTable(); }
 function resetBaselineFilter() {
-  document.getElementById('baselineSearch').value = '';
-  document.getElementById('baselineProvFilter').value = '';
-  document.getElementById('baselineUsulanFilter').value = '';
-  baselinePage = 1;
-  renderBaselineTable();
+  document.getElementById('baselineSearch').value='';
+  document.getElementById('baselineProvFilter').value='';
+  baselinePage=1; renderBaselineTable();
 }
 
-// ─── CODEBOOK ──────────────────────────────────────────────────────────────
-function toggleCodebook() {
-  document.getElementById('codebookWrap').classList.toggle('open');
-}
-function switchCodebookTab(tab, btn) {
-  document.querySelectorAll('.codebook-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.codebook-tab-pane').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('cb-tab-' + tab).classList.add('active');
-}
-
-// ─── DETAIL MODAL ────────────────────────────────────────────────────────────
-
-// Codebook labels
-const PM_L2_LABEL = {
-  '1.1': 'Budaya Belajar',
-  '2.1': 'Mengajar Efektif',
-  '2.2': 'Asesmen Otentik',
-  '2.3': 'Pengembangan Diri',
-  '3.1': 'Kepemimpinan PM',
-  '3.2': 'Pengelolaan SDM',
-  '3.3': 'Kemitraan',
-  '3.4': 'Teknologi Digital',
-};
-const KKA_L2_LABEL = {
-  '1.1': 'Budaya Belajar',
-  '2.1': 'Mengajar Efektif',
-  '2.2': 'Asesmen Otentik',
-  '3.1': 'Kepemimpinan PM',
-  '3.2': 'Pengelolaan SDM',
-  '3.3': 'Kemitraan',
-  '3.4': 'Teknologi Digital',
-};
-const PM_L3_LABEL = {
-  '1.1.1':'Memuliakan','1.1.2':'Berkesadaran','1.1.3':'Bermakna',
-  '1.1.4':'Menggembirakan','1.1.5':'Otonomi Belajar','1.1.6':'Refleksi',
-  '2.1.1':'Memuliakan','2.1.2':'Pengelolaan Pembelajaran','2.1.3':'Refleksi',
-  '2.2.1':'Formatif','2.2.2':'Sumatif',
-  '2.3.1':'Belajar Mandiri','2.3.2':'Belajar Komunitas',
-  '3.1.1':'Implementasi PM','3.1.2':'Visi Misi Sekolah',
-  '3.1.3':'Supervisi Instruksional','3.1.4':'Memimpin Refleksi',
-  '3.2.1':'Kembangkan & Kuatkan','3.2.2':'Optimalisasi SDM','3.2.3':'Manajemen Sekolah',
-  '3.3.1':'Kembangkan Kemitraan','3.3.2':'Lingkungan Belajar',
-  '3.4.1':'Infrastruktur','3.4.2':'Kapasitas Pendidik',
-};
-const KKA_L3_LABEL = {
-  '1.1.1':'Projek Koding & KA',
-  '2.1.1':'Literasi Digital Guru','2.1.2':'Teknologi Kontekstual',
-  '2.2.1':'Asesmen Teknologi',
-  '3.1.1':'Implementasi KKA','3.1.2':'Supervisi KKA',
-  '3.2.1':'Komunitas Belajar','3.2.2':'Sumber Belajar KKA',
-  '3.3.1':'Kemitraan KKA',
-  '3.4.1':'Sarana Prasarana','3.4.2':'Pemanfaatan Digital',
-};
-
-function profilScore(v) {
-  if (!v) return null;
-  const l = v.toLowerCase().replace(/[-\s]/g,'');
-  if (l.includes('unggul'))     return 4;
-  if (l.includes('maju'))       return 3;
-  if (l.includes('berkembang')) return 2;
-  if (l.includes('pra'))        return 1;
-  return null;
-}
-
-function profilClass(v) {
-  if (!v) return 'lv-na';
-  const l = v.toLowerCase().replace(/[-\s]/g,'');
-  if (l.includes('unggul'))     return 'lv-unggul';
-  if (l.includes('maju'))       return 'lv-maju';
-  if (l.includes('berkembang')) return 'lv-berkembang';
-  if (l.includes('pra'))        return 'lv-pra';
-  return 'lv-na';
-}
-
-function renderLevelGrid(containerId, data, labelMap) {
+function renderPager(containerId, current, total, onClick) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  const entries = Object.entries(data);
-  if (entries.length === 0) { el.innerHTML = '<p style="color:var(--muted);font-size:12px">Data tidak tersedia</p>'; return; }
-  el.innerHTML = entries.map(([code, val]) => {
-    const label = labelMap[code] || code;
-    const cls   = profilClass(val);
-    const display = val || '—';
-    return `<div class="level-card ${cls}">
-      <div class="level-card-code">${code}</div>
-      <div class="level-card-name">${label}</div>
-      <div class="level-card-val">${display}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderRadar(svgId, legendId, data, labelMap) {
-  const svg  = document.getElementById(svgId);
-  const legEl = document.getElementById(legendId);
-  if (!svg) return;
-
-  const keys   = Object.keys(data).filter(k => profilScore(data[k]) !== null);
-  const n      = keys.length;
-  if (n < 3) { svg.style.display = 'none'; return; }
-  svg.style.display = '';
-
-  const cx = 150, cy = 150, R = 110, innerR = 18;
-  const levels = 4; // 1..4
-  const angleStep = (2 * Math.PI) / n;
-  const getAngle  = i => -Math.PI / 2 + i * angleStep;
-  const ptOnGrid  = (i, r) => {
-    const a = getAngle(i);
-    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
-  };
-
-  let html = '';
-
-  // Grid rings
-  for (let lv = 1; lv <= levels; lv++) {
-    const r = innerR + ((R - innerR) * lv / levels);
-    const pts = keys.map((_, i) => ptOnGrid(i, r).join(',')).join(' ');
-    html += `<polygon points="${pts}" fill="none" stroke="#dce6f5" stroke-width="1"/>`;
+  if (total<=1) { el.innerHTML=''; return; }
+  let btns = `<button onclick="(${onClick.toString()})(${current-1})" ${current===1?'disabled':''}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>`;
+  const pages=[];
+  if (total<=7) { for(let i=1;i<=total;i++) pages.push(i); }
+  else {
+    pages.push(1);
+    if(current>3) pages.push('…');
+    for(let i=Math.max(2,current-1);i<=Math.min(total-1,current+1);i++) pages.push(i);
+    if(current<total-2) pages.push('…');
+    pages.push(total);
   }
-
-  // Spokes
-  keys.forEach((_, i) => {
-    const [x, y] = ptOnGrid(i, R);
-    html += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#dce6f5" stroke-width="1"/>`;
+  pages.forEach(p => {
+    if(p==='…') btns+=`<button disabled style="cursor:default">…</button>`;
+    else btns+=`<button class="${p===current?'cur':''}" onclick="(${onClick.toString()})(${p})">${p}</button>`;
   });
-
-  // Data polygon
-  const dataPts = keys.map((k, i) => {
-    const score = profilScore(data[k]) || 0;
-    const r = innerR + ((R - innerR) * score / levels);
-    return ptOnGrid(i, r).join(',');
-  }).join(' ');
-  html += `<polygon points="${dataPts}" fill="rgba(43,114,216,0.18)" stroke="#2b72d8" stroke-width="2" stroke-linejoin="round"/>`;
-
-  // Data dots
-  keys.forEach((k, i) => {
-    const score = profilScore(data[k]) || 0;
-    const r = innerR + ((R - innerR) * score / levels);
-    const [x, y] = ptOnGrid(i, r);
-    html += `<circle cx="${x}" cy="${y}" r="4" fill="#2b72d8"/>`;
-  });
-
-  // Labels
-  keys.forEach((k, i) => {
-    const [x, y] = ptOnGrid(i, R + 18);
-    const label = (labelMap[k] || k).replace(/ /g, '\n');
-    const lines = label.split('\n');
-    const anchor = x < cx - 4 ? 'end' : x > cx + 4 ? 'start' : 'middle';
-    let textHtml = `<text x="${x.toFixed(1)}" y="${(y - (lines.length - 1) * 6).toFixed(1)}" text-anchor="${anchor}" font-family="Plus Jakarta Sans,sans-serif" font-size="9.5" fill="#6b83a4">`;
-    lines.forEach((ln, li) => {
-      textHtml += `<tspan x="${x.toFixed(1)}" dy="${li === 0 ? 0 : 12}">${ln}</tspan>`;
-    });
-    textHtml += '</text>';
-    html += textHtml;
-  });
-
-  svg.innerHTML = html;
-
-  // Legend
-  const PROFIL_COLOR = { 4:'#f0a500', 3:'#1a6b3e', 2:'#1a4a8a', 1:'#c0392b' };
-  const PROFIL_LABEL = { 4:'Unggul', 3:'Maju', 2:'Berkembang', 1:'Pra-Berkembang' };
-  const usedScores = [...new Set(keys.map(k => profilScore(data[k])).filter(Boolean))].sort((a,b)=>b-a);
-  if (legEl) {
-    legEl.innerHTML = usedScores.map(s =>
-      `<div class="radar-leg-item"><div class="radar-leg-dot" style="background:${PROFIL_COLOR[s]}"></div>${PROFIL_LABEL[s]}</div>`
-    ).join('');
-  }
+  btns+=`<button onclick="(${onClick.toString()})(${current+1})" ${current===total?'disabled':''}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+  el.innerHTML=btns;
 }
 
-function switchModalTab(tab, btn) {
-  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.modal-pane').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('modal-tab-' + tab).classList.add('active');
-}
-
-function closeDetail(e) {
-  if (e && e.target !== document.getElementById('detailModal')) return;
-  document.getElementById('detailModal').classList.remove('open');
-}
-function closeDetailBtn() {
-  document.getElementById('detailModal').classList.remove('open');
-}
-
-async function openDetail(npsn) {
-  const modal = document.getElementById('detailModal');
-  modal.classList.add('open');
-  document.getElementById('detailLoading').style.display = 'flex';
-  document.getElementById('detailContent').style.display = 'none';
-
-  // Reset tab ke PM
-  document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', i===0));
-  document.querySelectorAll('.modal-pane').forEach((p,i) => p.classList.toggle('active', i===0));
-
-  try {
-    const res  = await fetch(GAS_DETAIL(npsn));
-    const d    = await res.json();
-    if (d.error) throw new Error(d.error);
-
-    // Header
-    document.getElementById('det-nama').textContent    = d.nama || '—';
-    document.getElementById('det-npsn').textContent    = 'NPSN: ' + (d.npsn || npsn);
-    document.getElementById('det-lokasi').textContent  = [d.kabkota, d.provinsi].filter(Boolean).join(', ');
-    document.getElementById('det-status').textContent  = d.status || '';
-    document.getElementById('det-kka-pel').textContent = d.kka_pel || '';
-
-    // PM tab
-    document.getElementById('det-pm-profil').textContent  = d.pm?.profil || '—';
-    document.getElementById('det-pm-skor').textContent    = d.pm?.skor   || '—';
-    document.getElementById('det-pm-kka-pel2').textContent = d.kka_pel || '—';
-    renderLevelGrid('pm-l1-grid', {
-      'Murid': d.pm?.l1?.murid,
-      'Guru':  d.pm?.l1?.guru,
-      'Kepala Satpen': d.pm?.l1?.kepsek,
-    }, { 'Murid':'Murid','Guru':'Guru','Kepala Satpen':'Kepala Satpen' });
-    renderLevelGrid('pm-l2-grid', d.pm?.l2 || {}, PM_L2_LABEL);
-    renderLevelGrid('pm-l3-grid', d.pm?.l3 || {}, PM_L3_LABEL);
-    renderRadar('radar-pm-l2', 'radar-pm-l2-legend', d.pm?.l2 || {}, PM_L2_LABEL);
-
-    // KKA tab
-    document.getElementById('det-kka-profil').textContent = d.kka?.profil || '—';
-    document.getElementById('det-kka-skor').textContent   = d.kka?.skor   || '—';
-    document.getElementById('det-kka-pel3').textContent   = d.kka_pel || '—';
-    renderLevelGrid('kka-l1-grid', {
-      'Murid': d.kka?.l1?.murid,
-      'Guru':  d.kka?.l1?.guru,
-      'Kepala Satpen': d.kka?.l1?.kepsek,
-    }, { 'Murid':'Murid','Guru':'Guru','Kepala Satpen':'Kepala Satpen' });
-    renderLevelGrid('kka-l2-grid', d.kka?.l2 || {}, KKA_L2_LABEL);
-    renderLevelGrid('kka-l3-grid', d.kka?.l3 || {}, KKA_L3_LABEL);
-    renderRadar('radar-kka-l2', 'radar-kka-l2-legend', d.kka?.l2 || {}, KKA_L2_LABEL);
-
-    document.getElementById('detailLoading').style.display = 'none';
-    document.getElementById('detailContent').style.display = 'block';
-  } catch (err) {
-    document.getElementById('detailLoading').innerHTML =
-      `<span style="color:#c0392b">Gagal memuat data: ${err.message}</span>`;
-  }
-}
-
-window.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeDetailBtn();
-});
-
-
+window.addEventListener('load', () => { loadData(); });
 </script>
 </body>
 </html>
