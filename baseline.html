@@ -855,7 +855,7 @@ async function doLoginSubmit() {
       // Tampilkan modal ganti password
       document.getElementById('changePwModal').classList.remove('hidden');
     } else {
-      finishLogin();
+      finishLogin(true);
     }
   } catch (e) {
     showAuthError('Gagal terhubung ke server. Coba lagi.');
@@ -899,7 +899,7 @@ async function doChangePwSubmit() {
     // Update session, hilangkan mustChange
     setSession({ ...sess, mustChange: false });
     document.getElementById('changePwModal').classList.add('hidden');
-    finishLogin();
+    finishLogin(true);
   } catch (e) {
     showChangePwError('Gagal terhubung ke server. Coba lagi.');
   } finally {
@@ -962,7 +962,7 @@ function renderSummaryCharts() {
 }
 
 // ── Selesai login: tampilkan app ───────────────────────────────────────────────
-function finishLogin() {
+function finishLogin(fromLogin) {
   const sess = getSession();
 
   // Sembunyikan inline auth form, tampilkan tabel
@@ -979,6 +979,14 @@ function finishLogin() {
   document.getElementById('userMobileEmail').textContent = sess.email;
   document.getElementById('userMobileRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
   document.getElementById('userMobileBar').classList.add('show');
+
+  // Kalau baru login (bukan restore session), scroll ke atas + force reflow
+  // supaya Chrome mobile recalculate viewport dan address bar tidak menutupi konten
+  if (fromLogin) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    document.body.style.minHeight = window.innerHeight + 'px';
+    requestAnimationFrame(() => { document.body.style.minHeight = ''; });
+  }
 
   loadData();
 }
