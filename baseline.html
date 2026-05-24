@@ -334,6 +334,27 @@ td.td-nama { font-weight: 600; color: var(--navy); }
   margin-bottom: 12px; display: none;
 }
 .changepw-error.show { display: block; }
+.changepw-notice-list { display: flex; flex-direction: column; gap: 6px; }
+.changepw-notice-item { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; color: #6b4400; line-height: 1.5; }
+.changepw-notice-dot  { flex-shrink: 0; font-size: 8px; margin-top: 4px; color: #c8860a; }
+
+/* ── LUPA PASSWORD FORM (inside inline-auth-wrap) ── */
+.forgot-panel { display: none; }
+.forgot-panel.show { display: block; }
+.forgot-back { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--blue-lt); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; margin-bottom: 14px; transition: color 0.15s; }
+.forgot-back:hover { color: var(--blue); }
+.forgot-success { background: #e0f0e9; border: 1px solid #a8d8b9; border-radius: 8px; padding: 11px 13px; font-size: 12px; color: #1a4a30; margin-bottom: 14px; display: none; line-height: 1.5; }
+.forgot-success.show { display: block; }
+.auth-field select {
+  width: 100%; padding: 9px 12px; border-radius: 8px;
+  border: 1.5px solid var(--border); font-size: 13px;
+  font-family: inherit; color: var(--text); background: var(--bg);
+  outline: none; transition: border-color 0.15s; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b83a4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 32px;
+}
+.auth-field select:focus { border-color: var(--blue-lt); background-color: #fff; }
 
 /* ── USER INFO — kanan atas topbar (desktop), baris sendiri (mobile) ── */
 .topbar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
@@ -404,7 +425,24 @@ td.td-nama { font-weight: 600; color: var(--navy); }
     </div>
     <div class="changepw-body">
       <div class="changepw-notice">
-        Anda masih menggunakan password default. Silakan buat password baru untuk melanjutkan akses.
+        <div class="changepw-notice-list">
+          <div class="changepw-notice-item">
+            <span class="changepw-notice-dot">●</span>
+            <span>Anda masih menggunakan password default. Silakan buat password baru untuk melanjutkan akses.</span>
+          </div>
+          <div class="changepw-notice-item">
+            <span class="changepw-notice-dot">●</span>
+            <span>Gunakan password yang mudah diingat oleh seluruh tim instansi.</span>
+          </div>
+          <div class="changepw-notice-item">
+            <span class="changepw-notice-dot">●</span>
+            <span>Hindari menggunakan password pribadi seperti password email, media sosial, atau akun penting lainnya.</span>
+          </div>
+          <div class="changepw-notice-item">
+            <span class="changepw-notice-dot">●</span>
+            <span>Password ini akan digunakan bersama oleh tim instansi untuk mengakses dashboard.</span>
+          </div>
+        </div>
       </div>
       <div class="changepw-error" id="changePwError"></div>
       <div class="auth-field">
@@ -598,23 +636,64 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       </div>
     </div>
     <div class="inline-auth-body">
-      <div class="auth-error" id="authError"></div>
-      <div class="inline-auth-fields">
-        <div class="auth-field" style="margin-bottom:0">
-          <label for="authEmail">Email</label>
-          <input type="email" id="authEmail" placeholder="Masukkan email Anda" autocomplete="email">
+      <!-- ── PANEL LOGIN ── -->
+      <div id="loginPanel">
+        <div class="auth-error" id="authError"></div>
+        <div class="inline-auth-fields">
+          <div class="auth-field" style="margin-bottom:0">
+            <label for="authEmail">Email</label>
+            <input type="email" id="authEmail" placeholder="Masukkan email Anda" autocomplete="email">
+          </div>
+          <div class="auth-field" style="margin-bottom:0">
+            <label for="authPassword">Password</label>
+            <input type="password" id="authPassword" placeholder="Masukkan password" autocomplete="current-password">
+          </div>
         </div>
-        <div class="auth-field" style="margin-bottom:0">
-          <label for="authPassword">Password</label>
-          <input type="password" id="authPassword" placeholder="Masukkan password" autocomplete="current-password">
+        <button class="btn-login" id="btnLogin" onclick="doLoginSubmit()" style="max-width:200px">
+          <svg class="btn-login-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span id="btnLoginText">Masuk</span>
+        </button>
+        <div class="auth-forgot" style="text-align:left;margin-top:12px">
+          <a href="#" onclick="showForgotPanel(event)">Lupa password?</a>
         </div>
       </div>
-      <button class="btn-login" id="btnLogin" onclick="doLoginSubmit()" style="max-width:200px">
-        <svg class="btn-login-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        <span id="btnLoginText">Masuk</span>
-      </button>
-      <div class="auth-forgot" style="text-align:left;margin-top:12px">
-        Lupa password? Hubungi <a href="mailto:sekolahmodel@kemdikbud.go.id">Direktorat SMA Kemendikdasmen</a>
+
+      <!-- ── PANEL LUPA PASSWORD ── -->
+      <div id="forgotPanel" class="forgot-panel">
+        <button class="forgot-back" onclick="showLoginPanel()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Kembali ke login
+        </button>
+        <div class="auth-error" id="forgotError"></div>
+        <button id="forgotRetry" onclick="doForgotSubmit()" style="display:none;margin-bottom:12px;padding:6px 14px;border-radius:7px;border:1.5px solid var(--blue-lt);background:var(--surface);color:var(--blue-lt);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;">↻ Coba lagi</button>
+        <div class="forgot-success" id="forgotSuccess"></div>
+        <div class="auth-field">
+          <label for="forgotEmail">Email Terdaftar</label>
+          <input type="email" id="forgotEmail" placeholder="Masukkan email akun Anda">
+        </div>
+        <div class="auth-field">
+          <label for="forgotUnsur">Unsur</label>
+          <select id="forgotUnsur" onchange="onForgotUnsurChange()">
+            <option value="">— Pilih unsur —</option>
+            <option value="provinsi">Dinas Pendidikan Provinsi</option>
+            <option value="upt">UPT</option>
+            <option value="sekolah">Sekolah</option>
+          </select>
+        </div>
+        <div class="auth-field" id="forgotProvinsiField" style="display:none">
+          <label for="forgotProvinsi">Provinsi</label>
+          <select id="forgotProvinsi">
+            <option value="">— Pilih provinsi —</option>
+          </select>
+        </div>
+        <div class="auth-field" id="forgotNpsnField" style="display:none">
+          <label for="forgotNpsn">NPSN</label>
+          <input type="text" id="forgotNpsn" placeholder="Masukkan NPSN sekolah" maxlength="12" inputmode="numeric">
+        </div>
+        <button class="btn-login" id="btnForgot" onclick="doForgotSubmit()">
+          <svg class="btn-login-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span id="btnForgotText">Reset Password</span>
+        </button>
       </div>
     </div>
   </div>
@@ -910,6 +989,135 @@ async function doChangePwSubmit() {
 
 function showChangePwError(msg) {
   const el = document.getElementById('changePwError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+// ── Lupa Password: toggle panel ─────────────────────────────────────────────
+function showForgotPanel(e) {
+  if (e) e.preventDefault();
+  document.getElementById('loginPanel').style.display = 'none';
+  document.getElementById('forgotPanel').classList.add('show');
+  // Reset state form lupa password
+  document.getElementById('forgotEmail').value = '';
+  document.getElementById('forgotUnsur').value = '';
+  document.getElementById('forgotProvinsi').value = '';
+  document.getElementById('forgotNpsn').value = '';
+  document.getElementById('forgotProvinsiField').style.display = 'none';
+  document.getElementById('forgotNpsnField').style.display = 'none';
+  const errEl = document.getElementById('forgotError');
+  errEl.textContent = ''; errEl.classList.remove('show');
+  const okEl = document.getElementById('forgotSuccess');
+  okEl.textContent = ''; okEl.classList.remove('show');
+}
+
+function showLoginPanel() {
+  document.getElementById('loginPanel').style.display = '';
+  document.getElementById('forgotPanel').classList.remove('show');
+}
+
+// Daftar provinsi per unsur (poin 5: UPT tidak include provinsi pemekaran Papua)
+const PROVINSI_ALL = [
+  'Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta',
+  'Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur',
+  'Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara',
+  'Kepulauan Bangka Belitung','Kepulauan Riau','Lampung',
+  'Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur',
+  'Papua','Papua Barat','Papua Barat Daya','Papua Pegunungan','Papua Selatan','Papua Tengah',
+  'Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara',
+  'Sumatera Barat','Sumatera Selatan','Sumatera Utara'
+];
+// UPT (BBPMP/BPMP) mengikuti struktur lama — tidak ada provinsi pemekaran Papua
+const PROVINSI_UPT = [
+  'Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta',
+  'Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur',
+  'Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara',
+  'Kepulauan Bangka Belitung','Kepulauan Riau','Lampung',
+  'Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur',
+  'Papua','Papua Barat',
+  'Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara',
+  'Sumatera Barat','Sumatera Selatan','Sumatera Utara'
+];
+
+function populateProvinsiDropdown(list) {
+  const sel = document.getElementById('forgotProvinsi');
+  sel.innerHTML = '<option value="">— Pilih provinsi —</option>' +
+    list.map(p => `<option>${p}</option>`).join('');
+}
+
+function onForgotUnsurChange() {
+  const val = document.getElementById('forgotUnsur').value;
+  const showProv = val === 'provinsi' || val === 'upt';
+  document.getElementById('forgotProvinsiField').style.display = showProv ? '' : 'none';
+  document.getElementById('forgotNpsnField').style.display = val === 'sekolah' ? '' : 'none';
+  document.getElementById('forgotProvinsi').value = '';
+  document.getElementById('forgotNpsn').value = '';
+  // Isi daftar provinsi sesuai unsur
+  if (val === 'upt') populateProvinsiDropdown(PROVINSI_UPT);
+  else if (val === 'provinsi') populateProvinsiDropdown(PROVINSI_ALL);
+}
+
+// ── Lupa Password: submit ───────────────────────────────────────────────────
+async function doForgotSubmit() {
+  const email  = document.getElementById('forgotEmail').value.trim();
+  const unsur  = document.getElementById('forgotUnsur').value;
+  const prov   = document.getElementById('forgotProvinsi').value;
+  const npsn   = document.getElementById('forgotNpsn').value.trim();
+  const errEl  = document.getElementById('forgotError');
+  const okEl   = document.getElementById('forgotSuccess');
+  const btn    = document.getElementById('btnForgot');
+  const retryEl = document.getElementById('forgotRetry');
+
+  errEl.textContent = ''; errEl.classList.remove('show');
+  okEl.textContent = '';  okEl.classList.remove('show');
+  if (retryEl) retryEl.style.display = 'none';
+
+  if (!email) { showForgotError('Email wajib diisi.'); return; }
+  if (!unsur) { showForgotError('Pilih unsur terlebih dahulu.'); return; }
+  if ((unsur === 'provinsi' || unsur === 'upt') && !prov) { showForgotError('Pilih provinsi untuk validasi.'); return; }
+  if (unsur === 'sekolah' && !npsn) { showForgotError('Masukkan NPSN untuk validasi.'); return; }
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  document.getElementById('btnForgotText').textContent = 'Memproses...';
+
+  try {
+    const params = new URLSearchParams({ action: 'resetPassword', email, unsur });
+    if (unsur === 'provinsi' || unsur === 'upt') params.set('provinsi', prov);
+    if (unsur === 'sekolah') params.set('npsn', npsn);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    let res;
+    try {
+      res = await fetch(`${GAS_URL}?${params.toString()}`, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeout);
+    }
+    const json = await res.json();
+
+    if (json.ok) {
+      okEl.innerHTML = 'Password berhasil direset ke password default (<strong>sekolahmodel123</strong>). Silakan kembali ke login dan masuk menggunakan password default, lalu segera buat password baru.';
+      okEl.classList.add('show');
+    } else {
+      showForgotError(json.error || 'Gagal mereset password.');
+    }
+  } catch (e) {
+    const isTimeout = e.name === 'AbortError';
+    showForgotError(isTimeout
+      ? 'Permintaan timeout. Koneksi ke server terlalu lama — silakan coba lagi.'
+      : 'Gagal terhubung ke server. Periksa koneksi internet Anda, lalu coba lagi.'
+    );
+    if (retryEl) retryEl.style.display = 'inline-flex';
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    document.getElementById('btnForgotText').textContent = 'Reset Password';
+  }
+}
+
+function showForgotError(msg) {
+  const el = document.getElementById('forgotError');
   el.textContent = msg;
   el.classList.add('show');
 }
