@@ -718,6 +718,22 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       <select class="filter-select" id="baselineProvFilter" onchange="filterBaseline()">
         <option value="">Semua Provinsi</option>
       </select>
+      <select class="filter-select" id="baselineProfilPMFilter" onchange="filterBaseline()">
+        <option value="">Semua Profil PM</option>
+        <option value="Unggul">Unggul</option>
+        <option value="Maju">Maju</option>
+        <option value="Berkembang">Berkembang</option>
+        <option value="Pra-Berkembang">Pra-Berkembang</option>
+        <option value="tt">Tidak Terkategori</option>
+      </select>
+      <select class="filter-select" id="baselineProfilKKAFilter" onchange="filterBaseline()">
+        <option value="">Semua Profil KKA</option>
+        <option value="Unggul">Unggul</option>
+        <option value="Maju">Maju</option>
+        <option value="Berkembang">Berkembang</option>
+        <option value="Pra-Berkembang">Pra-Berkembang</option>
+        <option value="tt">Tidak Terkategori</option>
+      </select>
       <button class="btn-reset-filter" onclick="resetBaselineFilter()">&#8635; Reset</button>
     </div>
     <div style="overflow-x:auto">
@@ -1143,11 +1159,10 @@ function renderSummaryCharts() {
     const wrap = document.getElementById(containerId);
     if (!wrap) return;
     const data = ORDER.map(label => ({ label, count: raw[label] || 0, color: COLOR[label] }));
-    const maxCount = Math.max(...data.map(d => d.count), 1);
 
     wrap.innerHTML = data.map(d => {
-      const pct     = Math.round((d.count / maxCount) * 100);
-      const pctDisp = Math.round(d.count / TOTAL * 100);
+      const pct     = Math.round(d.count / TOTAL * 100);
+      const pctDisp = pct;
       const isEmpty = d.count === 0;
       const countStr = `${d.count} <span class="bar-pct">(${pctDisp}%)</span>`;
       const fillHtml = isEmpty ? '' : `<div class="bar-fill" data-w="${pct}" style="width:0%;background:${d.color}"></div>`;
@@ -1454,12 +1469,22 @@ function populateFilters() {
   }
 }
 
+function matchProfil(val, filterVal) {
+  if (!filterVal) return true;
+  if (filterVal === 'tt') return !val || val.trim() === '' || val.toLowerCase() === 'tidak terkategori';
+  return val && val.toLowerCase().includes(filterVal.toLowerCase());
+}
+
 function getBaselineFiltered() {
-  const q    = (document.getElementById('baselineSearch')?.value || '').toLowerCase();
-  const prov = document.getElementById('baselineProvFilter')?.value || '';
+  const q      = (document.getElementById('baselineSearch')?.value || '').toLowerCase();
+  const prov   = document.getElementById('baselineProvFilter')?.value || '';
+  const fPM    = document.getElementById('baselineProfilPMFilter')?.value || '';
+  const fKKA   = document.getElementById('baselineProfilKKAFilter')?.value || '';
   return ALL_SCHOOLS.filter(r =>
     (!q    || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
-    (!prov || r.provinsi === prov)
+    (!prov || r.provinsi === prov) &&
+    matchProfil(r.profil_pm, fPM) &&
+    matchProfil(r.profil_kka, fKKA)
   );
 }
 
@@ -1504,6 +1529,10 @@ function filterBaseline()      { baselinePage=1; renderBaselineTable(); }
 function resetBaselineFilter() {
   document.getElementById('baselineSearch').value='';
   document.getElementById('baselineProvFilter').value='';
+  const fPM = document.getElementById('baselineProfilPMFilter');
+  const fKKA = document.getElementById('baselineProfilKKAFilter');
+  if (fPM) fPM.value='';
+  if (fKKA) fKKA.value='';
   baselinePage=1; renderBaselineTable();
 }
 
