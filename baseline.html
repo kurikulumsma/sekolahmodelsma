@@ -108,6 +108,8 @@ td.td-no   { color: var(--muted); font-size: 11px; text-align: center; width: 36
 td.td-npsn { font-family: monospace; font-size: 11.5px; color: var(--muted); }
 td.td-nama { font-weight: 600; color: var(--navy); }
 .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.tag-mapel-sudah { background: #e0f0e9; color: #1a6b3e; }
+.tag-mapel-belum { background: #fef9e7; color: #8a5c00; }
 .tag-ung  { background: #fef3d7; color: #8a5c00; }
 .tag-maju { background: #e0f0e9; color: #1a6b3e; }
 .tag-berk { background: #e8f0fb; color: #1a4a8a; }
@@ -237,6 +239,35 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 @media (max-width: 768px) {
   .summary-grid { grid-template-columns: 1fr; }
   .bar-item { grid-template-columns: 100px 1fr auto; gap: 8px; }
+}
+
+/* ── PIE CHART ── */
+.pie-chart-wrap { position: relative; display: flex; flex-direction: row; align-items: center; gap: 16px; }
+.pie-svg-area { width: 130px; height: 130px; flex-shrink: 0; }
+.pie-svg-area svg { width: 100%; height: 100%; overflow: visible; }
+.pie-slice { cursor: pointer; transition: opacity 0.15s, filter 0.15s; }
+.pie-slice:hover { filter: brightness(1.18) drop-shadow(0 2px 6px rgba(0,0,0,0.22)); }
+.pie-legend { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
+.pie-legend-item { display: flex; align-items: center; gap: 7px; cursor: default; padding: 3px 6px; border-radius: 7px; transition: background 0.12s; }
+.pie-legend-item:hover { background: var(--bg); }
+.pie-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.pie-legend-label { font-size: 11px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pie-legend-val { font-size: 11px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.pie-legend-pct { font-size: 10px; color: var(--muted); margin-left: 2px; }
+.pie-tooltip {
+  position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
+  background: var(--navy); color: #fff; border-radius: 8px;
+  padding: 6px 12px; font-size: 11px; font-weight: 600;
+  pointer-events: none; white-space: nowrap;
+  opacity: 0; transition: opacity 0.15s;
+  box-shadow: 0 4px 14px rgba(10,31,60,0.28);
+  z-index: 10;
+  text-align: center;
+}
+.pie-tooltip.show { opacity: 1; }
+@media (max-width: 768px) {
+  .pie-svg-area { width: 110px; height: 110px; }
+  .pie-legend-label { font-size: 10px; }
 }
 
 /* ── INLINE AUTH SECTION ── */
@@ -607,7 +638,11 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           <div class="summary-card-sub">Pembelajaran Mendalam · 223 sekolah</div>
         </div>
       </div>
-      <div class="bar-list" id="barListPM"></div>
+      <div class="pie-chart-wrap" id="pieWrapPM">
+        <div class="pie-svg-area"><svg id="pieSvgPM" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"></svg></div>
+        <div class="pie-legend" id="pieLegendPM"></div>
+        <div class="pie-tooltip" id="pieTooltipPM"></div>
+      </div>
     </div>
     <!-- KKA Chart -->
     <div class="summary-card">
@@ -620,7 +655,11 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           <div class="summary-card-sub">Koding &amp; Kecerdasan Artifisial · 223 sekolah</div>
         </div>
       </div>
-      <div class="bar-list" id="barListKKA"></div>
+      <div class="pie-chart-wrap" id="pieWrapKKA">
+        <div class="pie-svg-area"><svg id="pieSvgKKA" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"></svg></div>
+        <div class="pie-legend" id="pieLegendKKA"></div>
+        <div class="pie-tooltip" id="pieTooltipKKA"></div>
+      </div>
     </div>
   </div>
 
@@ -718,6 +757,11 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       <select class="filter-select" id="baselineProvFilter" onchange="filterBaseline()">
         <option value="">Semua Provinsi</option>
       </select>
+      <select class="filter-select" id="baselineMapelKKAFilter" onchange="filterBaseline()">
+        <option value="">Semua Mapel KKA</option>
+        <option value="sudah">Sudah</option>
+        <option value="belum">Belum</option>
+      </select>
       <select class="filter-select" id="baselineProfilPMFilter" onchange="filterBaseline()">
         <option value="">Semua Profil PM</option>
         <option value="Unggul">Unggul</option>
@@ -746,13 +790,14 @@ td.td-nama { font-weight: 600; color: var(--navy); }
             <th>Provinsi</th>
             <th>Kab/Kota</th>
             <th>Status</th>
+            <th>Mapel KKA</th>
             <th>Profil PM</th>
             <th>Profil KKA</th>
             <th style="width:80px"></th>
           </tr>
         </thead>
         <tbody id="baselineTbody">
-          <tr><td colspan="9" style="padding:32px;text-align:center;color:var(--muted)">
+          <tr><td colspan="10" style="padding:32px;text-align:center;color:var(--muted)">
             <div class="skel" style="width:200px;height:14px;display:inline-block"></div>
           </td></tr>
         </tbody>
@@ -850,6 +895,8 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 
       <!-- KKA pane -->
       <div class="modal-pane" id="mpane-kka">
+        <!-- Banner Mapel KKA -->
+        <div id="mMapelKKA" style="margin-bottom:14px"></div>
         <!-- KKA Murid: kotak -->
         <div class="l1-section">
           <div class="l1-header l1-header-murid">
@@ -1138,50 +1185,115 @@ function showForgotError(msg) {
   el.classList.add('show');
 }
 
-// ── Render summary bar charts (data statis) ───────────────────────────────────
+// ── Render summary pie charts (data statis) ───────────────────────────────────
 function renderSummaryCharts() {
   const TOTAL = 223;
-
-  // Urutan tetap: Unggul → Maju → Berkembang → Pra-Berkembang → Tidak Terkategori
   const ORDER = ['Unggul','Maju','Berkembang','Pra-Berkembang','Tidak Terkategori'];
   const COLOR = {
-    'Unggul'            : '#8a5c00',
+    'Unggul'            : '#c47f00',
     'Maju'              : '#1a6b3e',
     'Berkembang'        : '#1a56a0',
-    'Pra-Berkembang'    : '#8a3000',
+    'Pra-Berkembang'    : '#b84000',
     'Tidak Terkategori' : '#8896a8',
   };
 
-  const pmRaw = { 'Berkembang': 97, 'Maju': 113, 'Pra-Berkembang': 3, 'Unggul': 5, 'Tidak Terkategori': 5 };
-  const kkaRaw= { 'Berkembang': 64, 'Pra-Berkembang': 24, 'Tidak Terkategori': 135 };
+  const pmRaw  = { 'Berkembang': 97, 'Maju': 113, 'Pra-Berkembang': 3, 'Unggul': 5, 'Tidak Terkategori': 5 };
+  const kkaRaw = { 'Berkembang': 64, 'Pra-Berkembang': 24, 'Tidak Terkategori': 135, 'Unggul': 0, 'Maju': 0 };
 
-  function buildBars(containerId, raw) {
-    const wrap = document.getElementById(containerId);
-    if (!wrap) return;
-    const data = ORDER.map(label => ({ label, count: raw[label] || 0, color: COLOR[label] }));
+  function buildPie(svgId, legendId, tooltipId, raw) {
+    const svg     = document.getElementById(svgId);
+    const legendEl= document.getElementById(legendId);
+    const tipEl   = document.getElementById(tooltipId);
+    if (!svg || !legendEl || !tipEl) return;
 
-    wrap.innerHTML = data.map(d => {
-      const pct     = Math.round(d.count / TOTAL * 100);
-      const pctDisp = pct;
-      const isEmpty = d.count === 0;
-      const countStr = `${d.count} <span class="bar-pct">(${pctDisp}%)</span>`;
-      const fillHtml = isEmpty ? '' : `<div class="bar-fill" data-w="${pct}" style="width:0%;background:${d.color}"></div>`;
-      return `<div class="bar-item${isEmpty ? ' bar-zero' : ''}">
-        <span class="bar-label">${d.label}</span>
-        <div class="bar-track">${fillHtml}</div>
-        <span class="bar-count">${countStr}</span>
+    const allData  = ORDER.map(label => ({ label, count: raw[label] || 0, color: COLOR[label] }));
+    const data     = allData.filter(d => d.count > 0); // hanya untuk slice pie
+    const total    = data.reduce((s, d) => s + d.count, 0);
+    const cx = 100, cy = 100, r = 80, ri = 42; // donut
+
+    // Hitung sudut
+    let startAngle = -Math.PI / 2;
+    const slices = data.map(d => {
+      const angle = (d.count / total) * 2 * Math.PI;
+      const s = { ...d, startAngle, endAngle: startAngle + angle };
+      startAngle += angle;
+      return s;
+    });
+
+    function polarToXY(angle, radius) {
+      return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+    }
+
+    function describeArc(s, e, outerR, innerR) {
+      const p1 = polarToXY(s, outerR), p2 = polarToXY(e, outerR);
+      const p3 = polarToXY(e, innerR), p4 = polarToXY(s, innerR);
+      const large = (e - s) > Math.PI ? 1 : 0;
+      return `M ${p1.x} ${p1.y} A ${outerR} ${outerR} 0 ${large} 1 ${p2.x} ${p2.y} L ${p3.x} ${p3.y} A ${innerR} ${innerR} 0 ${large} 0 ${p4.x} ${p4.y} Z`;
+    }
+
+    // Render SVG slices
+    svg.innerHTML = '';
+
+    // Gap kecil antar slice (dalam radian)
+    const GAP = 0.018;
+
+    slices.forEach(sl => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d', describeArc(sl.startAngle + GAP/2, sl.endAngle - GAP/2, r, ri));
+      path.setAttribute('fill', sl.color);
+      path.setAttribute('class', 'pie-slice');
+
+      // Hover: tampilkan tooltip
+      path.addEventListener('mouseenter', () => {
+        const pct = Math.round(sl.count / TOTAL * 100);
+        tipEl.innerHTML = `<strong>${sl.label}</strong><br>${sl.count} sekolah &nbsp;·&nbsp; ${pct}%`;
+        tipEl.classList.add('show');
+      });
+      path.addEventListener('mouseleave', () => {
+        tipEl.classList.remove('show');
+      });
+
+      svg.appendChild(path);
+    });
+
+    // Teks tengah: total
+    const textGroup = document.createElementNS('http://www.w3.org/2000/svg','text');
+    textGroup.setAttribute('x', cx);
+    textGroup.setAttribute('y', cy - 6);
+    textGroup.setAttribute('text-anchor', 'middle');
+    textGroup.setAttribute('font-family', "'Plus Jakarta Sans', sans-serif");
+    textGroup.setAttribute('font-size', '22');
+    textGroup.setAttribute('font-weight', '800');
+    textGroup.setAttribute('fill', '#0a1f3c');
+    textGroup.textContent = total;
+    svg.appendChild(textGroup);
+
+    const textSub = document.createElementNS('http://www.w3.org/2000/svg','text');
+    textSub.setAttribute('x', cx);
+    textSub.setAttribute('y', cy + 12);
+    textSub.setAttribute('text-anchor', 'middle');
+    textSub.setAttribute('font-family', "'Plus Jakarta Sans', sans-serif");
+    textSub.setAttribute('font-size', '9');
+    textSub.setAttribute('fill', '#6b83a4');
+    textSub.textContent = 'sekolah';
+    svg.appendChild(textSub);
+
+    // Legend — pakai allData supaya kategori 0% tetap tampil
+    legendEl.innerHTML = allData.map(d => {
+      const pct = Math.round(d.count / TOTAL * 100);
+      const isZero = d.count === 0;
+      return `<div class="pie-legend-item" style="${isZero?'opacity:0.45':''}"
+        onmouseenter="document.getElementById('${tooltipId}').innerHTML='<strong>${d.label}</strong><br>${d.count} sekolah &nbsp;·&nbsp; ${pct}%';document.getElementById('${tooltipId}').classList.add('show')"
+        onmouseleave="document.getElementById('${tooltipId}').classList.remove('show')">
+        <div class="pie-legend-dot" style="background:${d.color}"></div>
+        <span class="pie-legend-label">${d.label}</span>
+        <span class="pie-legend-val">${d.count}<span class="pie-legend-pct">(${pct}%)</span></span>
       </div>`;
     }).join('');
-
-    requestAnimationFrame(() => {
-      wrap.querySelectorAll('.bar-fill').forEach(el => {
-        el.style.width = el.dataset.w + '%';
-      });
-    });
   }
 
-  buildBars('barListPM', pmRaw);
-  buildBars('barListKKA', kkaRaw);
+  buildPie('pieSvgPM',  'pieLegendPM',  'pieTooltipPM',  pmRaw);
+  buildPie('pieSvgKKA', 'pieLegendKKA', 'pieTooltipKKA', kkaRaw);
 }
 
 // ── Selesai login: tampilkan app ───────────────────────────────────────────────
@@ -1261,6 +1373,18 @@ function profil_tag(v) {
   if (l.startsWith('pra') || l.includes('pra-')) return `<span class="tag tag-pra">${v}</span>`;
   if (l.includes('berkembang'))                   return `<span class="tag tag-berk">${v}</span>`;
   return '<span class="tag tag-tt">Tidak Terkategori</span>';
+}
+
+function mapel_kka_tag(v) {
+  const sudah = v && v.toLowerCase().trim() === 'sudah';
+  return sudah
+    ? '<span class="tag tag-mapel-sudah">Sudah</span>'
+    : '<span class="tag tag-mapel-belum">Belum</span>';
+}
+
+function mapel_kka_label(v) {
+  const sudah = v && v.toLowerCase().trim() === 'sudah';
+  return sudah ? 'Sudah ada Mata Pelajaran KKA' : 'Belum ada Mata Pelajaran KKA';
 }
 
 // ── Radar ─────────────────────────────────────────────────────────────────────
@@ -1349,13 +1473,23 @@ function openModal(r) {
   fill('mMeta',
     `<span class="modal-meta-tag">${r.provinsi||'—'}</span>` +
     `<span class="modal-meta-tag">${r.kabkota||'—'}</span>` +
-    `<span class="modal-meta-tag">${r.status_sek||'—'}</span>` +
-    `<span class="modal-meta-tag">${r.status_pel||'—'}</span>`
+    `<span class="modal-meta-tag">${r.status_sek||'—'}</span>`
   );
   fill('mProfilPM',  profil_tag(r.profil_pm));
   fill('mProfilKKA', profil_tag(r.profil_kka));
   fill('mSkorPM',  r.skor_pm  || '—');
   fill('mSkorKKA', r.skor_kka || '—');
+
+  const sudahKKA = r.status_pel && r.status_pel.toLowerCase().trim() === 'sudah';
+  fill('mMapelKKA', `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:9px;background:${sudahKKA?'#e0f0e9':'#fef9e7'};border:1.5px solid ${sudahKKA?'#a3d4b5':'#f5d97a'}">
+    <div style="width:28px;height:28px;border-radius:7px;background:${sudahKKA?'#1a6b3e':'#b07c00'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      ${sudahKKA
+        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+      }
+    </div>
+    <span style="font-size:12.5px;font-weight:700;color:${sudahKKA?'#1a6b3e':'#8a5c00'}">${mapel_kka_label(r.status_pel)}</span>
+  </div>`);
 
   // KKA Murid kotak
   fill('kka-murid-box', `<div class="single-box">
@@ -1480,11 +1614,13 @@ function getBaselineFiltered() {
   const prov   = document.getElementById('baselineProvFilter')?.value || '';
   const fPM    = document.getElementById('baselineProfilPMFilter')?.value || '';
   const fKKA   = document.getElementById('baselineProfilKKAFilter')?.value || '';
+  const fMapel = document.getElementById('baselineMapelKKAFilter')?.value || '';
   return ALL_SCHOOLS.filter(r =>
-    (!q    || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
-    (!prov || r.provinsi === prov) &&
+    (!q      || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
+    (!prov   || r.provinsi === prov) &&
     matchProfil(r.profil_pm, fPM) &&
-    matchProfil(r.profil_kka, fKKA)
+    matchProfil(r.profil_kka, fKKA) &&
+    (!fMapel || (r.status_pel||'').toLowerCase().trim() === fMapel)
   );
 }
 
@@ -1497,7 +1633,7 @@ function renderBaselineTable() {
   const tbody    = document.getElementById('baselineTbody');
   if (!tbody) return;
   if (slice.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
   } else {
     tbody.innerHTML = slice.map((r, i) => {
       const no  = (baselinePage-1)*PAGE_SIZE + i + 1;
@@ -1509,6 +1645,7 @@ function renderBaselineTable() {
         <td>${r.provinsi||'—'}</td>
         <td>${r.kabkota||'—'}</td>
         <td>${r.status_sek||'—'}</td>
+        <td>${mapel_kka_tag(r.status_pel)}</td>
         <td>${profil_tag(r.profil_pm)}</td>
         <td>${profil_tag(r.profil_kka)}</td>
         <td><button class="btn-detail" onclick="event.stopPropagation();openModal(ALL_SCHOOLS[${idx}])">
@@ -1533,6 +1670,8 @@ function resetBaselineFilter() {
   const fKKA = document.getElementById('baselineProfilKKAFilter');
   if (fPM) fPM.value='';
   if (fKKA) fKKA.value='';
+  const fMapel = document.getElementById('baselineMapelKKAFilter');
+  if (fMapel) fMapel.value='';
   baselinePage=1; renderBaselineTable();
 }
 
