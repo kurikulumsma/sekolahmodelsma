@@ -823,7 +823,7 @@ async function doLogin() {
 
     const { data: profil, error: ep } = await sb
       .from('user_dasbor_sekolah_model')
-      .select('status,nama,role')
+      .select('status,nama,role,unsur,provinsi,bpmp,npsn')
       .eq('user_id', data.user.id)
       .single();
 
@@ -832,7 +832,9 @@ async function doLogin() {
     if (profil.status === 'rejected') { await sb.auth.signOut(); throw new Error('Akun Anda tidak disetujui. Hubungi administrator.'); }
 
     localStorage.setItem('sb_user', JSON.stringify({
-      email, nama: profil.nama, id: data.user.id, role: profil.role
+      email, nama: profil.nama, id: data.user.id, role: profil.role,
+      unsur: profil.unsur || '', provinsi: profil.provinsi || '',
+      bpmp: profil.bpmp || '', npsn: profil.npsn || ''
     }));
     window.location.href = 'beranda.html';
   } catch(e) {

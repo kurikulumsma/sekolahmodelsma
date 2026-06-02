@@ -713,6 +713,12 @@ const BPMP_PROVINSI_MAP = {
   'Papua Barat' : ['Papua Barat','Papua Barat Daya'],
 };
 
+// Kabkot Papua yang disimpan di kolom provinsi (untuk filter Dinas Papua)
+const PAPUA_KABKOT_SET = new Set([
+  'Kota Jayapura','Kab. Fak Fak','Kota Sorong',
+  'Kab. Jayawijaya','Kab. Merauke','Kab. Nabire'
+]);
+
 // profil user login (diisi saat init)
 let USER_PROFILE = null;
 
@@ -991,15 +997,18 @@ function closeModalOutside(e) { if (e.target === document.getElementById('modalB
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ── Fetch profil user dari Supabase ──────────────────────────────────────────
-async function fetchUserProfile(email) {
-  try {
-    const res = await fetch(
-      `https://lusytejskqevwyyffeue.supabase.co/rest/v1/user_dasbor_sekolah_model?email=eq.${encodeURIComponent(email)}&select=unsur,provinsi,bpmp,npsn&limit=1`,
-      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
-    );
-    const rows = await res.json();
-    return rows && rows.length > 0 ? rows[0] : null;
-  } catch { return null; }
+function fetchUserProfile(email) {
+  // Baca dari localStorage yang sudah diisi saat login
+  const raw = localStorage.getItem('sb_user');
+  if (!raw) return null;
+  const sess = JSON.parse(raw);
+  if (sess.email !== email) return null;
+  return {
+    unsur   : sess.unsur    || '',
+    provinsi: sess.provinsi || '',
+    bpmp    : sess.bpmp     || '',
+    npsn    : sess.npsn     || '',
+  };
 }
 
 // ── Tampilkan / sembunyikan tabel ─────────────────────────────────────────────
@@ -1039,7 +1048,11 @@ async function loadData() {
       const unsur = (USER_PROFILE.unsur || '').trim();
       if (unsur === 'Dinas Pendidikan') {
         const prov = USER_PROFILE.provinsi || '';
-        schools = schools.filter(r => r.provinsi === prov);
+        if (PAPUA_KABKOT_SET.has(prov)) {
+          schools = schools.filter(r => r.kabupaten_kota === prov);
+        } else {
+          schools = schools.filter(r => r.provinsi === prov);
+        }
       } else if (unsur === 'BBPMP/BPMP') {
         const bpmp = USER_PROFILE.bpmp || '';
         const provList = BPMP_PROVINSI_MAP[bpmp] || [bpmp];
@@ -1188,7 +1201,7 @@ function renderPager(containerId, current, total, onClick) {
 
   // Sudah login — fetch profil user kalau viewer
   if (sess.role === 'viewer') {
-    USER_PROFILE = await fetchUserProfile(sess.email);
+    USER_PROFILE = fetchUserProfile(sess.email);
   }
 
   showTable();
