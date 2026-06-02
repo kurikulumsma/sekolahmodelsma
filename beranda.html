@@ -540,7 +540,7 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
   </button>
   <span class="mobile-topbar-title">Daftar Sekolah Model SMA 2026</span>
   <a class="mobile-user-name" id="mobileUserName" href="profil.html" style="display:none"></a>
-  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
+  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login-mobile.html'">Masuk</button>
   <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
 </div>
 
@@ -598,7 +598,7 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
     <div class="user-badge" id="userBadge">
       <!-- Belum login -->
       <div id="badgeGuest" style="display:none">
-        <button class="btn-masuk" onclick="window.location.href='login.html'">
+        <button class="btn-masuk" onclick="window.location.href=window.innerWidth<768?'login-mobile.html':'login.html'">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Masuk
         </button>
@@ -1442,12 +1442,6 @@ function doLogout() {
 }
 
 // ── Init auth badge on load ───────────────────────────────────────────────────
-// Reload sekali setelah fresh login supaya iframe Google Sites render dengan benar
-if (sessionStorage.getItem('fresh_login')) {
-  sessionStorage.removeItem('fresh_login');
-  window.location.reload();
-}
-
 updateBadge();
 updateAdminNav();
 
