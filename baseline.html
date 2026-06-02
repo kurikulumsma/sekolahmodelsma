@@ -34,6 +34,7 @@ nav a svg { flex-shrink: 0; opacity: 0.65; }
 nav a:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
 nav a.active { background: var(--blue-lt); color: #fff; }
 nav a.active svg { opacity: 1; }
+.nav-admin-only { display: none; }
 .nav-divider { padding: 10px 12px 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.22); }
 .sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6; }
 .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 150; }
@@ -44,7 +45,7 @@ nav a.active svg { opacity: 1; }
 .hamburger { background: none; border: none; color: #fff; cursor: pointer; padding: 4px; display: flex; align-items: center; }
 .mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
 .mobile-auth-btn { margin-left: auto; padding: 5px 11px; border-radius: 7px; background: var(--blue-lt); color: #fff; border: none; font-size: 11.5px; font-weight: 600; font-family: inherit; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-.mobile-user-name { margin-left: auto; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+.mobile-user-name { margin-left: auto; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; flex-shrink: 0; }
 
 /* ── MAIN ── */
 main { margin-left: var(--sidebar-w); flex: 1; padding: 26px 28px 40px; overflow-x: hidden; }
@@ -220,6 +221,21 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 .btn-masuk:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.3); }
 .btn-logout-top { padding: 5px 12px; border-radius: 7px; background: transparent; border: 1.5px solid var(--border); color: var(--muted); font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
 .btn-logout-top:hover { background: #fde8d8; color: #8a3000; border-color: #f5b89a; }
+.badge-dropdown-wrap { position: relative; }
+.badge-trigger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 6px; border-radius: 8px; transition: background 0.15s; }
+.badge-trigger:hover { background: var(--border); }
+.badge-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue-lt); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.badge-chevron { color: var(--muted); transition: transform 0.2s; }
+.badge-dropdown-wrap.open .badge-chevron { transform: rotate(180deg); }
+.badge-menu { display: none; position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(10,31,60,0.12); min-width: 180px; z-index: 500; overflow: hidden; }
+.badge-dropdown-wrap.open .badge-menu { display: block; }
+.badge-menu-header { padding: 12px 14px 10px; border-bottom: 1px solid var(--border); }
+.badge-menu-name { font-size: 12.5px; font-weight: 700; color: var(--navy); }
+.badge-menu-email { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.badge-menu a, .badge-menu button { display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 14px; font-size: 12.5px; font-weight: 500; color: var(--text); text-decoration: none; background: none; border: none; font-family: inherit; cursor: pointer; text-align: left; transition: background 0.12s; }
+.badge-menu a:hover, .badge-menu button:hover { background: var(--bg); }
+.badge-menu .menu-logout { color: #c0392b; }
+.badge-menu .menu-logout:hover { background: #fde8d8; }
 
 /* skeleton */
 @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
@@ -256,7 +272,7 @@ td.td-nama { font-weight: 600; color: var(--navy); }
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <span class="mobile-topbar-title">Baseline Sekolah Model 2026</span>
-  <span class="mobile-user-name" id="mobileUserName" style="display:none"></span>
+  <a class="mobile-user-name" id="mobileUserName" href="profil.html" style="display:none"></a>
   <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
   <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
 </div>
@@ -317,12 +333,29 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           Masuk
         </button>
       </div>
-      <div id="badgeUser" style="display:none;align-items:center;gap:10px">
-        <div class="user-badge-info">
-          <div class="user-badge-name" id="badgeEmail">—</div>
-          <div class="user-badge-role" id="badgeRole">—</div>
+      <div class="badge-dropdown-wrap" id="badgeUser" style="display:none">
+        <div class="badge-trigger" onclick="toggleBadgeMenu()">
+          <div class="user-badge-info">
+            <div class="user-badge-name" id="badgeEmail">—</div>
+            <div class="user-badge-role" id="badgeRole">—</div>
+          </div>
+          <div class="badge-avatar" id="badgeAvatar">?</div>
+          <svg class="badge-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <button class="btn-logout-top" onclick="doLogout()">Keluar</button>
+        <div class="badge-menu">
+          <div class="badge-menu-header">
+            <div class="badge-menu-name" id="menuName">—</div>
+            <div class="badge-menu-email" id="menuEmail">—</div>
+          </div>
+          <a href="profil.html">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profil &amp; Kata Sandi
+          </a>
+          <button class="menu-logout" onclick="doLogout()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -739,11 +772,19 @@ function updateAdminNav() {
   const role = raw ? (JSON.parse(raw).role || '') : '';
   const show = (role === 'superadmin' || role === 'admin');
   document.querySelectorAll('.nav-admin-only').forEach(el => {
-    el.style.display = show ? '' : 'none';
+    el.style.display = show ? (el.tagName === 'A' ? 'flex' : 'block') : 'none';
   });
 }
 
 // ── Logout ───────────────────────────────────────────────────────────────────
+function toggleBadgeMenu() {
+  document.getElementById('badgeUser').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('badgeUser');
+  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+});
+
 function doLogout() {
   localStorage.removeItem('sb_user');
   window.location.href = 'login.html';
@@ -759,8 +800,17 @@ function updateBadge() {
   const badgeUser = document.getElementById('badgeUser');
   badgeUser.style.display = loggedIn ? 'flex' : 'none';
   if (loggedIn) {
-    document.getElementById('badgeEmail').textContent = sess.nama || sess.email;
+    const nama = sess.nama || sess.email;
+    document.getElementById('badgeEmail').textContent = nama;
     document.getElementById('badgeRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
+    const parts = nama.trim().split(' ');
+    const initial = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : nama[0].toUpperCase();
+    const av = document.getElementById('badgeAvatar');
+    if (av) av.textContent = initial;
+    const mn = document.getElementById('menuName');
+    const me = document.getElementById('menuEmail');
+    if (mn) mn.textContent = nama;
+    if (me) me.textContent = sess.email;
   }
 
   document.getElementById('mobileBtnMasuk').style.display  = loggedIn ? 'none' : '';

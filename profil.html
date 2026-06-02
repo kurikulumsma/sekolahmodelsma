@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil — Sekolah Model 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:      #0a1f3c;
+  --navy-mid:  #0e2d57;
+  --blue:      #1a56a0;
+  --blue-lt:   #2b72d8;
+  --accent:    #f0a500;
+  --accent-lt: #ffc840;
+  --bg:        #f2f6fb;
+  --surface:   #ffffff;
+  --border:    #dce6f5;
+  --text:      #0d1f38;
+  --muted:     #6b83a4;
+  --sidebar-w: 220px;
+}
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  font-size: 13.5px;
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar-w);
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 200;
+  transition: transform 0.25s ease;
+}
+.sidebar-logo {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sidebar-logo img {
+  width: 100%; max-width: 160px;
+  height: auto; object-fit: contain; display: block;
+}
+.sidebar-close {
+  display: none;
+  background: none; border: none;
+  color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px;
+  flex-shrink: 0; margin-left: 8px;
+}
+nav {
+  flex: 1; padding: 14px 10px;
+  display: flex; flex-direction: column; gap: 2px;
+  overflow-y: auto;
+}
+nav a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none; font-size: 12.5px; font-weight: 500;
+  transition: background 0.15s, color 0.15s; cursor: pointer;
+}
+nav a svg { flex-shrink: 0; opacity: 0.65; }
+nav a:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
+nav a.active { background: var(--blue-lt); color: #fff; }
+nav a.active svg { opacity: 1; }
+.nav-admin-only { display: none; }
+.nav-divider {
+  padding: 10px 12px 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.22);
+}
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6;
+}
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4); z-index: 150;
+}
+.sidebar-overlay.show { display: block; }
+
+/* ── MOBILE TOPBAR ── */
+.mobile-topbar {
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0; height: 52px;
+  background: var(--navy); z-index: 100;
+  align-items: center; padding: 0 16px; gap: 12px;
+}
+.hamburger {
+  background: none; border: none; color: #fff;
+  cursor: pointer; padding: 4px; display: flex; align-items: center;
+}
+.mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+
+/* ── MAIN ── */
+main {
+  margin-left: var(--sidebar-w);
+  flex: 1; padding: 26px 28px 40px;
+  overflow-x: hidden; transition: margin-left 0.25s;
+}
+
+/* TOPBAR */
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.topbar-left h1 {
+  font-size: 22px; font-weight: 800; color: var(--navy);
+  letter-spacing: -0.03em; line-height: 1.2;
+}
+.topbar-left p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* USER BADGE */
+.user-badge { display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative; }
+.user-badge-info { text-align: right; }
+.user-badge-name { font-size: 12px; font-weight: 700; color: var(--navy); line-height: 1.3; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-badge-role { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.btn-logout-top {
+  padding: 5px 12px; border-radius: 7px;
+  background: transparent; border: 1.5px solid var(--border);
+  color: var(--muted); font-size: 11px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.btn-logout-top:hover { background: #fde8d8; color: #8a3000; border-color: #f5b89a; }
+.btn-masuk {
+  padding: 6px 14px; border-radius: 8px;
+  background: var(--blue-lt); color: #fff;
+  border: none; font-size: 12px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-masuk:hover { background: var(--blue); }
+
+/* ── DROPDOWN BADGE ── */
+.badge-dropdown-wrap { position: relative; }
+.badge-trigger {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; padding: 4px 6px; border-radius: 8px;
+  transition: background 0.15s;
+}
+.badge-trigger:hover { background: var(--border); }
+.badge-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue-lt); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.badge-chevron { color: var(--muted); transition: transform 0.2s; }
+.badge-dropdown-wrap.open .badge-chevron { transform: rotate(180deg); }
+.badge-menu {
+  display: none; position: absolute; right: 0; top: calc(100% + 6px);
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(10,31,60,0.12);
+  min-width: 180px; z-index: 500; overflow: hidden;
+}
+.badge-dropdown-wrap.open .badge-menu { display: block; }
+.badge-menu-header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.badge-menu-name { font-size: 12.5px; font-weight: 700; color: var(--navy); }
+.badge-menu-email { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.badge-menu a, .badge-menu button {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; padding: 9px 14px;
+  font-size: 12.5px; font-weight: 500; color: var(--text);
+  text-decoration: none; background: none; border: none;
+  font-family: inherit; cursor: pointer; text-align: left;
+  transition: background 0.12s;
+}
+.badge-menu a:hover, .badge-menu button:hover { background: var(--bg); }
+.badge-menu a.active-page { color: var(--blue-lt); font-weight: 600; }
+.badge-menu .menu-logout { color: #c0392b; }
+.badge-menu .menu-logout:hover { background: #fde8d8; }
+
+/* ── PROFIL CONTENT ── */
+.profil-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  animation: fadeUp 0.3s ease both;
+}
+.card:hover { border-color: var(--blue-lt); transition: border-color 0.15s; }
+.card-header {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.card-header-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: #eef4ff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-header-icon svg { color: var(--blue-lt); }
+.card-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.card-body { padding: 18px 20px; }
+
+/* Avatar besar */
+.profil-avatar-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 20px 20px; gap: 12px;
+}
+.profil-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-lt), var(--navy-mid));
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 800; letter-spacing: -1px;
+  flex-shrink: 0;
+}
+.profil-name { font-size: 16px; font-weight: 800; color: var(--navy); text-align: center; }
+.profil-email { font-size: 12px; color: var(--muted); text-align: center; }
+.profil-role-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+  background: #eef4ff; color: var(--blue-lt);
+}
+
+/* Field info */
+.info-row {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.info-row:last-child { border-bottom: none; padding-bottom: 0; }
+.info-row:first-child { padding-top: 0; }
+.info-label {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted);
+}
+.info-value { font-size: 13px; font-weight: 600; color: var(--navy); line-height: 1.4; }
+.info-value.empty { color: var(--muted); font-weight: 400; font-style: italic; }
+
+/* Form ganti password */
+.form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+.form-group:last-of-type { margin-bottom: 0; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--navy); }
+.form-input {
+  width: 100%; padding: 9px 12px; border-radius: 8px;
+  border: 1.5px solid var(--border);
+  font-size: 13px; font-family: inherit; color: var(--text);
+  background: var(--bg); outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-input:focus { border-color: var(--blue-lt); box-shadow: 0 0 0 3px rgba(43,114,216,0.1); background: #fff; }
+.form-hint { font-size: 11px; color: var(--muted); }
+
+.btn-primary {
+  width: 100%; padding: 10px 16px; border-radius: 9px;
+  background: var(--blue-lt); color: #fff;
+  border: none; font-size: 13px; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+  transition: all 0.15s; margin-top: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.btn-primary:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.3); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.alert {
+  padding: 10px 13px; border-radius: 8px;
+  font-size: 12px; font-weight: 500; margin-top: 14px;
+  display: none;
+}
+.alert-success { background: #e0f0e9; color: #1a6b3e; border: 1px solid #b2dfc9; }
+.alert-error   { background: #fde8d8; color: #8a3000; border: 1px solid #f5b89a; }
+.alert.show { display: block; animation: fadeUp 0.25s ease; }
+
+/* Divider section */
+.section-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 20px 0 16px;
+}
+.section-divider span {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); white-space: nowrap;
+}
+.section-divider::before, .section-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* Mobile topbar auth */
+.mobile-auth-btn {
+  margin-left: auto; padding: 5px 11px; border-radius: 7px;
+  background: var(--blue-lt); color: #fff;
+  border: none; font-size: 11.5px; font-weight: 600;
+  font-family: inherit; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+}
+.mobile-user-name {
+  margin-left: auto; font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; flex-shrink: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+  .profil-grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+@media (max-width: 768px) {
+  aside { transform: translateX(-100%); }
+  aside.open { transform: translateX(0); }
+  .sidebar-close { display: flex; }
+  .mobile-topbar { display: flex; }
+  main { margin-left: 0; padding: 70px 14px 40px; }
+  .topbar { display: none; }
+}
+@media (max-width: 768px) { .user-badge-info { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="mobile-topbar">
+  <button class="hamburger" onclick="openSidebar()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <span class="mobile-topbar-title">Profil Saya</span>
+  <a class="mobile-user-name" id="mobileUserName" href="profil.html" style="display:none"></a>
+  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
+  <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
+</div>
+
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo Kemendikdasmen">
+    <button class="sidebar-close" onclick="closeSidebar()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav>
+    <div class="nav-divider">Program</div>
+    <a href="beranda.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Beranda
+    </a>
+    <a href="surat-dukungan.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Surat Dukungan
+    </a>
+    <a href="baseline.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Baseline Sekolah
+    </a>
+    <div class="nav-divider">Intervensi</div>
+    <a href="intervensi-direktorat.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Direktorat SMA
+    </a>
+    <a href="intervensi-upt.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      BBPMP/BPMP
+    </a>
+    <a href="intervensi-dinas.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
+      Dinas Pendidikan
+    </a>
+    <div class="nav-divider nav-admin-only" id="navDividerSistem">Sistem</div>
+    <a href="kelola-pengguna.html" class="nav-admin-only">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Kelola Pengguna
+    </a>
+  </nav>
+  <div class="sidebar-footer">Data diperbarui<br>30 Mei 2026 · 20:05</div>
+</aside>
+
+<main>
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Profil Saya</h1>
+      <p>Informasi akun dan pengaturan kata sandi</p>
+    </div>
+    <div class="user-badge" id="userBadge">
+      <div id="badgeGuest" style="display:none">
+        <button class="btn-masuk" onclick="window.location.href='login.html'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Masuk
+        </button>
+      </div>
+      <div class="badge-dropdown-wrap" id="badgeUser" style="display:none">
+        <div class="badge-trigger" onclick="toggleBadgeMenu()">
+          <div class="user-badge-info">
+            <div class="user-badge-name" id="badgeEmail">—</div>
+            <div class="user-badge-role" id="badgeRole">—</div>
+          </div>
+          <div class="badge-avatar" id="badgeAvatar">?</div>
+          <svg class="badge-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="badge-menu">
+          <div class="badge-menu-header">
+            <div class="badge-menu-name" id="menuName">—</div>
+            <div class="badge-menu-email" id="menuEmail">—</div>
+          </div>
+          <a href="profil.html" class="active-page">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profil &amp; Kata Sandi
+          </a>
+          <button class="menu-logout" onclick="doLogout()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KONTEN PROFIL -->
+  <div class="profil-grid">
+
+    <!-- Kartu Info Profil -->
+    <div>
+      <div class="card" style="animation-delay:.04s">
+        <div class="profil-avatar-wrap">
+          <div class="profil-avatar" id="profilAvatarBesar">?</div>
+          <div class="profil-name" id="profilNama">—</div>
+          <div class="profil-email" id="profilEmail">—</div>
+          <div class="profil-role-badge" id="profilRoleBadge">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kolom kanan: detail + ganti password -->
+    <div style="display:flex;flex-direction:column;gap:20px">
+
+      <!-- Detail Akun -->
+      <div class="card" style="animation-delay:.08s">
+        <div class="card-header">
+          <div class="card-header-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <div class="card-title">Detail Akun</div>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <div class="info-label">Nama Lengkap</div>
+            <div class="info-value" id="detailNama">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Email</div>
+            <div class="info-value" id="detailEmail">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Instansi</div>
+            <div class="info-value" id="detailInstansi">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Jabatan</div>
+            <div class="info-value" id="detailJabatan">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Unsur</div>
+            <div class="info-value" id="detailUnsur">—</div>
+          </div>
+          <div class="info-row" id="rowWilayah">
+            <div class="info-label" id="labelWilayah">Wilayah</div>
+            <div class="info-value" id="detailWilayah">—</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Role</div>
+            <div class="info-value" id="detailRole">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ganti Password -->
+      <div class="card" style="animation-delay:.12s">
+        <div class="card-header">
+          <div class="card-header-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="card-title">Ganti Kata Sandi</div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label" for="pwBaru">Kata Sandi Baru</label>
+            <input class="form-input" type="password" id="pwBaru" placeholder="Minimal 8 karakter" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pwKonfirmasi">Konfirmasi Kata Sandi</label>
+            <input class="form-input" type="password" id="pwKonfirmasi" placeholder="Ulangi kata sandi baru" autocomplete="new-password">
+            <span class="form-hint">Pastikan kedua kata sandi sama.</span>
+          </div>
+          <button class="btn-primary" id="btnGantiPw" onclick="gantiPassword()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Simpan Kata Sandi
+          </button>
+          <div class="alert alert-success" id="alertOk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:5px"><polyline points="20 6 9 17 4 12"/></svg>
+            Kata sandi berhasil diperbarui.
+          </div>
+          <div class="alert alert-error" id="alertErr"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+// ── Supabase ─────────────────────────────────────────────────────────────────
+const SUPA_URL = 'https://lusytejskqevwyyffeue.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
+let _sb = null;
+function getSb() {
+  if (!_sb) _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+  return _sb;
+}
+
+// ── Load Supabase CDN ─────────────────────────────────────────────────────────
+(function() {
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.onload = () => { initPage(); };
+  document.head.appendChild(s);
+})();
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+function openSidebar()  { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+
+// ── Badge dropdown ────────────────────────────────────────────────────────────
+function toggleBadgeMenu() {
+  document.getElementById('badgeUser').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('badgeUser');
+  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+});
+
+// ── Auth utils ────────────────────────────────────────────────────────────────
+const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
+
+function getInitial(nama) {
+  if (!nama) return '?';
+  const parts = nama.trim().split(' ');
+  return parts.length >= 2
+    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    : nama[0].toUpperCase();
+}
+
+function doLogout() {
+  localStorage.removeItem('sb_user');
+  window.location.href = 'login.html';
+}
+
+function updateAdminNav() {
+  const raw  = localStorage.getItem('sb_user');
+  const role = raw ? (JSON.parse(raw).role || '') : '';
+  const show = (role === 'superadmin' || role === 'admin');
+  document.querySelectorAll('.nav-admin-only').forEach(el => {
+    el.style.display = show ? (el.tagName === 'A' ? 'flex' : 'block') : 'none';
+  });
+}
+
+// ── Init page ─────────────────────────────────────────────────────────────────
+async function initPage() {
+  const raw = localStorage.getItem('sb_user');
+  if (!raw) { window.location.href = 'login.html'; return; }
+  const sess = JSON.parse(raw);
+
+  // Ambil data lengkap dari Supabase (pakai session auth)
+  const sb = getSb();
+  let profil = null;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      const { data } = await sb
+        .from('user_dasbor_sekolah_model')
+        .select('nama,email,instansi,jabatan,unsur,provinsi,bpmp,npsn,nama_sekolah,role')
+        .eq('user_id', session.user.id)
+        .single();
+      profil = data;
+    }
+  } catch(e) {}
+
+  // Fallback ke localStorage kalau fetch gagal
+  const nama     = profil?.nama     || sess.nama     || sess.email;
+  const email    = profil?.email    || sess.email;
+  const instansi = profil?.instansi || sess.instansi || '—';
+  const jabatan  = profil?.jabatan  || sess.jabatan  || '—';
+  const unsur    = profil?.unsur    || sess.unsur    || '—';
+  const provinsi = profil?.provinsi || sess.provinsi || '';
+  const bpmp     = profil?.bpmp     || sess.bpmp     || '';
+  const role     = profil?.role     || sess.role     || '';
+
+  const initial = getInitial(nama);
+  const roleLabel = ROLE_LABEL[role] || role;
+
+  // Badge topbar
+  document.getElementById('badgeGuest').style.display = 'none';
+  const badgeUser = document.getElementById('badgeUser');
+  badgeUser.style.display = 'flex';
+  document.getElementById('badgeEmail').textContent = nama;
+  document.getElementById('badgeRole').textContent  = roleLabel;
+  document.getElementById('badgeAvatar').textContent = initial;
+  document.getElementById('menuName').textContent   = nama;
+  document.getElementById('menuEmail').textContent  = email;
+
+  // Mobile
+  const mName = document.getElementById('mobileUserName');
+  mName.style.display = '';
+  mName.textContent = nama.split(' ')[0];
+  document.getElementById('mobileBtnMasuk').style.display  = 'none';
+  document.getElementById('mobileBtnKeluar').style.display = '';
+
+  // Avatar besar
+  document.getElementById('profilAvatarBesar').textContent = initial;
+  document.getElementById('profilNama').textContent        = nama;
+  document.getElementById('profilEmail').textContent       = email;
+  document.getElementById('profilRoleBadge').textContent   = roleLabel;
+
+  // Detail
+  document.getElementById('detailNama').textContent     = nama;
+  document.getElementById('detailEmail').textContent    = email;
+  document.getElementById('detailInstansi').textContent = instansi;
+  document.getElementById('detailJabatan').textContent  = jabatan;
+  document.getElementById('detailUnsur').textContent    = unsur;
+  document.getElementById('detailRole').textContent     = roleLabel;
+
+  // Wilayah: tampilkan sesuai unsur
+  const rowWilayah   = document.getElementById('rowWilayah');
+  const labelWilayah = document.getElementById('labelWilayah');
+  const detailWilayah = document.getElementById('detailWilayah');
+  if (unsur === 'Dinas Pendidikan' && provinsi) {
+    labelWilayah.textContent  = 'Kabupaten/Kota';
+    detailWilayah.textContent = provinsi;
+  } else if (unsur === 'BBPMP/BPMP' && bpmp) {
+    labelWilayah.textContent  = 'BBPMP/BPMP';
+    detailWilayah.textContent = bpmp;
+  } else if (unsur === 'Sekolah' && provinsi) {
+    labelWilayah.textContent  = 'Provinsi';
+    detailWilayah.textContent = provinsi;
+  } else {
+    rowWilayah.style.display = 'none';
+  }
+
+  updateAdminNav();
+}
+
+// ── Ganti Password ────────────────────────────────────────────────────────────
+async function gantiPassword() {
+  const pwBaru      = document.getElementById('pwBaru').value.trim();
+  const pwKonfirmasi = document.getElementById('pwKonfirmasi').value.trim();
+  const alertOk  = document.getElementById('alertOk');
+  const alertErr = document.getElementById('alertErr');
+  const btn      = document.getElementById('btnGantiPw');
+
+  alertOk.classList.remove('show');
+  alertErr.classList.remove('show');
+
+  if (!pwBaru)               { showErr('Kata sandi baru tidak boleh kosong.'); return; }
+  if (pwBaru.length < 8)     { showErr('Kata sandi minimal 8 karakter.'); return; }
+  if (pwBaru !== pwKonfirmasi) { showErr('Konfirmasi kata sandi tidak cocok.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Menyimpan…';
+
+  try {
+    const sb = getSb();
+    const { error } = await sb.auth.updateUser({ password: pwBaru });
+    if (error) throw error;
+    alertOk.classList.add('show');
+    document.getElementById('pwBaru').value = '';
+    document.getElementById('pwKonfirmasi').value = '';
+  } catch(e) {
+    showErr(e.message || 'Gagal memperbarui kata sandi. Coba lagi.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan Kata Sandi`;
+  }
+}
+
+function showErr(msg) {
+  const el = document.getElementById('alertErr');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+</script>
+</body>
+</html>
