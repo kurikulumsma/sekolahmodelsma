@@ -734,6 +734,9 @@ html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-si
 </div>
 
 <script>
+// Redirect ke beranda kalau mobile (layar sempit di iframe Google Sites)
+if (window.innerWidth <= 768) { window.location.replace('beranda.html'); }
+
 // ── Data Wilayah (embedded) ──────────────────────────────
 // 38 provinsi untuk Dinas Pendidikan
 const PROVINSI = [
@@ -836,7 +839,6 @@ async function doLogin() {
       unsur: profil.unsur || '', provinsi: profil.provinsi || '',
       bpmp: profil.bpmp || '', npsn: profil.npsn || ''
     }));
-    sessionStorage.setItem('fresh_login', '1');
     window.location.href = 'beranda.html';
   } catch(e) {
     showErr(err, e.message === 'Invalid login credentials' ? 'Email atau password salah.' : e.message);
