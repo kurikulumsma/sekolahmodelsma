@@ -1442,6 +1442,12 @@ function doLogout() {
 }
 
 // ── Init auth badge on load ───────────────────────────────────────────────────
+// Reload sekali setelah fresh login supaya iframe Google Sites render dengan benar
+if (sessionStorage.getItem('fresh_login')) {
+  sessionStorage.removeItem('fresh_login');
+  window.location.reload();
+}
+
 updateBadge();
 updateAdminNav();
 

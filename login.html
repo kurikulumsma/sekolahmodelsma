@@ -836,6 +836,7 @@ async function doLogin() {
       unsur: profil.unsur || '', provinsi: profil.provinsi || '',
       bpmp: profil.bpmp || '', npsn: profil.npsn || ''
     }));
+    sessionStorage.setItem('fresh_login', '1');
     window.location.href = 'beranda.html';
   } catch(e) {
     showErr(err, e.message === 'Invalid login credentials' ? 'Email atau password salah.' : e.message);
