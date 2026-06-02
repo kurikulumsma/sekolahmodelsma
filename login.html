@@ -245,7 +245,7 @@ html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-si
 .input-wrap input {
   width:100%; padding:10px 40px 10px 36px;
   border:1.5px solid var(--border); border-radius:10px;
-  font-family:inherit; font-size:13.5px; color:var(--text);
+  font-family:inherit; font-size:16px; color:var(--text);
   background:#fafcff; outline:none;
   transition:border-color .15s, box-shadow .15s;
 }
@@ -345,7 +345,7 @@ html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-si
 .input-wrap select {
   width:100%; padding:10px 36px 10px 36px;
   border:1.5px solid var(--border); border-radius:10px;
-  font-family:inherit; font-size:13.5px; color:var(--text);
+  font-family:inherit; font-size:16px; color:var(--text);
   background:#fafcff; outline:none; appearance:none;
   transition:border-color .15s, box-shadow .15s;
   cursor:pointer;
@@ -989,7 +989,7 @@ async function doDaftar() {
   const provinsiSekolah  = document.getElementById('daftarProvinsiSekolah').value;
 
   if (!nama || !email || !pw || !instansi || !jabatan || !unsur) { showErr(err, 'Semua field wajib diisi.'); return; }
-  if (pw.length < 8)                                    { showErr(err, 'Password minimal 8 karakter.'); return; }
+  if (pw.length < 6)                                    { showErr(err, 'Password minimal 6 karakter.'); return; }
   if (unsur === 'Dinas Pendidikan' && !provinsi)        { showErr(err, 'Pilih provinsi terlebih dahulu.'); return; }
   if (unsur === 'Dinas Pendidikan' && PAPUA_KABKOT[provinsi] && !kabkot) { showErr(err, 'Pilih kabupaten/kota terlebih dahulu.'); return; }
   if (unsur === 'BBPMP/BPMP' && !bpmp)                 { showErr(err, 'Pilih BBPMP/BPMP terlebih dahulu.'); return; }
@@ -1064,7 +1064,7 @@ async function doResetPassword() {
   const ok      = document.getElementById('resetOk');
   err.classList.remove('show'); ok.classList.remove('show');
 
-  if (pw.length < 8)   { err.textContent = 'Password minimal 8 karakter.'; err.classList.add('show'); return; }
+  if (pw.length < 6)   { err.textContent = 'Password minimal 6 karakter.'; err.classList.add('show'); return; }
   if (pw !== pwConf)   { err.textContent = 'Konfirmasi password tidak cocok.'; err.classList.add('show'); return; }
 
   const btn = document.getElementById('btnReset');
