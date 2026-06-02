@@ -604,6 +604,18 @@ html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-si
         </div>
       </div>
 
+      <!-- Field Kabkot (Papua saja) -->
+      <div class="field" id="fieldKabkot" style="display:none">
+        <label>Kabupaten/Kota</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+          <select id="daftarKabkot">
+            <option value="">-- Pilih Kabupaten/Kota --</option>
+          </select>
+          <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </div>
+      </div>
+
       <!-- Field BPMP -->
       <div class="field" id="fieldBpmp" style="display:none">
         <label>BBPMP/BPMP</label>
@@ -749,6 +761,16 @@ const BPMP_PROV = [
   "Sumatera Selatan","Sumatera Utara"
 ];
 
+// Kabkot per provinsi Papua (untuk Dinas Pendidikan)
+const PAPUA_KABKOT = {
+  "Papua":            ["Kota Jayapura"],
+  "Papua Barat":      ["Kab. Fak Fak"],
+  "Papua Barat Daya": ["Kota Sorong"],
+  "Papua Pegunungan": ["Kab. Jayawijaya"],
+  "Papua Selatan":    ["Kab. Merauke"],
+  "Papua Tengah":     ["Kab. Nabire"]
+};
+
 // ── Supabase (lazy-load) ──────────────────────────────────
 const SUPA_URL = 'https://lusytejskqevwyyffeue.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
@@ -854,6 +876,22 @@ function initDropdowns() {
   if (!selProv || !selBpmp) return;
   PROVINSI.forEach(p => selProv.innerHTML += `<option value="${p}">${p}</option>`);
   BPMP_PROV.forEach(p => selBpmp.innerHTML += `<option value="${p}">${p}</option>`);
+  selProv.addEventListener('change', onProvinsiChange);
+}
+
+function onProvinsiChange() {
+  const prov = document.getElementById('daftarProvinsi').value;
+  const fieldKabkot = document.getElementById('fieldKabkot');
+  const selKabkot   = document.getElementById('daftarKabkot');
+  const kabkotList  = PAPUA_KABKOT[prov];
+
+  selKabkot.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+  if (kabkotList) {
+    kabkotList.forEach(k => selKabkot.innerHTML += `<option value="${k}">${k}</option>`);
+    fieldKabkot.style.display = 'block';
+  } else {
+    fieldKabkot.style.display = 'none';
+  }
 }
 
 function onUnsurChange() {
@@ -864,6 +902,8 @@ function onUnsurChange() {
   document.getElementById('fieldNpsn').style.display     = unsur === 'Sekolah' ? 'block' : 'none';
   document.getElementById('daftarProvinsi').value = '';
   document.getElementById('daftarBpmp').value = '';
+  document.getElementById('fieldKabkot').style.display = 'none';
+  document.getElementById('daftarKabkot').innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
   clearNpsn();
 }
 
@@ -940,6 +980,7 @@ async function doDaftar() {
   const jabatan  = document.getElementById('daftarJabatan').value.trim();
   const unsur    = document.getElementById('daftarUnsur').value;
   const provinsi = document.getElementById('daftarProvinsi').value;
+  const kabkot   = document.getElementById('daftarKabkot').value;
   const bpmp     = document.getElementById('daftarBpmp').value;
   const npsn     = document.getElementById('daftarNpsn').value;
   const namaSekolah      = document.getElementById('daftarNamaSekolah').value;
@@ -948,6 +989,7 @@ async function doDaftar() {
   if (!nama || !email || !pw || !instansi || !jabatan || !unsur) { showErr(err, 'Semua field wajib diisi.'); return; }
   if (pw.length < 8)                                    { showErr(err, 'Password minimal 8 karakter.'); return; }
   if (unsur === 'Dinas Pendidikan' && !provinsi)        { showErr(err, 'Pilih provinsi terlebih dahulu.'); return; }
+  if (unsur === 'Dinas Pendidikan' && PAPUA_KABKOT[provinsi] && !kabkot) { showErr(err, 'Pilih kabupaten/kota terlebih dahulu.'); return; }
   if (unsur === 'BBPMP/BPMP' && !bpmp)                 { showErr(err, 'Pilih BBPMP/BPMP terlebih dahulu.'); return; }
   if (unsur === 'Sekolah' && !npsn)                     { showErr(err, 'Pilih sekolah terlebih dahulu.'); return; }
 
@@ -964,7 +1006,7 @@ async function doDaftar() {
     const { error: insertErr } = await sb.from('user_dasbor_sekolah_model').insert({
       user_id:     userId,
       nama, email, instansi, jabatan, unsur,
-      provinsi:     unsur === 'Dinas Pendidikan' ? provinsi
+      provinsi:     unsur === 'Dinas Pendidikan' ? (PAPUA_KABKOT[provinsi] ? kabkot : provinsi)
                   : unsur === 'Sekolah'          ? provinsiSekolah
                   : null,
       bpmp:         unsur === 'BBPMP/BPMP' ? bpmp : null,
