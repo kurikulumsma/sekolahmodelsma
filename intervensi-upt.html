@@ -482,131 +482,8 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
   flex-shrink: 0;
 }
 
-/* ── LOGIN MODAL OVERLAY ── */
-.auth-modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,31,60,0.6); z-index: 20000;
-  align-items: center; justify-content: center;
-  padding: 20px;
-}
-.auth-modal-overlay.open { display: flex; }
-.auth-modal {
-  background: var(--surface); border-radius: 16px;
-  width: 100%; max-width: 400px;
-  box-shadow: 0 20px 60px rgba(10,31,60,0.3);
-  overflow: hidden; animation: fadeUp 0.2s ease both;
-}
-.auth-modal-head {
-  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
-  padding: 20px 22px; display: flex; align-items: center; gap: 12px;
-}
-.auth-modal-head-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: rgba(255,255,255,0.15);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.auth-modal-head-icon svg { color: #fff; }
-.auth-modal-head-text strong { display: block; font-size: 14px; font-weight: 800; color: #fff; }
-.auth-modal-head-text span  { font-size: 11.5px; color: rgba(255,255,255,0.65); }
-.auth-modal-close {
-  margin-left: auto; background: rgba(255,255,255,0.12);
-  border: none; border-radius: 8px; width: 30px; height: 30px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #fff; flex-shrink: 0; transition: background 0.15s;
-}
-.auth-modal-close:hover { background: rgba(255,255,255,0.22); }
-.auth-modal-body { padding: 22px; }
-
-/* Field label & input */
-.auth-field { margin-bottom: 14px; }
-.auth-field label { display: block; font-size: 11.5px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
-.auth-field input, .auth-field select {
-  width: 100%; padding: 9px 12px; border-radius: 8px;
-  border: 1.5px solid var(--border); font-size: 13px;
-  font-family: inherit; color: var(--text); background: var(--bg);
-  outline: none; transition: border-color 0.15s; appearance: none;
-}
-.auth-field input:focus, .auth-field select:focus { border-color: var(--blue-lt); background: #fff; }
-.auth-field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b83a4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px;
-}
-.auth-error {
-  background: #fde8d8; border: 1px solid #f5b89a; border-radius: 8px;
-  padding: 9px 12px; font-size: 12px; color: #8a3000;
-  margin-bottom: 14px; display: none;
-}
-.auth-error.show { display: block; }
-.btn-auth-submit {
-  width: 100%; padding: 11px; border-radius: 9px;
-  background: var(--blue-lt); color: #fff; border: none;
-  font-size: 13.5px; font-weight: 700; font-family: inherit;
-  cursor: pointer; transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn-auth-submit:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.35); }
-.btn-auth-submit:disabled { opacity: 0.6; cursor: default; transform: none; box-shadow: none; }
-.btn-auth-spinner {
-  display: none; width: 16px; height: 16px; flex-shrink: 0;
-  animation: spin 0.8s linear infinite;
-}
-.btn-auth-submit.loading .btn-auth-spinner { display: block; }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.auth-link { font-size: 11.5px; color: var(--blue-lt); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; transition: color 0.15s; display: inline-flex; align-items: center; gap: 4px; }
-.auth-link:hover { color: var(--blue); }
-.auth-divider { margin-top: 12px; text-align: left; }
-
-/* Forgot panel */
-.auth-panel { display: none; }
-.auth-panel.active { display: block; }
-.auth-success {
-  background: #e0f0e9; border: 1px solid #a8d8b9; border-radius: 8px;
-  padding: 10px 12px; font-size: 12px; color: #1a4a30;
-  margin-bottom: 14px; display: none; line-height: 1.5;
-}
-.auth-success.show { display: block; }
-
-/* Change password modal */
-.changepw-overlay {
-  display: none; position: fixed; inset: 0; z-index: 21000;
-  background: rgba(10,31,60,0.65);
-  align-items: center; justify-content: center; padding: 20px;
-}
-.changepw-overlay.open { display: flex; }
-.changepw-card {
-  background: var(--surface); border-radius: 16px;
-  width: 100%; max-width: 380px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  overflow: hidden; animation: fadeUp 0.2s ease both;
-}
-.changepw-head {
-  background: linear-gradient(115deg, #1a4a8f, #1e5fbb);
-  padding: 20px 22px; display: flex; align-items: center; gap: 12px;
-}
-.changepw-head-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: rgba(255,255,255,0.15);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.changepw-head-icon svg { color: #fff; }
-.changepw-head-text strong { display: block; font-size: 13.5px; font-weight: 800; color: #fff; }
-.changepw-head-text span  { font-size: 11px; color: rgba(255,255,255,0.65); }
-.changepw-body { padding: 20px 22px 24px; }
-.changepw-notice {
-  background: #fef3d7; border: 1px solid #f0d080; border-radius: 8px;
-  padding: 10px 12px; font-size: 12px; color: #6b4400;
-  margin-bottom: 16px; line-height: 1.5;
-}
-.changepw-notice-list { display: flex; flex-direction: column; gap: 5px; }
-.changepw-notice-item { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: #6b4400; }
-.changepw-notice-dot { flex-shrink: 0; font-size: 8px; margin-top: 4px; color: #c8860a; }
-.changepw-error { background: #fde8d8; border: 1px solid #f5b89a; border-radius: 8px; padding: 9px 12px; font-size: 12px; color: #8a3000; margin-bottom: 12px; display: none; }
-.changepw-error.show { display: block; }
-
 /* iOS font-size fix */
 @media (max-width: 768px) {
-  .auth-field input, .auth-field select,
-  #cpNewPw1, #cpNewPw2 { font-size: 16px; }
   .user-badge-info { display: none; }
 }
 </style>
@@ -615,110 +492,6 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
 
 <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- ── LOGIN MODAL ── -->
-<div class="auth-modal-overlay" id="loginModalOverlay">
-  <div class="auth-modal">
-    <div class="auth-modal-head">
-      <div class="auth-modal-head-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <div class="auth-modal-head-text">
-        <strong id="authModalTitle">Masuk ke Dashboard</strong>
-        <span id="authModalSub">Sekolah Model 2026</span>
-      </div>
-      <button class="auth-modal-close" onclick="closeLoginModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="auth-modal-body">
-      <div class="auth-panel active" id="panelLogin">
-        <div class="auth-error" id="loginError"></div>
-        <div class="auth-field">
-          <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" placeholder="Masukkan email Anda" autocomplete="email">
-        </div>
-        <div class="auth-field" style="margin-bottom:16px">
-          <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" placeholder="Masukkan password" autocomplete="current-password">
-        </div>
-        <button class="btn-auth-submit" id="btnLoginSubmit" onclick="doLogin()">
-          <svg class="btn-auth-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          <span id="btnLoginText">Masuk</span>
-        </button>
-        <div class="auth-divider">
-          <button class="auth-link" onclick="showPanel('panelForgot')" style="margin-top:10px">Lupa password?</button>
-        </div>
-      </div>
-      <div class="auth-panel" id="panelForgot">
-        <button class="auth-link" onclick="showPanel('panelLogin')" style="margin-bottom:14px">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          Kembali ke login
-        </button>
-        <div class="auth-error" id="forgotError"></div>
-        <div class="auth-success" id="forgotSuccess"></div>
-        <div class="auth-field">
-          <label for="forgotEmail">Email Terdaftar</label>
-          <input type="email" id="forgotEmail" placeholder="Masukkan email akun Anda">
-        </div>
-        <div class="auth-field">
-          <label for="forgotUnsur">Unsur</label>
-          <select id="forgotUnsur" onchange="onForgotUnsurChange()">
-            <option value="">— Pilih unsur —</option>
-            <option value="provinsi">Dinas Pendidikan Provinsi</option>
-            <option value="upt">UPT</option>
-            <option value="sekolah">Sekolah</option>
-          </select>
-        </div>
-        <div class="auth-field" id="forgotProvinsiField" style="display:none">
-          <label for="forgotProvinsi">Provinsi</label>
-          <select id="forgotProvinsi"><option value="">— Pilih provinsi —</option></select>
-        </div>
-        <div class="auth-field" id="forgotNpsnField" style="display:none">
-          <label for="forgotNpsn">NPSN</label>
-          <input type="text" id="forgotNpsn" placeholder="Masukkan NPSN sekolah" maxlength="12" inputmode="numeric">
-        </div>
-        <button class="btn-auth-submit" id="btnForgotSubmit" onclick="doForgot()">
-          <svg class="btn-auth-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          <span id="btnForgotText">Reset Password</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── CHANGE PASSWORD MODAL (first login) ── -->
-<div class="changepw-overlay" id="changePwOverlay">
-  <div class="changepw-card">
-    <div class="changepw-head">
-      <div class="changepw-head-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <div class="changepw-head-text">
-        <strong>Buat Password Baru</strong>
-        <span>Wajib dilakukan saat pertama login</span>
-      </div>
-    </div>
-    <div class="changepw-body">
-      <div class="changepw-notice">
-        <div class="changepw-notice-list">
-          <div class="changepw-notice-item"><span class="changepw-notice-dot">●</span><span>Anda masih menggunakan password default. Silakan buat password baru untuk melanjutkan.</span></div>
-          <div class="changepw-notice-item"><span class="changepw-notice-dot">●</span><span>Gunakan password yang mudah diingat oleh seluruh tim instansi.</span></div>
-          <div class="changepw-notice-item"><span class="changepw-notice-dot">●</span><span>Password ini digunakan bersama oleh tim instansi untuk mengakses dashboard.</span></div>
-        </div>
-      </div>
-      <div class="changepw-error" id="cpError"></div>
-      <div class="auth-field">
-        <label for="cpNewPw1">Password Baru</label>
-        <input type="password" id="cpNewPw1" placeholder="Minimal 6 karakter">
-      </div>
-      <div class="auth-field" style="margin-bottom:18px">
-        <label for="cpNewPw2">Konfirmasi Password</label>
-        <input type="password" id="cpNewPw2" placeholder="Ulangi password baru">
-      </div>
-      <button class="btn-auth-submit" id="btnCpSubmit" onclick="doChangePassword()">Simpan Password</button>
-    </div>
-  </div>
-</div>
 
 <div class="mobile-topbar">
   <button class="hamburger" onclick="openSidebar()">
@@ -726,7 +499,7 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
   </button>
   <span class="mobile-topbar-title">Daftar Sekolah Model SMA 2026</span>
   <span class="mobile-user-name" id="mobileUserName" style="display:none"></span>
-  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="openLoginModal()">Masuk</button>
+  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
   <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
 </div>
 
@@ -765,6 +538,11 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
       Dinas Pendidikan
     </a>
+    <div class="nav-divider nav-admin-only">Sistem</div>
+    <a href="kelola-pengguna.html" class="nav-admin-only">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Kelola Pengguna
+    </a>
   </nav>
   <div class="sidebar-footer">Data diperbarui<br>30 Mei 2026 · 20:05</div>
 </aside>
@@ -778,8 +556,8 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
       </div>
       <div class="user-badge" id="userBadge">
         <!-- Belum login -->
-        <div id="badgeGuest">
-          <button class="btn-masuk" onclick="openLoginModal()">
+        <div id="badgeGuest" style="display:none">
+          <button class="btn-masuk" onclick="window.location.href='login.html'">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Masuk
           </button>
@@ -814,199 +592,51 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
 function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
 // ── Auth constants ──────────────────────────────────────────────────────────
-const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbzMYVmecr4FcaODB7gn9JfVgitygGw0JExzkzqNJ-txvURw21JDifCyVD-C4lM9N64_/exec';
-const ROLE_LABEL   = { nasional: 'Nasional', upt: 'BBPMP/BPMP', provinsi: 'Dinas Pendidikan', sekolah: 'Sekolah' };
+const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
 
 const PROVINSI_ALL = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Papua Barat Daya','Papua Pegunungan','Papua Selatan','Papua Tengah','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
 const PROVINSI_UPT = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
 
-// ── Session helpers ──────────────────────────────────────────────────────────
-function getSession() { try { return JSON.parse(localStorage.getItem('smAuth') || 'null'); } catch { return null; } }
-function setSession(d) { localStorage.setItem('smAuth', JSON.stringify(d)); }
-function clearSession() { localStorage.removeItem('smAuth'); }
-
-// ── Modal open/close ─────────────────────────────────────────────────────────
-function openLoginModal() {
-  showPanel('panelLogin');
-  document.getElementById('loginError').classList.remove('show');
-  document.getElementById('loginModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+// ── Admin nav visibility ──────────────────────────────────────────────────────
+function updateAdminNav() {
+  const raw  = localStorage.getItem('sb_user');
+  const role = raw ? (JSON.parse(raw).role || '') : '';
+  const show = (role === 'superadmin' || role === 'admin');
+  document.querySelectorAll('.nav-admin-only').forEach(el => {
+    el.style.display = show ? '' : 'none';
+  });
 }
-function closeLoginModal() {
-  document.getElementById('loginModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('loginModalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeLoginModal();
-});
-
-function showPanel(id) {
-  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (id === 'panelForgot') {
-    document.getElementById('authModalTitle').textContent = 'Reset Password';
-    document.getElementById('authModalSub').textContent   = 'Verifikasi identitas akun Anda';
-  } else {
-    document.getElementById('authModalTitle').textContent = 'Masuk ke Dashboard';
-    document.getElementById('authModalSub').textContent   = 'Sekolah Model 2026';
-  }
-}
-
-// ── Login ────────────────────────────────────────────────────────────────────
-async function doLogin() {
-  const email    = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const errEl    = document.getElementById('loginError');
-  const btn      = document.getElementById('btnLoginSubmit');
-  errEl.classList.remove('show');
-  if (!email || !password) { showAuthErr(errEl, 'Email dan password wajib diisi.'); return; }
-  btn.disabled = true; btn.classList.add('loading');
-  document.getElementById('btnLoginText').textContent = 'Memeriksa...';
-  try {
-    const res  = await fetch(`${AUTH_GAS_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
-    const json = await res.json();
-    if (!json.ok) { showAuthErr(errEl, json.error || 'Login gagal.'); return; }
-    setSession({ email, role: json.role, provinsi: json.provinsi, npsn: json.npsn, mustChange: json.mustChange, _tempPw: json.mustChange ? password : undefined });
-    if (json.mustChange) {
-      closeLoginModal();
-      document.getElementById('changePwOverlay').classList.add('open');
-    } else {
-      closeLoginModal();
-      updateBadge();
-    }
-  } catch { showAuthErr(errEl, 'Gagal terhubung ke server. Coba lagi.'); }
-  finally {
-    btn.disabled = false; btn.classList.remove('loading');
-    document.getElementById('btnLoginText').textContent = 'Masuk';
-  }
-}
-
-// ── Change password ──────────────────────────────────────────────────────────
-let _cpSubmitting = false;
-async function doChangePassword() {
-  if (_cpSubmitting) return;
-  const pw1  = document.getElementById('cpNewPw1').value;
-  const pw2  = document.getElementById('cpNewPw2').value;
-  const errEl = document.getElementById('cpError');
-  const btn   = document.getElementById('btnCpSubmit');
-  errEl.classList.remove('show');
-  if (pw1.length < 6) { showAuthErr(errEl, 'Password minimal 6 karakter.'); return; }
-  if (pw1 !== pw2)    { showAuthErr(errEl, 'Konfirmasi password tidak cocok.'); return; }
-  const sess = getSession();
-  if (!sess) { showAuthErr(errEl, 'Sesi tidak valid, silakan login ulang.'); return; }
-  _cpSubmitting = true;
-  btn.disabled = true; btn.textContent = 'Menyimpan...';
-  try {
-    const oldPw = sess._tempPw || 'sekolahmodel123';
-    const res  = await fetch(`${AUTH_GAS_URL}?action=changePassword&email=${encodeURIComponent(sess.email)}&oldPassword=${encodeURIComponent(oldPw)}&newPassword=${encodeURIComponent(pw1)}`);
-    const json = await res.json();
-    if (!json.ok) { showAuthErr(errEl, json.error || 'Gagal menyimpan password.'); return; }
-    const { _tempPw, ...sessClean } = sess;
-    setSession({ ...sessClean, mustChange: false });
-    document.getElementById('changePwOverlay').classList.remove('open');
-    updateBadge();
-  } catch { showAuthErr(errEl, 'Gagal terhubung ke server. Coba lagi.'); }
-  finally { _cpSubmitting = false; btn.disabled = false; btn.textContent = 'Simpan Password'; }
-}
-
-// ── Forgot password ──────────────────────────────────────────────────────────
-function onForgotUnsurChange() {
-  const val = document.getElementById('forgotUnsur').value;
-  document.getElementById('forgotProvinsiField').style.display = (val === 'provinsi' || val === 'upt') ? '' : 'none';
-  document.getElementById('forgotNpsnField').style.display     = val === 'sekolah' ? '' : 'none';
-  const sel = document.getElementById('forgotProvinsi');
-  const list = val === 'upt' ? PROVINSI_UPT : PROVINSI_ALL;
-  sel.innerHTML = '<option value="">— Pilih provinsi —</option>' + list.map(p => `<option>${p}</option>`).join('');
-}
-
-async function doForgot() {
-  const email  = document.getElementById('forgotEmail').value.trim();
-  const unsur  = document.getElementById('forgotUnsur').value;
-  const prov   = document.getElementById('forgotProvinsi').value;
-  const npsn   = document.getElementById('forgotNpsn').value.trim();
-  const errEl  = document.getElementById('forgotError');
-  const okEl   = document.getElementById('forgotSuccess');
-  const btn    = document.getElementById('btnForgotSubmit');
-  errEl.classList.remove('show'); okEl.classList.remove('show');
-  if (!email) { showAuthErr(errEl, 'Email wajib diisi.'); return; }
-  if (!unsur) { showAuthErr(errEl, 'Pilih unsur terlebih dahulu.'); return; }
-  if ((unsur === 'provinsi' || unsur === 'upt') && !prov) { showAuthErr(errEl, 'Pilih provinsi untuk validasi.'); return; }
-  if (unsur === 'sekolah' && !npsn) { showAuthErr(errEl, 'Masukkan NPSN untuk validasi.'); return; }
-  btn.disabled = true; btn.classList.add('loading');
-  document.getElementById('btnForgotText').textContent = 'Memproses...';
-  let elapsed = 0;
-  const countInterval = setInterval(() => {
-    elapsed++;
-    const el = document.getElementById('btnForgotText');
-    if (el) el.textContent = `Memproses... (${elapsed}d)`;
-  }, 1000);
-  try {
-    const params = new URLSearchParams({ action: 'resetPassword', email, unsur });
-    if (unsur === 'provinsi' || unsur === 'upt') params.set('provinsi', prov);
-    if (unsur === 'sekolah') params.set('npsn', npsn);
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 45000);
-    let res;
-    try {
-      res = await fetch(`${AUTH_GAS_URL}?${params.toString()}`, { signal: controller.signal });
-    } finally {
-      clearTimeout(timeout);
-    }
-    const json = await res.json();
-    if (json.ok) {
-      okEl.innerHTML = 'Password berhasil direset ke password default (<strong>sekolahmodel123</strong>). Silakan kembali ke login dan masuk menggunakan password default, lalu segera buat password baru.';
-      okEl.classList.add('show');
-    } else {
-      showAuthErr(errEl, json.error || 'Gagal mereset password.');
-    }
-  } catch (e) {
-    const isTimeout = e.name === 'AbortError';
-    showAuthErr(errEl, isTimeout
-      ? 'Permintaan timeout. Koneksi ke server terlalu lama — silakan coba lagi.'
-      : 'Gagal terhubung ke server. Periksa koneksi internet Anda, lalu coba lagi.'
-    );
-  } finally {
-    clearInterval(countInterval);
-    btn.disabled = false; btn.classList.remove('loading');
-    document.getElementById('btnForgotText').textContent = 'Reset Password';
-  }
-}
-
-function showAuthErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
 
 // ── Logout ───────────────────────────────────────────────────────────────────
-function doLogout() { clearSession(); updateBadge(); }
+function doLogout() {
+  localStorage.removeItem('sb_user');
+  window.location.href = 'login.html';
+}
 
 // ── Update badge (desktop + mobile) ─────────────────────────────────────────
 function updateBadge() {
-  const sess = getSession();
-  const loggedIn = sess && !sess.mustChange;
-  document.getElementById('badgeGuest').style.display   = loggedIn ? 'none'  : '';
+  const raw      = localStorage.getItem('sb_user');
+  const loggedIn = !!raw;
+  const sess     = loggedIn ? JSON.parse(raw) : null;
+
+  // Desktop
+  document.getElementById('badgeGuest').style.display = loggedIn ? 'none' : '';
   const badgeUser = document.getElementById('badgeUser');
   badgeUser.style.display = loggedIn ? 'flex' : 'none';
   if (loggedIn) {
-    document.getElementById('badgeEmail').textContent = sess.email;
+    document.getElementById('badgeEmail').textContent = sess.nama || sess.email;
     document.getElementById('badgeRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
   }
+
+  // Mobile
   document.getElementById('mobileBtnMasuk').style.display  = loggedIn ? 'none' : '';
   document.getElementById('mobileBtnKeluar').style.display = loggedIn ? ''     : 'none';
   const mName = document.getElementById('mobileUserName');
   mName.style.display = loggedIn ? '' : 'none';
-  if (loggedIn) mName.textContent = sess.email.split('@')[0];
-}
+  if (loggedIn) mName.textContent = (sess.nama || sess.email || '').split('@')[0];
 
-// ── Enter key support ─────────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeLoginModal(); }
-  if (e.key === 'Enter') {
-    if (document.getElementById('changePwOverlay').classList.contains('open')) { doChangePassword(); }
-    else if (document.getElementById('loginModalOverlay').classList.contains('open')) {
-      const activePanel = document.querySelector('.auth-panel.active');
-      if (activePanel?.id === 'panelLogin') doLogin();
-      else if (activePanel?.id === 'panelForgot') doForgot();
-    }
-  }
-});
+  updateAdminNav();
+}
 
 // ── Init auth badge on load ───────────────────────────────────────────────────
 updateBadge();

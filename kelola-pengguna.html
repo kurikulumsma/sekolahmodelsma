@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kelola Pengguna — Sekolah Model 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:      #0a1f3c;
+  --navy-mid:  #0e2d57;
+  --blue:      #1a56a0;
+  --blue-lt:   #2b72d8;
+  --accent:    #f0a500;
+  --accent-lt: #ffc840;
+  --bg:        #f2f6fb;
+  --surface:   #ffffff;
+  --border:    #dce6f5;
+  --text:      #0d1f38;
+  --muted:     #6b83a4;
+  --sidebar-w: 220px;
+  --green:     #16a34a;
+  --green-bg:  #f0fdf4;
+  --green-bd:  #bbf7d0;
+  --red:       #b91c1c;
+  --red-bg:    #fff0f0;
+  --red-bd:    #fca5a5;
+  --yellow:    #92400e;
+  --yellow-bg: #fef9ec;
+  --yellow-bd: #fde68a;
+}
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg); color: var(--text);
+  display: flex; min-height: 100vh; font-size: 13.5px;
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar-w); background: var(--navy);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0;
+  z-index: 200; transition: transform 0.25s ease;
+}
+.sidebar-logo {
+  padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sidebar-logo img { width: 100%; max-width: 160px; height: auto; object-fit: contain; display: block; }
+.sidebar-close { display: none; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px; flex-shrink: 0; margin-left: 8px; }
+nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+nav a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none; font-size: 12.5px; font-weight: 500;
+  transition: background 0.15s, color 0.15s; cursor: pointer;
+}
+nav a svg { flex-shrink: 0; opacity: 0.65; }
+nav a:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
+nav a.active { background: var(--blue-lt); color: #fff; }
+nav a.active svg { opacity: 1; }
+.nav-divider { padding: 10px 12px 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.22); }
+.sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 150; }
+.sidebar-overlay.show { display: block; }
+
+/* ── MOBILE TOPBAR ── */
+.mobile-topbar {
+  display: none; position: fixed; top: 0; left: 0; right: 0; height: 52px;
+  background: var(--navy); z-index: 100;
+  align-items: center; padding: 0 16px; gap: 12px;
+}
+.hamburger { background: none; border: none; color: #fff; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+.mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+
+/* ── MAIN ── */
+main { margin-left: var(--sidebar-w); flex: 1; padding: 26px 28px 40px; overflow-x: hidden; }
+
+/* TOPBAR */
+.topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; gap: 16px; }
+.topbar-left h1 { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -0.03em; line-height: 1.2; }
+.topbar-left p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* STATS ROW */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--surface); border-radius: 12px; padding: 15px 16px;
+  border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+  transition: border-color 0.15s;
+}
+.stat-card:hover { border-color: var(--blue-lt); }
+.stat-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stat-icon.pending  { background: var(--yellow-bg); }
+.stat-icon.approved { background: var(--green-bg); }
+.stat-icon.total    { background: #eef4ff; }
+.stat-info { display: flex; flex-direction: column; gap: 2px; }
+.stat-val  { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.stat-val.pending  { color: #d97706; }
+.stat-val.approved { color: var(--green); }
+.stat-val.total    { color: var(--blue-lt); }
+.stat-lbl  { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+.tab-btn {
+  padding: 9px 16px; font-family: inherit; font-size: 12.5px; font-weight: 600;
+  background: none; border: none; cursor: pointer; color: var(--muted);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s; display: flex; align-items: center; gap: 7px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--blue-lt); border-bottom-color: var(--blue-lt); }
+.tab-badge {
+  min-width: 18px; height: 18px; border-radius: 9px; padding: 0 5px;
+  font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;
+}
+.tab-badge.yellow { background: var(--yellow-bg); color: #d97706; border: 1px solid var(--yellow-bd); }
+.tab-badge.green  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-bd); }
+.tab-badge.red    { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-bd); }
+
+/* TAB PANELS */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* TOOLBAR */
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 320px; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search-wrap input {
+  width: 100%; padding: 8px 12px 8px 34px;
+  border: 1.5px solid var(--border); border-radius: 9px;
+  font-family: inherit; font-size: 12.5px; color: var(--text);
+  background: var(--surface); outline: none;
+  transition: border-color 0.15s;
+}
+.search-wrap input:focus { border-color: var(--blue-lt); box-shadow: 0 0 0 3px rgba(43,114,216,0.1); }
+.filter-select {
+  padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 9px;
+  font-family: inherit; font-size: 12.5px; color: var(--text);
+  background: var(--surface); outline: none; cursor: pointer;
+  transition: border-color 0.15s; appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b83a4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+.filter-select:focus { border-color: var(--blue-lt); }
+.toolbar-right { margin-left: auto; font-size: 11.5px; color: var(--muted); }
+
+/* TABLE */
+.table-wrap { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+thead { background: #f7faff; }
+th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 13px 14px; font-size: 12.5px; border-bottom: 1px solid #f0f4fb; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafcff; }
+
+.user-name { font-weight: 700; color: var(--text); margin-bottom: 1px; }
+.user-email { font-size: 11.5px; color: var(--muted); }
+
+/* BADGES */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.badge-pending  { background: var(--yellow-bg); color: #d97706; border: 1px solid var(--yellow-bd); }
+.badge-approved { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-bd); }
+.badge-rejected { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-bd); }
+.badge-superadmin { background: #fdf2ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+.badge-admin    { background: #eef4ff; color: var(--blue-lt); border: 1px solid var(--border); }
+.badge-viewer   { background: #f7faff; color: var(--muted); border: 1px solid var(--border); }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+/* ACTION BUTTONS */
+.btn-approve {
+  padding: 5px 12px; border-radius: 7px; font-family: inherit; font-size: 11.5px; font-weight: 700;
+  cursor: pointer; border: none; background: var(--green); color: #fff;
+  transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px;
+}
+.btn-approve:hover { background: #15803d; box-shadow: 0 3px 10px rgba(22,163,74,0.3); transform: translateY(-1px); }
+.btn-reject {
+  padding: 5px 12px; border-radius: 7px; font-family: inherit; font-size: 11.5px; font-weight: 700;
+  cursor: pointer; border: 1.5px solid var(--red-bd); background: var(--red-bg); color: var(--red);
+  transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px;
+}
+.btn-reject:hover { background: var(--red); color: #fff; transform: translateY(-1px); }
+.btn-icon {
+  width: 30px; height: 30px; border-radius: 7px; border: 1.5px solid var(--border);
+  background: var(--surface); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--muted); transition: all 0.15s;
+}
+.btn-icon:hover { border-color: var(--blue-lt); color: var(--blue-lt); background: #eef4ff; }
+.btn-icon.danger:hover { border-color: var(--red-bd); color: var(--red); background: var(--red-bg); }
+
+.actions-wrap { display: flex; align-items: center; gap: 6px; }
+
+/* ROLE SELECT */
+.role-select {
+  padding: 4px 8px; border: 1.5px solid var(--border); border-radius: 6px;
+  font-family: inherit; font-size: 11.5px; color: var(--text);
+  background: var(--surface); cursor: pointer; outline: none;
+  transition: border-color 0.15s;
+}
+.role-select:focus { border-color: var(--blue-lt); }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 52px 20px; color: var(--muted); }
+.empty-icon { width: 52px; height: 52px; background: #f0f4ff; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+.empty-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 12px; }
+
+/* LOADING */
+.loading-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 12.5px; }
+.spinner { width: 20px; height: 20px; border: 2.5px solid var(--border); border-top-color: var(--blue-lt); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; margin-right: 8px; vertical-align: middle; }
+
+.btn-export {
+  padding: 7px 13px; border-radius: 8px; font-family: inherit; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
+  display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
+}
+.btn-export:hover { border-color: var(--blue-lt); color: var(--blue-lt); background: #eef4ff; }
+.btn-tambah-admin {
+  padding: 7px 13px; border-radius: 8px; font-family: inherit; font-size: 12px; font-weight: 700;
+  cursor: pointer; border: none; background: var(--blue-lt); color: #fff;
+  display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
+}
+.btn-tambah-admin:hover { background: #1e63c5; box-shadow: 0 3px 12px rgba(43,114,216,0.35); transform: translateY(-1px); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  background: var(--navy); color: #fff;
+  padding: 12px 18px; border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  display: flex; align-items: center; gap: 9px;
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s cubic-bezier(0.32,1,0.4,1);
+  pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error   { background: var(--red); }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border-radius: 16px; padding: 28px;
+  width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  transform: scale(0.95); transition: transform 0.2s;
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.modal-desc  { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.modal-field { margin-bottom: 16px; }
+.modal-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.modal-field textarea {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 9px;
+  font-family: inherit; font-size: 13px; color: var(--text); resize: vertical; min-height: 80px;
+  outline: none; transition: border-color 0.15s;
+}
+.modal-field textarea:focus { border-color: var(--blue-lt); }
+.btn-cancel {
+  padding: 8px 16px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
+  transition: all 0.15s;
+}
+.btn-cancel:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+.btn-confirm {
+  padding: 8px 16px; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; color: #fff; transition: all 0.15s;
+}
+.btn-confirm.green  { background: var(--green); }
+.btn-confirm.green:hover  { background: #15803d; }
+.btn-confirm.red    { background: var(--red); }
+.btn-confirm.red:hover    { background: #991b1b; }
+
+/* ACCESS DENIED */
+.access-denied {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--bg); flex-direction: column; gap: 12px; text-align: center;
+}
+
+.user-badge { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.user-badge-info { text-align: right; }
+.user-badge-name { font-size: 12px; font-weight: 700; color: var(--navy); line-height: 1.3; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-badge-role { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.btn-masuk {
+  padding: 6px 14px; border-radius: 8px;
+  background: var(--blue-lt); color: #fff;
+  border: none; font-size: 12px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-masuk:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.3); }
+.btn-logout-top {
+  padding: 5px 12px; border-radius: 7px;
+  background: transparent; border: 1.5px solid var(--border);
+  color: var(--muted); font-size: 11px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.btn-logout-top:hover { background: #fde8d8; color: #8a3000; border-color: #f5b89a; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  aside { transform: translateX(-100%); }
+  aside.open { transform: translateX(0); }
+  .sidebar-close { display: flex; }
+  main { margin-left: 0; padding: 70px 16px 40px; }
+  .mobile-topbar { display: flex; }
+  .stats-row { grid-template-columns: 1fr; }
+  .table-wrap { overflow-x: auto; }
+  table { min-width: 640px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ── SIDEBAR ── -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo" onerror="this.style.display='none'">
+    <button class="sidebar-close" onclick="closeSidebar()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <nav>
+    <div class="nav-divider">Program</div>
+    <a href="beranda.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Beranda
+    </a>
+    <a href="surat-dukungan.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Surat Dukungan
+    </a>
+    <a href="baseline.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Baseline Sekolah
+    </a>
+    <div class="nav-divider">Intervensi</div>
+    <a href="intervensi-direktorat.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Direktorat SMA
+    </a>
+    <a href="intervensi-upt.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      BBPMP/BPMP
+    </a>
+    <a href="intervensi-dinas.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
+      Dinas Pendidikan
+    </a>
+    <div class="nav-divider">Sistem</div>
+    <a href="kelola-pengguna.html" class="active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Kelola Pengguna
+    </a>
+  </nav>
+  <div class="sidebar-footer" id="sidebarFooter">Direktorat SMA · Kemendikdasmen 2026</div>
+</aside>
+
+<!-- ── MOBILE TOPBAR ── -->
+<div class="mobile-topbar">
+  <button class="hamburger" onclick="openSidebar()">
+    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <span class="mobile-topbar-title">Kelola Pengguna</span>
+</div>
+
+<!-- ── MAIN ── -->
+<main>
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Kelola Pengguna</h1>
+      <p>Manajemen akun dan persetujuan pendaftar</p>
+    </div>
+    <div class="user-badge" id="userBadge">
+      <div id="badgeGuest" style="display:none">
+        <button class="btn-masuk" onclick="window.location.href='login.html'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Masuk
+        </button>
+      </div>
+      <div id="badgeUser" style="display:none;align-items:center;gap:10px">
+        <div class="user-badge-info">
+          <div class="user-badge-name" id="badgeEmail">—</div>
+          <div class="user-badge-role" id="badgeRole">—</div>
+        </div>
+        <button class="btn-logout-top" onclick="doLogout()">Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon pending">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#d97706" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-val pending" id="statPending">—</div>
+        <div class="stat-lbl">Menunggu</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon approved">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#16a34a" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-val approved" id="statApproved">—</div>
+        <div class="stat-lbl">Aktif</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon total">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2b72d8" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-val total" id="statTotal">—</div>
+        <div class="stat-lbl">Total Pengguna</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('pending')" id="tabBtnPending">
+      Menunggu Persetujuan
+      <span class="tab-badge yellow" id="tabBadgePending">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('approved')" id="tabBtnApproved">
+      Pengguna Aktif
+      <span class="tab-badge green" id="tabBadgeApproved">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('deactivated')" id="tabBtnDeactivated">
+      Dinonaktifkan
+      <span class="tab-badge red" id="tabBadgeDeactivated">0</span>
+    </button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding-bottom:1px">
+      <button class="btn-export" onclick="exportExcel()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        Export Excel
+      </button>
+      <button class="btn-tambah-admin" id="btnTambahAdmin" onclick="openTambahAdmin()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        Tambah Admin
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB: PENDING -->
+  <div class="tab-panel active" id="tabPending">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" placeholder="Cari nama atau email..." oninput="filterPending(this.value)" id="searchPending">
+      </div>
+      <select class="filter-select" onchange="filterPendingUnsur(this.value)">
+        <option value="">Semua Unsur</option>
+        <option value="Dinas Pendidikan">Dinas Pendidikan</option>
+        <option value="BBPMP/BPMP">BBPMP/BPMP</option>
+        <option value="Sekolah">Sekolah</option>
+      </select>
+      <span class="toolbar-right" id="countPending"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pendaftar</th>
+            <th>Instansi &amp; Jabatan</th>
+            <th>Unsur</th>
+            <th>Wilayah / Sekolah</th>
+            <th>Tanggal Daftar</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyPending">
+          <tr class="loading-row"><td colspan="6"><span class="spinner"></span>Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: APPROVED -->
+  <div class="tab-panel" id="tabApproved">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" placeholder="Cari nama atau email..." oninput="filterApproved(this.value)" id="searchApproved">
+      </div>
+      <select class="filter-select" onchange="filterApprovedUnsur(this.value)">
+        <option value="">Semua Unsur</option>
+        <option value="Dinas Pendidikan">Dinas Pendidikan</option>
+        <option value="BBPMP/BPMP">BBPMP/BPMP</option>
+        <option value="Sekolah">Sekolah</option>
+      </select>
+      <select class="filter-select" onchange="filterApprovedRole(this.value)">
+        <option value="">Semua Role</option>
+        <option value="superadmin">Superadmin</option>
+        <option value="admin">Admin</option>
+        <option value="viewer">Viewer</option>
+      </select>
+      <span class="toolbar-right" id="countApproved"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pengguna</th>
+            <th>Instansi &amp; Jabatan</th>
+            <th>Unsur</th>
+            <th>Wilayah / Sekolah</th>
+            <th>Role</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyApproved">
+          <tr class="loading-row"><td colspan="6"><span class="spinner"></span>Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: DEACTIVATED -->
+  <div class="tab-panel" id="tabDeactivated">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" placeholder="Cari nama atau email..." oninput="filterDeactivated(this.value)" id="searchDeactivated">
+      </div>
+      <span class="toolbar-right" id="countDeactivated"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pengguna</th>
+            <th>Instansi &amp; Jabatan</th>
+            <th>Unsur</th>
+            <th>Wilayah / Sekolah</th>
+            <th>Role Sebelumnya</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyDeactivated">
+          <tr class="loading-row"><td colspan="6"><span class="spinner"></span>Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ── MODAL TOLAK ── -->
+<div class="modal-overlay" id="modalTolak">
+  <div class="modal">
+    <div class="modal-title">Tolak Pendaftaran</div>
+    <div class="modal-desc" id="modalTolakDesc">Pendaftaran dari <strong id="modalTolakNama"></strong> akan ditolak.</div>
+    <div class="modal-field">
+      <label>Catatan untuk pendaftar (opsional)</label>
+      <textarea id="modalTolakCatatan" placeholder="Alasan penolakan..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalTolak')">Batal</button>
+      <button class="btn-confirm red" onclick="confirmTolak()">Tolak Pendaftaran</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL NONAKTIFKAN ── -->
+<div class="modal-overlay" id="modalNonaktif">
+  <div class="modal">
+    <div class="modal-title">Nonaktifkan Pengguna</div>
+    <div class="modal-desc">Pengguna <strong id="modalNonaktifNama"></strong> tidak akan bisa login setelah dinonaktifkan. Akun bisa dihapus permanen dari tab Dinonaktifkan.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalNonaktif')">Batal</button>
+      <button class="btn-confirm red" onclick="confirmNonaktif()">Nonaktifkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL HAPUS PERMANEN ── -->
+<div class="modal-overlay" id="modalHapus">
+  <div class="modal">
+    <div class="modal-title">Hapus Permanen</div>
+    <div class="modal-desc">Data <strong id="modalHapusNama"></strong> akan dihapus dari sistem secara permanen. Tindakan ini tidak bisa dibatalkan.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalHapus')">Batal</button>
+      <button class="btn-confirm red" onclick="confirmHapus()">Hapus Permanen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL TAMBAH ADMIN ── -->
+<div class="modal-overlay" id="modalTambahAdmin">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-title">Tambah Akun Admin</div>
+    <div class="modal-desc">Buat akun baru dengan role Admin. Akun langsung aktif tanpa perlu approval.</div>
+    <div class="err-msg" id="tambahAdminErr" style="display:none;background:#fff0f0;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;font-size:12px;color:#b91c1c;margin-bottom:12px"></div>
+    <div class="modal-field">
+      <label>Nama Lengkap</label>
+      <input type="text" id="taName" placeholder="Nama admin" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue-lt)'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <div class="modal-field">
+      <label>Email</label>
+      <input type="email" id="taEmail" placeholder="email@instansi.go.id" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue-lt)'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <div class="modal-field">
+      <label>Password</label>
+      <input type="password" id="taPw" placeholder="Minimal 8 karakter" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue-lt)'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <div class="modal-field">
+      <label>Instansi</label>
+      <input type="text" id="taInstansi" placeholder="Nama instansi" value="Direktorat SMA" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--blue-lt)'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <div class="modal-field">
+      <label>Role</label>
+      <select id="taRole" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;outline:none;background:white;cursor:pointer">
+        <option value="admin">Admin</option>
+        <option value="superadmin">Superadmin</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalTambahAdmin')">Batal</button>
+      <button class="btn-confirm green" id="btnConfirmTambah" onclick="confirmTambahAdmin()">Buat Akun</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const SUPA_URL = 'https://lusytejskqevwyyffeue.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
+let _sb = null;
+function getSb() {
+  if (_sb) return _sb;
+  _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+  return _sb;
+}
+
+// ── STATE ─────────────────────────────────────────────────
+let currentUser = null;
+let allPending     = [];
+let allApproved    = [];
+let allDeactivated = [];
+let actionId    = null; // id row yang sedang diproses
+let filterPendingQ    = '';
+let filterPendingU    = '';
+let filterApprovedQ   = '';
+let filterApprovedU   = '';
+let filterApprovedR   = '';
+let filterDeactivatedQ = '';
+
+// ── INIT ──────────────────────────────────────────────────
+(function() {
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.onload = init;
+  document.head.appendChild(s);
+})();
+
+async function init() {
+  // Cek auth dari localStorage
+  const raw = localStorage.getItem('sb_user');
+  if (!raw) { window.location.href = 'login.html'; return; }
+  currentUser = JSON.parse(raw);
+
+  // Guard: hanya superadmin & admin
+  if (!['superadmin','admin'].includes(currentUser.role)) {
+    document.body.innerHTML = `<div class="access-denied">
+      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#b91c1c" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+      <div style="font-size:18px;font-weight:800;color:#0d1f38">Akses Ditolak</div>
+      <div style="font-size:13px;color:#6b83a4">Halaman ini hanya dapat diakses oleh admin.</div>
+      <a href="beranda.html" style="margin-top:8px;color:#2b72d8;font-weight:600;font-size:13px">Kembali ke Beranda</a>
+    </div>`;
+    return;
+  }
+
+  updateBadge();
+
+  // Sembunyikan tombol Tambah Admin untuk role admin biasa
+  if (currentUser.role !== 'superadmin') {
+    const btn = document.getElementById('btnTambahAdmin');
+    if (btn) btn.style.display = 'none';
+  }
+
+  await loadAll();
+}
+
+async function loadAll() {
+  const sb = getSb();
+
+  // Re-init sesi dari localStorage agar tidak tergantung sesi Supabase aktif
+  const raw = localStorage.getItem('sb_user');
+  if (raw) currentUser = JSON.parse(raw);
+
+  const { data, error } = await sb
+    .from('user_dasbor_sekolah_model')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) { showToast('Gagal memuat data: ' + error.message, 'error'); return; }
+
+  allPending     = data.filter(u => u.status === 'pending');
+  allApproved    = data.filter(u => u.status === 'approved');
+  allDeactivated = data.filter(u => u.status === 'deactivated');
+
+  updateStats(data);
+  renderPending();
+  renderApproved();
+  renderDeactivated();
+}
+
+function updateStats(data) {
+  const pending     = data.filter(u => u.status === 'pending').length;
+  const approved    = data.filter(u => u.status === 'approved').length;
+  const deactivated = data.filter(u => u.status === 'deactivated').length;
+  document.getElementById('statPending').textContent  = pending;
+  document.getElementById('statApproved').textContent = approved;
+  document.getElementById('statTotal').textContent    = data.length;
+  document.getElementById('tabBadgePending').textContent    = pending;
+  document.getElementById('tabBadgeApproved').textContent   = approved;
+  document.getElementById('tabBadgeDeactivated').textContent = deactivated;
+}
+
+// ── RENDER PENDING ────────────────────────────────────────
+function renderPending() {
+  let data = allPending;
+  if (filterPendingQ) data = data.filter(u =>
+    u.nama?.toLowerCase().includes(filterPendingQ) ||
+    u.email?.toLowerCase().includes(filterPendingQ));
+  if (filterPendingU) data = data.filter(u => u.unsur === filterPendingU);
+
+  document.getElementById('countPending').textContent = data.length + ' pendaftar';
+  const tbody = document.getElementById('tbodyPending');
+
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="empty-state">
+        <div class="empty-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#2b72d8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></div>
+        <div class="empty-title">Tidak ada pendaftar</div>
+        <div class="empty-sub">Semua pendaftaran sudah diproses</div>
+      </div>
+    </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(u => `
+    <tr>
+      <td>
+        <div class="user-name">${esc(u.nama)}</div>
+        <div class="user-email">${esc(u.email)}</div>
+      </td>
+      <td>
+        <div style="font-weight:600">${esc(u.instansi)}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${esc(u.jabatan)}</div>
+      </td>
+      <td><span class="badge badge-pending">${esc(u.unsur)}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${wilayahLabel(u)}</td>
+      <td style="font-size:12px;color:var(--muted);white-space:nowrap">${fmtDate(u.created_at)}</td>
+      <td>
+        <div class="actions-wrap">
+          <button class="btn-approve" onclick="doApprove(${u.id}, '${esc(u.nama)}')">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+            Setujui
+          </button>
+          <button class="btn-reject" onclick="openTolak(${u.id}, '${esc(u.nama)}')">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+            Tolak
+          </button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+// ── RENDER APPROVED ───────────────────────────────────────
+function renderApproved() {
+  let data = allApproved;
+  if (filterApprovedQ) data = data.filter(u =>
+    u.nama?.toLowerCase().includes(filterApprovedQ) ||
+    u.email?.toLowerCase().includes(filterApprovedQ));
+  if (filterApprovedU) data = data.filter(u => u.unsur === filterApprovedU);
+  if (filterApprovedR) data = data.filter(u => u.role === filterApprovedR);
+
+  document.getElementById('countApproved').textContent = data.length + ' pengguna';
+  const tbody = document.getElementById('tbodyApproved');
+
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="empty-state">
+        <div class="empty-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#2b72d8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg></div>
+        <div class="empty-title">Belum ada pengguna aktif</div>
+        <div class="empty-sub">Setujui pendaftar untuk mengaktifkan akun</div>
+      </div>
+    </td></tr>`;
+    return;
+  }
+
+  // Superadmin hanya bisa ubah role user lain; tidak bisa nonaktifkan diri sendiri
+  tbody.innerHTML = data.map(u => {
+    const isSelf = u.email === currentUser.email;
+    const canChangeRole = currentUser.role === 'superadmin';
+    const roleOptions = ['superadmin','admin','viewer'].map(r =>
+      `<option value="${r}" ${u.role===r?'selected':''}>${r}</option>`).join('');
+    return `
+    <tr>
+      <td>
+        <div class="user-name">${esc(u.nama)} ${isSelf ? '<span style="font-size:10px;background:#eef4ff;color:var(--blue-lt);padding:2px 6px;border-radius:4px;font-weight:700">Anda</span>' : ''}</div>
+        <div class="user-email">${esc(u.email)}</div>
+      </td>
+      <td>
+        <div style="font-weight:600">${esc(u.instansi)}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${esc(u.jabatan)}</div>
+      </td>
+      <td><span class="badge badge-approved">${esc(u.unsur)}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${wilayahLabel(u)}</td>
+      <td>
+        ${canChangeRole && !isSelf
+          ? `<select class="role-select" onchange="updateRole(${u.id}, this.value, '${esc(u.nama)}')">${roleOptions}</select>`
+          : `<span class="badge badge-${u.role}">${u.role}</span>`}
+      </td>
+      <td>
+        ${!isSelf && currentUser.role === 'superadmin' ? `
+        <button class="btn-icon danger" title="Nonaktifkan" onclick="openNonaktif(${u.id}, '${esc(u.nama)}')">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+        </button>` : '<span style="font-size:11px;color:var(--muted)">—</span>'}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── ACTIONS ───────────────────────────────────────────────
+async function doApprove(id, nama) {
+  const { error } = await getSb()
+    .from('user_dasbor_sekolah_model')
+    .update({ status: 'approved', approved_by: currentUser.email, approved_at: new Date().toISOString() })
+    .eq('id', id);
+
+  if (error) { showToast('Gagal menyetujui: ' + error.message, 'error'); return; }
+  showToast(nama + ' berhasil disetujui', 'success');
+  await loadAll();
+}
+
+function openTolak(id, nama) {
+  actionId = id;
+  document.getElementById('modalTolakNama').textContent = nama;
+  document.getElementById('modalTolakCatatan').value = '';
+  openModal('modalTolak');
+}
+
+async function confirmTolak() {
+  const catatan = document.getElementById('modalTolakCatatan').value.trim();
+  const { error } = await getSb()
+    .from('user_dasbor_sekolah_model')
+    .update({ status: 'rejected', catatan_admin: catatan || null, approved_by: currentUser.email, approved_at: new Date().toISOString() })
+    .eq('id', actionId);
+
+  closeModal('modalTolak');
+  if (error) { showToast('Gagal menolak: ' + error.message, 'error'); return; }
+  showToast('Pendaftaran ditolak', 'success');
+  await loadAll();
+}
+
+function openNonaktif(id, nama) {
+  actionId = id;
+  document.getElementById('modalNonaktifNama').textContent = nama;
+  openModal('modalNonaktif');
+}
+
+async function confirmNonaktif() {
+  const { error } = await getSb()
+    .from('user_dasbor_sekolah_model')
+    .update({ status: 'deactivated' })
+    .eq('id', actionId);
+
+  closeModal('modalNonaktif');
+  if (error) { showToast('Gagal menonaktifkan: ' + error.message, 'error'); return; }
+  showToast('Pengguna dinonaktifkan', 'success');
+  await loadAll();
+}
+
+async function updateRole(id, role, nama) {
+  const { error } = await getSb()
+    .from('user_dasbor_sekolah_model')
+    .update({ role })
+    .eq('id', id);
+
+  if (error) { showToast('Gagal mengubah role: ' + error.message, 'error'); await loadAll(); return; }
+  showToast('Role ' + nama + ' diubah ke ' + role, 'success');
+  // Update local data tanpa reload full
+  const u = allApproved.find(x => x.id === id);
+  if (u) u.role = role;
+}
+
+// ── RENDER DEACTIVATED ────────────────────────────────────
+function renderDeactivated() {
+  let data = allDeactivated;
+  if (filterDeactivatedQ) data = data.filter(u =>
+    u.nama?.toLowerCase().includes(filterDeactivatedQ) ||
+    u.email?.toLowerCase().includes(filterDeactivatedQ));
+
+  document.getElementById('countDeactivated').textContent = data.length + ' pengguna';
+  const tbody = document.getElementById('tbodyDeactivated');
+
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="empty-state">
+        <div class="empty-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#2b72d8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg></div>
+        <div class="empty-title">Tidak ada pengguna dinonaktifkan</div>
+        <div class="empty-sub">Pengguna yang dinonaktifkan akan muncul di sini</div>
+      </div>
+    </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(u => `
+    <tr>
+      <td>
+        <div class="user-name">${esc(u.nama)}</div>
+        <div class="user-email">${esc(u.email)}</div>
+      </td>
+      <td>
+        <div style="font-weight:600">${esc(u.instansi)}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${esc(u.jabatan)}</div>
+      </td>
+      <td><span class="badge badge-rejected">${esc(u.unsur)}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${wilayahLabel(u)}</td>
+      <td><span class="badge badge-${u.role}">${u.role}</span></td>
+      <td>
+        <button class="btn-icon danger" title="Hapus permanen" onclick="openHapus(${u.id}, '${esc(u.nama)}')">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+        </button>
+      </td>
+    </tr>`).join('');
+}
+
+// ── HAPUS PERMANEN ────────────────────────────────────────
+function openHapus(id, nama) {
+  actionId = id;
+  document.getElementById('modalHapusNama').textContent = nama;
+  openModal('modalHapus');
+}
+
+async function confirmHapus() {
+  const { error } = await getSb()
+    .from('user_dasbor_sekolah_model')
+    .delete()
+    .eq('id', actionId);
+
+  closeModal('modalHapus');
+  if (error) { showToast('Gagal menghapus: ' + error.message, 'error'); return; }
+  showToast('Pengguna dihapus permanen', 'success');
+  await loadAll();
+}
+
+// ── FILTER ────────────────────────────────────────────────
+function filterPending(q)        { filterPendingQ = q.toLowerCase(); renderPending(); }
+function filterPendingUnsur(v)   { filterPendingU = v; renderPending(); }
+function filterApproved(q)       { filterApprovedQ = q.toLowerCase(); renderApproved(); }
+function filterApprovedUnsur(v)  { filterApprovedU = v; renderApproved(); }
+function filterApprovedRole(v)   { filterApprovedR = v; renderApproved(); }
+function filterDeactivated(q)    { filterDeactivatedQ = q.toLowerCase(); renderDeactivated(); }
+
+// ── TABS ──────────────────────────────────────────────────
+function switchTab(tab) {
+  ['pending','approved','deactivated'].forEach(t => {
+    document.getElementById('tab' + cap(t))?.classList.remove('active');
+    document.getElementById('tabBtn' + cap(t))?.classList.remove('active');
+  });
+  document.getElementById('tab' + cap(tab)).classList.add('active');
+  document.getElementById('tabBtn' + cap(tab)).classList.add('active');
+}
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ── MODAL ─────────────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); });
+});
+
+// ── TOAST ─────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+function wilayahLabel(u) {
+  if (u.unsur === 'Sekolah')           return (u.nama_sekolah || '') + (u.npsn ? ' <span style="font-size:10.5px">(' + u.npsn + ')</span>' : '');
+  if (u.unsur === 'BBPMP/BPMP')        return 'BPMP ' + (u.bpmp || '—');
+  if (u.unsur === 'Dinas Pendidikan')  return u.provinsi || '—';
+  return '—';
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+}
+
+// ── TAMBAH ADMIN ─────────────────────────────────────────
+function openTambahAdmin() {
+  // hanya superadmin
+  if (currentUser.role !== 'superadmin') { showToast('Hanya superadmin yang bisa menambah admin', 'error'); return; }
+  ['taName','taEmail','taPw'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('taInstansi').value = 'Direktorat SMA';
+  document.getElementById('taRole').value = 'admin';
+  const err = document.getElementById('tambahAdminErr');
+  err.style.display = 'none'; err.textContent = '';
+  openModal('modalTambahAdmin');
+}
+
+async function confirmTambahAdmin() {
+  const err    = document.getElementById('tambahAdminErr');
+  err.style.display = 'none';
+  const nama   = document.getElementById('taName').value.trim();
+  const email  = document.getElementById('taEmail').value.trim();
+  const pw     = document.getElementById('taPw').value;
+  const instansi = document.getElementById('taInstansi').value.trim();
+  const role   = document.getElementById('taRole').value;
+
+  if (!nama || !email || !pw || !instansi) {
+    err.textContent = 'Semua field wajib diisi.'; err.style.display = 'block'; return;
+  }
+  if (pw.length < 8) {
+    err.textContent = 'Password minimal 8 karakter.'; err.style.display = 'block'; return;
+  }
+
+  const btn = document.getElementById('btnConfirmTambah');
+  btn.disabled = true; btn.textContent = 'Memproses...';
+
+  try {
+    const sb = getSb();
+
+    // Simpan sesi superadmin sebelum signUp (signUp akan override sesi aktif)
+    const { data: sessionData } = await sb.auth.getSession();
+    const savedSession = sessionData?.session;
+
+    // 1. Buat akun Auth
+    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password: pw });
+    if (authErr) throw authErr;
+    const userId = authData.user?.id;
+    if (!userId) throw new Error('Gagal mendapatkan ID pengguna.');
+
+    // 2. Insert profil langsung approved
+    const { error: insertErr } = await sb.from('user_dasbor_sekolah_model').insert({
+      user_id: userId, nama, email, instansi,
+      jabatan: 'Administrator',
+      unsur: 'Direktorat',
+      status: 'approved',
+      role,
+      approved_by: currentUser.email,
+      approved_at: new Date().toISOString()
+    });
+    if (insertErr) throw insertErr;
+
+    // 3. Restore sesi superadmin
+    if (savedSession) {
+      await sb.auth.setSession({
+        access_token: savedSession.access_token,
+        refresh_token: savedSession.refresh_token
+      });
+    }
+
+    closeModal('modalTambahAdmin');
+    showToast('Akun ' + nama + ' berhasil dibuat (' + role + ')', 'success');
+    await loadAll();
+  } catch(e) {
+    err.textContent = e.message?.includes('already registered')
+      ? 'Email sudah terdaftar.' : 'Gagal: ' + e.message;
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Buat Akun';
+  }
+}
+
+// ── EXPORT EXCEL ──────────────────────────────────────────
+function exportExcel() {
+  const allData = [...allPending, ...allApproved];
+  if (!allData.length) { showToast('Tidak ada data untuk diekspor', ''); return; }
+
+  const rows = [['Nama', 'Email', 'Instansi', 'Jabatan', 'Unsur', 'Wilayah/Sekolah', 'NPSN', 'Status']];
+  allData.forEach(u => {
+    let wilayah = '';
+    if (u.unsur === 'Sekolah')          wilayah = u.nama_sekolah || '';
+    else if (u.unsur === 'BBPMP/BPMP') wilayah = 'BPMP ' + (u.bpmp || '');
+    else                                wilayah = u.provinsi || '';
+    rows.push([
+      u.nama || '', u.email || '', u.instansi || '', u.jabatan || '',
+      u.unsur || '', wilayah, u.npsn || '', u.status || ''
+    ]);
+  });
+
+  // Buat CSV dengan BOM UTF-8 agar Excel baca benar
+  const bom = '﻿';
+  const csv = bom + rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pengguna-sekolah-model-2026.csv';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('File berhasil diunduh', 'success');
+}
+
+// ── USER BADGE ────────────────────────────────────────────
+const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
+
+function updateBadge() {
+  const raw = localStorage.getItem('sb_user');
+  const loggedIn = !!raw;
+  document.getElementById('badgeGuest').style.display = loggedIn ? 'none' : '';
+  const badgeUser = document.getElementById('badgeUser');
+  badgeUser.style.display = loggedIn ? 'flex' : 'none';
+  if (loggedIn) {
+    const sess = JSON.parse(raw);
+    document.getElementById('badgeEmail').textContent = sess.nama || sess.email;
+    document.getElementById('badgeRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
+  }
+}
+
+async function doLogout() {
+  try { await getSb().auth.signOut(); } catch(e) {}
+  localStorage.removeItem('sb_user');
+  window.location.href = 'login.html';
+}
+
+// ── SIDEBAR MOBILE ────────────────────────────────────────
+function openSidebar()  { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+</script>
+</body>
+</html>

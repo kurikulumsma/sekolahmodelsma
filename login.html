@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk — Sekolah Model 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:     #0a1f3c;
+  --navy-mid: #0e2d57;
+  --blue:     #1a56a0;
+  --blue-lt:  #2b72d8;
+  --accent:   #f0a500;
+  --accent-lt:#ffc840;
+  --bg:       #f2f6fb;
+  --surface:  #ffffff;
+  --border:   #dce6f5;
+  --text:     #0d1f38;
+  --muted:    #6b83a4;
+}
+html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; background: var(--navy); overflow: hidden; }
+
+/* ── LAYOUT ─────────────────────────────── */
+.page { position:relative; min-height:100vh; height:100vh; overflow:hidden; }
+
+/* ── LEFT (now full-bg) ──────────────────── */
+.left {
+  background: linear-gradient(135deg, var(--navy) 0%, #0b2448 40%, #0f3268 100%);
+  display: flex; flex-direction: column;
+  padding: 24px 36px 20px; position: relative;
+  width:100%; height:100vh; overflow:hidden;
+}
+.left::before {
+  content:''; position:absolute; top:0; right:0;
+  width:280px; height:280px;
+  background-image: radial-gradient(circle, rgba(43,114,216,.45) 1px, transparent 1px);
+  background-size: 20px 20px;
+  mask-image: radial-gradient(ellipse 80% 80% at 80% 20%, black 40%, transparent 100%);
+  pointer-events:none;
+}
+.left::after {
+  content:''; position:absolute; bottom:-80px; left:-60px;
+  width:360px; height:360px; border-radius:50%;
+  background: radial-gradient(circle, rgba(26,86,160,.22) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+/* logo */
+.logo-row { display:flex; align-items:center; gap:12px; margin-bottom:20px; animation: fadeDown .5s ease both; }
+.logo-img { height:44px; width:auto; object-fit:contain; }
+.logo-text { display:flex; flex-direction:column; }
+.logo-brand { font-size:13px; font-weight:800; color:#fff; letter-spacing:-.01em; line-height:1.2; }
+.logo-brand span { color:var(--accent); }
+.logo-sub { font-size:10px; color:rgba(255,255,255,.45); font-weight:500; margin-top:1px; }
+
+/* hero */
+.hero-content {
+  position: relative; z-index: 2;
+  flex:1; display:flex; flex-direction:column;
+  justify-content:center; align-items:flex-start;
+  padding-bottom: 0;
+  animation: fadeUp .55s .1s ease both;
+}
+.badge { display:inline-flex; align-items:center; gap:6px; background:rgba(240,165,0,.15); border:1px solid rgba(240,165,0,.3); border-radius:20px; padding:4px 12px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--accent-lt); margin-bottom:12px; width:fit-content; }
+.badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+.hero-title {
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight:800; color:#fff; letter-spacing:-.03em; line-height:1.1; margin-bottom:10px;
+  white-space: normal;
+}
+.hero-title span { color:var(--accent); }
+.hero-desc {
+  font-size: clamp(11px, 1.2vw, 14px);
+  color:rgba(255,255,255,.65); line-height:1.7;
+  max-width: 520px;
+  white-space: normal;
+  margin-bottom:24px;
+}
+
+/* MAP — absolute background */
+.map-wrap {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%; z-index: 1;
+  pointer-events: none;
+}
+.map-wrap img {
+  width:100%; height:auto; display:block;
+  opacity: 0.18;
+  filter: drop-shadow(0 0 28px rgba(43,114,216,.6));
+  animation: pulseMap 4s ease-in-out infinite;
+}
+@keyframes pulseMap {
+  0%,100% { opacity:.18; filter: drop-shadow(0 0 18px rgba(43,114,216,.5)); }
+  50%      { opacity:.22; filter: drop-shadow(0 0 36px rgba(43,114,216,.8)); }
+}
+
+.hero-btns {
+  display:flex; gap:12px; margin-bottom:0;
+  align-items:center; width:fit-content;
+  animation: fadeUp .55s .18s ease both;
+}
+.btn-primary {
+  display:inline-flex; align-items:center; gap:9px;
+  background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+  border:none; border-radius:10px;
+  padding:11px 18px; color:#fff;
+  font-family:inherit; font-size:13px; font-weight:700;
+  cursor:pointer; letter-spacing:.01em; width:fit-content;
+  box-shadow:0 4px 16px rgba(37,99,235,.45);
+  transition:all .2s; text-decoration:none; white-space:nowrap;
+}
+.btn-primary:hover {
+  background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);
+  box-shadow:0 6px 24px rgba(37,99,235,.65), 0 0 0 2px rgba(99,159,255,.3);
+  transform:translateY(-2px);
+}
+.btn-primary:active { transform:translateY(0); }
+.btn-primary svg { flex-shrink:0; }
+.btn-primary .arrow { opacity:.7; transition:transform .2s; }
+.btn-primary:hover .arrow { transform:translateX(3px); opacity:1; }
+
+.btn-secondary {
+  display:inline-flex; align-items:center; gap:9px;
+  background:rgba(255,255,255,.07);
+  border:1.5px solid rgba(255,255,255,.2); border-radius:10px;
+  padding:11px 18px; color:rgba(255,255,255,.85);
+  font-family:inherit; font-size:13px; font-weight:600;
+  cursor:pointer; letter-spacing:.01em; width:fit-content;
+  transition:all .2s; text-decoration:none; white-space:nowrap;
+}
+.btn-secondary:hover {
+  background:rgba(255,255,255,.13);
+  border-color:rgba(255,255,255,.4);
+  color:#fff;
+  box-shadow:0 4px 18px rgba(0,0,0,.2), 0 0 0 2px rgba(255,255,255,.08);
+  transform:translateY(-2px);
+}
+.btn-secondary:active { transform:translateY(0); }
+.btn-secondary svg { flex-shrink:0; opacity:.7; }
+.btn-primary, .btn-secondary {
+  height: 44px; box-sizing: border-box;
+}
+
+
+/* status */
+.status-bar { margin-top:14px; display:flex; align-items:center; gap:8px; font-size:10.5px; color:rgba(255,255,255,.3); animation: fadeUp .6s .3s ease both; }
+.status-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 6px #22c55e; flex-shrink:0; animation:blink 2.5s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── RIGHT (floating card) ───────────────── */
+.right {
+  background:var(--surface); display:flex; flex-direction:column;
+  justify-content:center; padding:36px 36px;
+  position:fixed; top:50%; right:48px; transform:translateY(-50%);
+  width:380px; max-height:92vh; overflow-y:auto;
+  border-radius:20px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.45), 0 8px 24px rgba(0,0,0,.3);
+  animation: slideIn .45s ease both;
+  z-index:10;
+}
+@media (max-width: 768px) {
+  html, body { overflow:hidden; height:100%; }
+  .page { height:100vh; overflow:hidden; }
+
+  /* LEFT: full screen, judul + tombol tampil normal */
+  .left {
+    width:100%; height:100vh;
+    padding: 28px 24px 32px;
+    display: flex; flex-direction: column;
+  }
+  .hero-title { font-size: 26px; white-space:normal; }
+  .hero-desc  { font-size: 12px; white-space:normal; }
+  .hero-btns  { flex-direction:column; width:100%; }
+  .hero-btns .btn-primary,
+  .hero-btns .btn-secondary { width:100%; justify-content:center; }
+  .btn-panduan { display:none !important; }
+
+  /* RIGHT: bottom sheet modal, tersembunyi default */
+  .right {
+    position: fixed;
+    top: auto;
+    bottom: 0; left: 0; right: 0;
+    animation: none;
+    transition: transform .35s cubic-bezier(.32,1,.4,1), visibility 0s .35s;
+    transform: translateY(100%);
+    visibility: hidden;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 40px rgba(0,0,0,.4);
+    padding: 32px 24px 48px;
+    z-index: 100;
+  }
+  .right.open {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform .35s cubic-bezier(.32,1,.4,1), visibility 0s 0s;
+  }
+
+  /* Overlay backdrop */
+  .mobile-overlay {
+    display: block;
+    position: fixed; inset:0;
+    background: rgba(0,0,0,.5);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  .mobile-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Drag handle */
+  .right::before {
+    content:'';
+    display:block;
+    width:40px; height:4px;
+    background: #dce6f5;
+    border-radius:2px;
+    margin: 0 auto 24px;
+  }
+}
+@keyframes slideIn { from{transform:translateY(calc(-50% + 20px));opacity:0} to{transform:translateY(-50%);opacity:1} }
+
+.lock-wrap { width:56px; height:56px; background:linear-gradient(135deg,#eef4ff 0%,#dbeafe 100%); border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+.form-title { font-size:22px; font-weight:800; color:var(--text); letter-spacing:-.03em; margin-bottom:4px; }
+.form-sub   { font-size:12px; color:var(--muted); margin-bottom:26px; }
+
+/* panels */
+.auth-panel { display:none; }
+.auth-panel.active { display:block; }
+
+/* field */
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:12px; font-weight:600; color:var(--text); margin-bottom:5px; }
+.input-wrap { position:relative; }
+.input-wrap svg.il { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.input-wrap input {
+  width:100%; padding:10px 40px 10px 36px;
+  border:1.5px solid var(--border); border-radius:10px;
+  font-family:inherit; font-size:13.5px; color:var(--text);
+  background:#fafcff; outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+.input-wrap input:focus { border-color:var(--blue-lt); box-shadow:0 0 0 3px rgba(43,114,216,.1); background:#fff; }
+.input-wrap input::placeholder { color:#b0bfd4; }
+.toggle-pw { position:absolute; right:11px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--muted); padding:2px; display:flex; align-items:center; }
+.toggle-pw:hover { color:var(--blue-lt); }
+
+/* row meta */
+.row-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.check-label { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text); cursor:pointer; user-select:none; }
+.check-label input[type=checkbox] { display:none; }
+.check-box { width:16px; height:16px; border:1.5px solid var(--border); border-radius:4px; background:#fafcff; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.check-label input:checked + .check-box { background:var(--blue-lt); border-color:var(--blue-lt); }
+.check-label input:checked + .check-box::after { content:''; width:9px; height:5px; border-left:1.5px solid #fff; border-bottom:1.5px solid #fff; transform:rotate(-45deg) translateY(-1px); display:block; }
+.link-forgot { font-size:12px; font-weight:600; color:var(--blue-lt); text-decoration:none; cursor:pointer; }
+.link-forgot:hover { text-decoration:underline; }
+
+/* buttons */
+.btn-primary {
+  width:100%; padding:12px; background:var(--blue-lt); color:#fff;
+  border:none; border-radius:10px; font-family:inherit; font-size:14px; font-weight:700;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:background .15s, box-shadow .15s, transform .1s;
+}
+.btn-primary:hover { background:#1e63c5; box-shadow:0 6px 20px rgba(43,114,216,.35); transform:translateY(-1px); }
+.btn-primary:active { transform:translateY(0); }
+
+.divider { display:flex; align-items:center; gap:10px; margin-bottom:12px; font-size:11.5px; color:var(--muted); }
+.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.btn-ghost {
+  width:100%; padding:11px; background:transparent; color:var(--text);
+  border:1.5px solid var(--border); border-radius:10px;
+  font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:all .15s;
+}
+.btn-ghost:hover { border-color:var(--blue-lt); color:var(--blue-lt); background:rgba(43,114,216,.04); }
+
+/* msg */
+.err-msg { display:none; background:#fff0f0; border:1px solid #fca5a5; border-radius:8px; padding:8px 12px; font-size:12px; color:#b91c1c; margin-bottom:12px; }
+.err-msg.show { display:block; }
+.ok-msg  { display:none; background:#f0fff4; border:1px solid #86efac; border-radius:8px; padding:8px 12px; font-size:12px; color:#166534; margin-bottom:12px; line-height:1.6; }
+.ok-msg.show { display:block; }
+.ok-msg.show  { display:block; }
+
+.back-link { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--muted); cursor:pointer; border:none; background:none; font-family:inherit; padding:0; margin-bottom:18px; transition:color .15s; }
+.back-link:hover { color:var(--blue-lt); }
+
+.right-footer { margin-top:24px; text-align:center; font-size:11px; color:#c0cedf; }
+
+
+.cta-data {
+  display:flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg, rgba(240,165,0,.18) 0%, rgba(240,165,0,.08) 100%);
+  border:1px solid rgba(240,165,0,.4);
+  color:#fff; border-radius:10px;
+  padding:10px 16px; font-family:inherit; font-size:12px; font-weight:700;
+  cursor:pointer; letter-spacing:.02em; transition:all .2s;
+  margin-bottom:10px; width:100%;
+  box-shadow: 0 2px 12px rgba(240,165,0,.1);
+}
+.cta-data:hover { 
+  background:linear-gradient(135deg, rgba(240,165,0,.3) 0%, rgba(240,165,0,.15) 100%);
+  border-color:var(--accent); 
+  color:var(--accent-lt); 
+  box-shadow: 0 4px 20px rgba(240,165,0,.25);
+  transform: translateY(-1px);
+}
+.cta-data:active { transform:translateY(0); }
+.cta-data-icon { 
+  width:30px; height:30px; border-radius:7px; 
+  background:rgba(240,165,0,.2); border:1px solid rgba(240,165,0,.3);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.cta-data-text { display:flex; flex-direction:column; text-align:left; flex:1; }
+.cta-data-label { font-size:12px; font-weight:700; color:#fff; line-height:1.2; }
+.cta-data-sub { font-size:10px; color:rgba(255,255,255,.5); font-weight:500; margin-top:1px; }
+.cta-data-arrow { color:rgba(240,165,0,.7); flex-shrink:0; transition:transform .2s; }
+.cta-data:hover .cta-data-arrow { transform:translateX(3px); color:var(--accent); }
+
+/* map dots */
+.mdot {
+  fill: #a8d4ff;
+  opacity: 0.92;
+  cursor: pointer;
+  filter: url(#dotGlow);
+  transition: opacity .2s;
+}
+.mdot:hover {
+  opacity: 1;
+  filter: url(#dotGlowHover);
+}
+
+/* select */
+.input-wrap select {
+  width:100%; padding:10px 36px 10px 36px;
+  border:1.5px solid var(--border); border-radius:10px;
+  font-family:inherit; font-size:13.5px; color:var(--text);
+  background:#fafcff; outline:none; appearance:none;
+  transition:border-color .15s, box-shadow .15s;
+  cursor:pointer;
+}
+.input-wrap select:focus { border-color:var(--blue-lt); box-shadow:0 0 0 3px rgba(43,114,216,.1); background:#fff; }
+.input-wrap .select-arrow { position:absolute; right:11px; top:50%; transform:translateY(-50%); pointer-events:none; color:var(--muted); }
+
+/* autocomplete NPSN */
+.autocomplete-wrap { position:relative; }
+.autocomplete-list {
+  position:absolute; top:calc(100% + 4px); left:0; right:0;
+  background:#fff; border:1.5px solid var(--border); border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.1); z-index:50;
+  max-height:200px; overflow-y:auto; display:none;
+}
+.autocomplete-list.show { display:block; }
+.autocomplete-item {
+  padding:9px 12px; cursor:pointer; font-size:13px;
+  display:flex; flex-direction:column; gap:1px;
+  border-bottom:1px solid var(--border); transition:background .1s;
+}
+.autocomplete-item:last-child { border-bottom:none; }
+.autocomplete-item:hover, .autocomplete-item.active { background:#eef4ff; }
+.autocomplete-item .ac-npsn { font-weight:700; color:var(--blue-lt); font-size:12px; }
+.autocomplete-item .ac-nama { color:var(--text); font-size:13px; }
+.autocomplete-item .ac-wil  { color:var(--muted); font-size:11px; }
+.autocomplete-loading { padding:10px 12px; font-size:12px; color:var(--muted); text-align:center; }
+
+/* divider daftar */
+.daftar-link { text-align:center; margin-top:14px; font-size:12px; color:var(--muted); }
+.daftar-link a { color:var(--blue-lt); font-weight:600; cursor:pointer; text-decoration:none; }
+.daftar-link a:hover { text-decoration:underline; }
+
+/* panel sukses */
+.success-wrap { text-align:center; padding:8px 0; }
+.success-icon { width:60px; height:60px; background:linear-gradient(135deg,#dcfce7,#bbf7d0); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+.success-title { font-size:20px; font-weight:800; color:var(--text); letter-spacing:-.02em; margin-bottom:6px; }
+.success-sub { font-size:12.5px; color:var(--muted); line-height:1.7; margin-bottom:20px; }
+.success-badge { display:inline-flex; align-items:center; gap:6px; background:#fef9ec; border:1px solid #fde68a; border-radius:8px; padding:7px 12px; font-size:12px; color:#92400e; font-weight:600; margin-bottom:20px; }
+
+/* animations */
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+
+/* responsive */
+@media (max-width:900px) {
+  .hero-title { white-space:normal; }
+  .hero-desc  { white-space:normal; }
+}
+
+/* Tombol Masuk khusus mobile */
+.btn-masuk-mobile {
+  display: none;
+}
+@media (max-width: 768px) {
+  .btn-masuk-mobile {
+    display: inline-flex; align-items:center; gap:9px; justify-content:center;
+    width: 100%; margin-top: 12px;
+    background: rgba(255,255,255,.12);
+    border: 1.5px solid rgba(255,255,255,.35);
+    border-radius: 10px; padding: 12px 18px;
+    color: #fff; font-family:inherit; font-size:13px; font-weight:700;
+    cursor:pointer; letter-spacing:.01em;
+    transition: all .2s;
+  }
+  .btn-masuk-mobile:hover {
+    background: rgba(255,255,255,.2);
+    border-color: rgba(255,255,255,.6);
+  }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileLogin()"></div>
+
+  <!-- ── LEFT ──────────────────────────────── -->
+  <div class="left">
+
+    <!-- Logo -->
+    <div class="logo-row">
+      <img class="logo-img"
+           src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png"
+           alt="Logo Kemendikdasmen"
+           onerror="this.style.display='none'">
+    </div>
+
+    <!-- Hero -->
+    <div class="hero-content">
+      <h1 class="hero-title">Dasbor Sekolah Model<br><span>Sekolah Menengah Atas 2026</span></h1>
+      <p class="hero-desc">Data sekolah model implementasi Pembelajaran Mendalam (PM) <br> dan Koding &amp; Kecerdasan Artifisial (KKA) Sekolah Menengah Atas.</p>
+
+      <!-- Hero buttons -->
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="masukTanpaLogin()">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+          Jelajahi Dasbor
+          <svg class="arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+        </button>
+        <a class="btn-secondary btn-panduan" href="https://kurikulum.kemendikdasmen.go.id/file/Panduan%20Penyelenggaraan%20Sekolah%20Model%20Implementasi%20Pembelajaran%20Mendalam%20dan%20Koding%20dan%20Kecerdasan%20Artifisial.pdf" target="_blank">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+          Panduan Penyelenggaraan
+        </a>
+      </div>
+      <!-- Tombol Masuk khusus mobile -->
+      <button class="btn-masuk-mobile" onclick="openMobileLogin()">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
+        Masuk dengan Akun
+      </button>
+    </div>
+    </div>
+
+    <!-- Peta Indonesia SVG inline (background dekoratif) -->
+          <div class="map-wrap">
+        <img src="peta-indonesia.svg" alt="Peta Indonesia" width="100%" height="auto">
+      </div>
+
+  </div>
+
+  <!-- ── RIGHT ──────────────────────────────── -->
+  <div class="right">
+
+    <div class="lock-wrap">
+      <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#2b72d8" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
+      </svg>
+    </div>
+
+    <!-- Panel Login -->
+    <div id="panelLogin" class="auth-panel active">
+      <h2 class="form-title">Masuk dengan Akun</h2>
+      <p class="form-sub">Gunakan akun yang telah terdaftar</p>
+
+      <div class="err-msg" id="loginErr"></div>
+
+      <div class="field">
+        <label>Email</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+          <input type="text" id="loginUser" placeholder="Masukkan username atau email" autocomplete="username">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+          <input type="password" id="loginPw" placeholder="Masukkan password" autocomplete="current-password">
+          <button class="toggle-pw" onclick="togglePw('loginPw',this)" type="button" tabindex="-1">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="row-meta">
+        <label class="check-label">
+          <input type="checkbox" id="rememberMe" checked>
+          <div class="check-box"></div>
+          Ingat saya
+        </label>
+        <a class="link-forgot" onclick="showPanel('panelForgot')">Lupa password?</a>
+      </div>
+
+      <button class="btn-primary" onclick="doLogin()">
+        Masuk
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+      </button>
+
+      <div class="divider">atau</div>
+
+      <button class="btn-ghost" onclick="masukTanpaLogin()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+        Jelajahi Dasbor
+      </button>
+
+      <div class="daftar-link">Belum punya akun? <a onclick="showPanel('panelDaftar')">Daftar sekarang</a></div>
+    </div>
+
+    <!-- Panel Daftar -->
+    <div id="panelDaftar" class="auth-panel">
+      <button class="back-link" onclick="showPanel('panelLogin')">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+        Kembali ke login
+      </button>
+      <h2 class="form-title">Buat Akun</h2>
+      <p class="form-sub">Isi data diri Anda untuk mendaftar</p>
+
+      <div class="err-msg" id="daftarErr"></div>
+
+      <div class="field">
+        <label>Nama Lengkap</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+          <input type="text" id="daftarNama" placeholder="Nama lengkap Anda">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+          <input type="email" id="daftarEmail" placeholder="email@instansi.go.id">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+          <input type="password" id="daftarPw" placeholder="Minimal 8 karakter" autocomplete="new-password">
+          <button class="toggle-pw" onclick="togglePw('daftarPw',this)" type="button" tabindex="-1">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Instansi</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+          <input type="text" id="daftarInstansi" placeholder="Nama instansi Anda">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Jabatan</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+          <input type="text" id="daftarJabatan" placeholder="Jabatan Anda">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Unsur</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+          <select id="daftarUnsur" onchange="onUnsurChange()">
+            <option value="">-- Pilih Unsur --</option>
+            <option value="Dinas Pendidikan">Dinas Pendidikan</option>
+            <option value="BBPMP/BPMP">BBPMP/BPMP</option>
+            <option value="Sekolah">Sekolah</option>
+          </select>
+          <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Field provinsi (Dinas saja) -->
+      <div class="field" id="fieldProvinsi" style="display:none">
+        <label>Provinsi</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+          <select id="daftarProvinsi">
+            <option value="">-- Pilih Provinsi --</option>
+          </select>
+          <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Field BPMP -->
+      <div class="field" id="fieldBpmp" style="display:none">
+        <label>BBPMP/BPMP</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+          <select id="daftarBpmp">
+            <option value="">-- Pilih BBPMP/BPMP --</option>
+          </select>
+          <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Field NPSN autocomplete (Sekolah) -->
+      <div class="field" id="fieldNpsn" style="display:none">
+        <label>Cari NPSN Sekolah Model</label>
+        <div class="input-wrap autocomplete-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" id="daftarNpsnInput" placeholder="Ketik NPSN atau nama sekolah..." autocomplete="off" oninput="onNpsnInput(this.value)">
+          <div class="autocomplete-list" id="npsnList"></div>
+        </div>
+        <input type="hidden" id="daftarNpsn">
+        <input type="hidden" id="daftarNamaSekolah">
+        <input type="hidden" id="daftarProvinsiSekolah">
+        <div id="sekolahTerpilih" style="display:none; margin-top:6px; padding:8px 10px; background:#eef4ff; border-radius:8px; font-size:12px; color:var(--blue-lt); font-weight:600;"></div>
+      </div>
+
+      <button class="btn-primary" id="btnDaftar" onclick="doDaftar()">
+        Daftar
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+      </button>
+    </div>
+
+    <!-- Panel Sukses Daftar -->
+    <div id="panelSukses" class="auth-panel">
+      <div class="success-wrap">
+        <div class="success-icon">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="#16a34a" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        </div>
+        <h2 class="success-title">Pendaftaran Berhasil!</h2>
+        <p class="success-sub">Data Anda telah kami terima dan sedang menunggu persetujuan admin. Anda akan dihubungi jika akun telah diaktifkan.</p>
+        <div class="success-badge">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          Menunggu persetujuan admin
+        </div>
+        <button class="back-link" onclick="showPanel('panelLogin')" style="margin:0 auto 16px">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+          Kembali ke Login
+        </button>
+        <button class="btn-ghost" onclick="masukTanpaLogin()">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+          Jelajahi Dasbor Dulu
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel Lupa Password -->
+    <div id="panelForgot" class="auth-panel">
+      <button class="back-link" onclick="showPanel('panelLogin')">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+        Kembali ke login
+      </button>
+      <h2 class="form-title">Lupa Password?</h2>
+      <p class="form-sub">Masukkan email akun Anda, kami akan mengirimkan tautan reset melalui email.</p>
+
+      <div class="err-msg" id="forgotErr"></div>
+      <div class="ok-msg"  id="forgotOk"></div>
+
+      <div class="field">
+        <label>Alamat Email</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+          <input type="email" id="forgotEmail" placeholder="email@contoh.com" autocomplete="email">
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btnForgot" onclick="doForgot()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+        Kirim Tautan Reset
+      </button>
+    </div>
+
+    <!-- Panel Reset Password (hanya muncul dari link email) -->
+    <div id="panelReset" class="auth-panel">
+      <h2 class="form-title">Buat Password Baru</h2>
+      <p class="form-sub">Masukkan password baru untuk akun Anda.</p>
+      <div class="err-msg" id="resetErr"></div>
+      <div class="ok-msg"  id="resetOk"></div>
+      <div class="field">
+        <label>Password Baru</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+          <input type="password" id="resetPw" placeholder="Minimal 8 karakter" autocomplete="new-password">
+          <button class="toggle-pw" onclick="togglePw('resetPw',this)" type="button" tabindex="-1">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Konfirmasi Password</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+          <input type="password" id="resetPwConfirm" placeholder="Ulangi password baru" autocomplete="new-password">
+          <button class="toggle-pw" onclick="togglePw('resetPwConfirm',this)" type="button" tabindex="-1">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-submit" id="btnReset" onclick="doResetPassword()">
+        Simpan Password Baru
+      </button>
+    </div>
+
+    <div class="right-footer">Direktorat SMA &nbsp;·&nbsp; Kemendikdasmen 2026</div>
+  </div>
+
+</div>
+
+<script>
+// ── Data Wilayah (embedded) ──────────────────────────────
+// 38 provinsi untuk Dinas Pendidikan
+const PROVINSI = [
+  "Aceh","Bali","Banten","Bengkulu","D.I. Yogyakarta","D.K.I. Jakarta",
+  "Gorontalo","Jambi","Jawa Barat","Jawa Tengah","Jawa Timur",
+  "Kalimantan Barat","Kalimantan Selatan","Kalimantan Tengah",
+  "Kalimantan Timur","Kalimantan Utara","Kepulauan Bangka Belitung",
+  "Kepulauan Riau","Lampung","Maluku","Maluku Utara",
+  "Nusa Tenggara Barat","Nusa Tenggara Timur","Papua","Papua Barat",
+  "Papua Barat Daya","Papua Pegunungan","Papua Selatan","Papua Tengah",
+  "Riau","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tengah",
+  "Sulawesi Tenggara","Sulawesi Utara","Sumatera Barat",
+  "Sumatera Selatan","Sumatera Utara"
+];
+// 34 provinsi untuk BBPMP/BPMP (tanpa 4 Papua pemekaran)
+const BPMP_PROV = [
+  "Aceh","Bali","Banten","Bengkulu","D.I. Yogyakarta","D.K.I. Jakarta",
+  "Gorontalo","Jambi","Jawa Barat","Jawa Tengah","Jawa Timur",
+  "Kalimantan Barat","Kalimantan Selatan","Kalimantan Tengah",
+  "Kalimantan Timur","Kalimantan Utara","Kepulauan Bangka Belitung",
+  "Kepulauan Riau","Lampung","Maluku","Maluku Utara",
+  "Nusa Tenggara Barat","Nusa Tenggara Timur","Papua","Papua Barat",
+  "Riau","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tengah",
+  "Sulawesi Tenggara","Sulawesi Utara","Sumatera Barat",
+  "Sumatera Selatan","Sumatera Utara"
+];
+
+// ── Supabase (lazy-load) ──────────────────────────────────
+const SUPA_URL = 'https://lusytejskqevwyyffeue.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
+let _sb = null;
+function getSb() {
+  if (_sb) return _sb;
+  if (!window.supabase) { console.error('Supabase belum load'); return null; }
+  _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+  return _sb;
+}
+
+// ── Panel ─────────────────────────────────────────────────
+function showPanel(id) {
+  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  ['loginErr','forgotErr','forgotOk','daftarErr'].forEach(x => {
+    const el = document.getElementById(x);
+    if (el) { el.classList.remove('show'); el.textContent = ''; }
+  });
+  // Sembunyikan gembok ketika panel daftar atau sukses aktif
+  const lockWrap = document.querySelector('.lock-wrap');
+  if (lockWrap) {
+    lockWrap.style.display = (id === 'panelDaftar' || id === 'panelSukses') ? 'none' : '';
+  }
+}
+
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.querySelector('svg').style.opacity = inp.type === 'text' ? '0.4' : '1';
+}
+
+function masukTanpaLogin() { window.location.href = 'beranda.html'; }
+
+// ── Login ─────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('loginUser').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  const err   = document.getElementById('loginErr');
+  err.classList.remove('show');
+  if (!email || !pw) { showErr(err, 'Email dan password wajib diisi.'); return; }
+
+  const btn = document.querySelector('#panelLogin .btn-primary');
+  setBtn(btn, true, 'Memproses...');
+
+  try {
+    const sb = getSb();
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if (error) throw error;
+
+    const { data: profil, error: ep } = await sb
+      .from('user_dasbor_sekolah_model')
+      .select('status,nama,role')
+      .eq('user_id', data.user.id)
+      .single();
+
+    if (ep || !profil) { await sb.auth.signOut(); throw new Error('Akun tidak ditemukan. Hubungi administrator.'); }
+    if (profil.status === 'pending')  { await sb.auth.signOut(); throw new Error('Akun Anda belum disetujui admin. Silakan tunggu konfirmasi.'); }
+    if (profil.status === 'rejected') { await sb.auth.signOut(); throw new Error('Akun Anda tidak disetujui. Hubungi administrator.'); }
+
+    localStorage.setItem('sb_user', JSON.stringify({
+      email, nama: profil.nama, id: data.user.id, role: profil.role
+    }));
+    window.location.href = 'beranda.html';
+  } catch(e) {
+    showErr(err, e.message === 'Invalid login credentials' ? 'Email atau password salah.' : e.message);
+  } finally {
+    setBtn(btn, false, 'Masuk <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>');
+  }
+}
+
+// ── Lupa Password ─────────────────────────────────────────
+async function doForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const err   = document.getElementById('forgotErr');
+  const ok    = document.getElementById('forgotOk');
+  err.classList.remove('show'); ok.classList.remove('show');
+  if (!email) { showErr(err, 'Alamat email wajib diisi.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr(err, 'Format email tidak valid.'); return; }
+
+  const btn = document.getElementById('btnForgot');
+  setBtn(btn, true, 'Mengirim...');
+
+  try {
+    const sb = getSb();
+    if (sb) await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/login.html' });
+  } catch(e) {
+    // error diabaikan — Supabase selalu "berhasil" untuk keamanan
+  }
+
+  // Selalu tampilkan sukses (Supabase tidak beri tahu apakah email terdaftar)
+  document.getElementById('forgotEmail').closest('.field').style.display = 'none';
+  btn.style.display = 'none';
+
+  ok.innerHTML = `Tautan reset berhasil dikirim ke <strong>${email}</strong>. Cek kotak masuk (dan folder spam).`;
+  ok.classList.add('show');
+}
+
+// ── Dropdown wilayah ──────────────────────────────────────
+function initDropdowns() {
+  const selProv = document.getElementById('daftarProvinsi');
+  const selBpmp = document.getElementById('daftarBpmp');
+  if (!selProv || !selBpmp) return;
+  PROVINSI.forEach(p => selProv.innerHTML += `<option value="${p}">${p}</option>`);
+  BPMP_PROV.forEach(p => selBpmp.innerHTML += `<option value="${p}">${p}</option>`);
+}
+
+function onUnsurChange() {
+  const unsur = document.getElementById('daftarUnsur').value;
+  // Provinsi hanya untuk Dinas (bukan Sekolah lagi)
+  document.getElementById('fieldProvinsi').style.display = unsur === 'Dinas Pendidikan' ? 'block' : 'none';
+  document.getElementById('fieldBpmp').style.display     = unsur === 'BBPMP/BPMP' ? 'block' : 'none';
+  document.getElementById('fieldNpsn').style.display     = unsur === 'Sekolah' ? 'block' : 'none';
+  document.getElementById('daftarProvinsi').value = '';
+  document.getElementById('daftarBpmp').value = '';
+  clearNpsn();
+}
+
+// ── Autocomplete NPSN ─────────────────────────────────────
+let npsnTimer = null;
+
+function onNpsnInput(val) {
+  clearNpsn();
+  clearTimeout(npsnTimer);
+  const list = document.getElementById('npsnList');
+  if (val.length < 3) { list.classList.remove('show'); return; }
+  list.innerHTML = '<div class="autocomplete-loading">Mencari...</div>';
+  list.classList.add('show');
+  npsnTimer = setTimeout(() => fetchNpsn(val), 300);
+}
+
+async function fetchNpsn(val) {
+  const list = document.getElementById('npsnList');
+  try {
+    const isNum = /^\d+$/.test(val);
+    let q = getSb().from('sekolah_model_2026').select('npsn,nama,provinsi,kabupaten_kota').limit(8);
+    q = isNum ? q.ilike('npsn', val + '%') : q.ilike('nama', '%' + val + '%');
+    const { data, error } = await q;
+    if (error || !data?.length) {
+      list.innerHTML = '<div class="autocomplete-loading">Sekolah tidak ditemukan</div>';
+      return;
+    }
+    list.innerHTML = data.map(s =>
+      `<div class="autocomplete-item" onclick="pilihSekolah('${s.npsn}','${s.nama.replace(/'/g,"\\'")}','${s.provinsi}','${s.kabupaten_kota}')">
+        <span class="ac-npsn">${s.npsn}</span>
+        <span class="ac-nama">${s.nama}</span>
+        <span class="ac-wil">${s.kabupaten_kota}, ${s.provinsi}</span>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="autocomplete-loading">Gagal memuat data</div>';
+  }
+}
+
+function pilihSekolah(npsn, nama, provinsi, kabkota) {
+  document.getElementById('daftarNpsnInput').value      = npsn;
+  document.getElementById('daftarNpsn').value            = npsn;
+  document.getElementById('daftarNamaSekolah').value     = nama;
+  document.getElementById('daftarProvinsiSekolah').value = provinsi;
+  document.getElementById('npsnList').classList.remove('show');
+  const box = document.getElementById('sekolahTerpilih');
+  box.textContent = npsn + ' — ' + nama + ' (' + kabkota + ', ' + provinsi + ')';
+  box.style.display = 'block';
+}
+
+function clearNpsn() {
+  ['daftarNpsn','daftarNamaSekolah','daftarProvinsiSekolah'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  const box = document.getElementById('sekolahTerpilih');
+  if (box) box.style.display = 'none';
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    const list = document.getElementById('npsnList');
+    if (list) list.classList.remove('show');
+  }
+});
+
+// ── Daftar Submit ─────────────────────────────────────────
+async function doDaftar() {
+  const err = document.getElementById('daftarErr');
+  err.classList.remove('show');
+
+  const nama     = document.getElementById('daftarNama').value.trim();
+  const email    = document.getElementById('daftarEmail').value.trim();
+  const pw       = document.getElementById('daftarPw').value;
+  const instansi = document.getElementById('daftarInstansi').value.trim();
+  const jabatan  = document.getElementById('daftarJabatan').value.trim();
+  const unsur    = document.getElementById('daftarUnsur').value;
+  const provinsi = document.getElementById('daftarProvinsi').value;
+  const bpmp     = document.getElementById('daftarBpmp').value;
+  const npsn     = document.getElementById('daftarNpsn').value;
+  const namaSekolah      = document.getElementById('daftarNamaSekolah').value;
+  const provinsiSekolah  = document.getElementById('daftarProvinsiSekolah').value;
+
+  if (!nama || !email || !pw || !instansi || !jabatan || !unsur) { showErr(err, 'Semua field wajib diisi.'); return; }
+  if (pw.length < 8)                                    { showErr(err, 'Password minimal 8 karakter.'); return; }
+  if (unsur === 'Dinas Pendidikan' && !provinsi)        { showErr(err, 'Pilih provinsi terlebih dahulu.'); return; }
+  if (unsur === 'BBPMP/BPMP' && !bpmp)                 { showErr(err, 'Pilih BBPMP/BPMP terlebih dahulu.'); return; }
+  if (unsur === 'Sekolah' && !npsn)                     { showErr(err, 'Pilih sekolah terlebih dahulu.'); return; }
+
+  const btn = document.getElementById('btnDaftar');
+  setBtn(btn, true, 'Memproses...');
+
+  try {
+    const sb = getSb();
+    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password: pw });
+    if (authErr) throw authErr;
+    const userId = authData.user?.id;
+    if (!userId) throw new Error('Gagal mendapatkan ID pengguna.');
+
+    const { error: insertErr } = await sb.from('user_dasbor_sekolah_model').insert({
+      user_id:     userId,
+      nama, email, instansi, jabatan, unsur,
+      provinsi:     unsur === 'Dinas Pendidikan' ? provinsi
+                  : unsur === 'Sekolah'          ? provinsiSekolah
+                  : null,
+      bpmp:         unsur === 'BBPMP/BPMP' ? bpmp : null,
+      npsn:         unsur === 'Sekolah' ? npsn : null,
+      nama_sekolah: unsur === 'Sekolah' ? namaSekolah : null,
+      status: 'pending',
+      role:   'viewer'
+    });
+    if (insertErr) throw insertErr;
+
+    await sb.auth.signOut();
+    showPanel('panelSukses');
+  } catch(e) {
+    showErr(err, e.message?.includes('already registered')
+      ? 'Email sudah terdaftar. Gunakan email lain atau login.'
+      : 'Pendaftaran gagal: ' + e.message);
+  } finally {
+    setBtn(btn, false, 'Daftar <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>');
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────
+function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+function setBtn(btn, disabled, html) { btn.disabled = disabled; btn.innerHTML = html; }
+
+// ── Keyboard ──────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const active = document.querySelector('.auth-panel.active');
+  if (active?.id === 'panelLogin')  doLogin();
+  if (active?.id === 'panelForgot') doForgot();
+  if (active?.id === 'panelDaftar') doDaftar();
+});
+
+// ── Mobile ────────────────────────────────────────────────
+function isMobile() { return window.innerWidth <= 768; }
+function openMobileLogin() {
+  document.querySelector('.right').classList.add('open');
+  document.getElementById('mobileOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileLogin() {
+  document.querySelector('.right').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── Reset Password ────────────────────────────────────────
+async function doResetPassword() {
+  const pw      = document.getElementById('resetPw').value;
+  const pwConf  = document.getElementById('resetPwConfirm').value;
+  const err     = document.getElementById('resetErr');
+  const ok      = document.getElementById('resetOk');
+  err.classList.remove('show'); ok.classList.remove('show');
+
+  if (pw.length < 8)   { err.textContent = 'Password minimal 8 karakter.'; err.classList.add('show'); return; }
+  if (pw !== pwConf)   { err.textContent = 'Konfirmasi password tidak cocok.'; err.classList.add('show'); return; }
+
+  const btn = document.getElementById('btnReset');
+  btn.disabled = true; btn.textContent = 'Menyimpan...';
+
+  const { error } = await getSb().auth.updateUser({ password: pw });
+  btn.disabled = false;
+  btn.textContent = 'Simpan Password Baru';
+
+  if (error) { err.textContent = 'Gagal: ' + error.message; err.classList.add('show'); return; }
+
+  ok.innerHTML = 'Password berhasil diubah! Anda akan diarahkan ke halaman login...';
+  ok.classList.add('show');
+  setTimeout(() => {
+    getSb().auth.signOut();
+    showPanel('panelLogin');
+  }, 2500);
+}
+
+// ── Cek token reset dari URL hash ─────────────────────────
+function checkResetToken() {
+  const hash = window.location.hash;
+  if (!hash) return false;
+  const params = new URLSearchParams(hash.substring(1));
+  const type   = params.get('type');
+  if (type === 'recovery') {
+    // Supabase sudah otomatis set session dari URL hash
+    showPanel('panelReset');
+    // Bersihkan hash dari URL
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    return true;
+  }
+  return false;
+}
+
+// ── Init: load Supabase CDN lalu isi dropdown ─────────────
+(function() {
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.onload = function() {
+    initDropdowns();
+    // Cek apakah landing dari link reset password
+    checkResetToken();
+  };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

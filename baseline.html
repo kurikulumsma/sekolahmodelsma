@@ -24,7 +24,7 @@
 body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; font-size: 13.5px; }
 
 /* ── SIDEBAR ── */
-aside { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 10001; transition: transform 0.25s ease; }
+aside { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform 0.25s ease; }
 .sidebar-logo { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; }
 .sidebar-logo img { width: 100%; max-width: 160px; height: auto; object-fit: contain; display: block; }
 .sidebar-close { display: none; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px; flex-shrink: 0; margin-left: 8px; }
@@ -36,17 +36,19 @@ nav a.active { background: var(--blue-lt); color: #fff; }
 nav a.active svg { opacity: 1; }
 .nav-divider { padding: 10px 12px 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.22); }
 .sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6; }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 10000; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 150; }
 .sidebar-overlay.show { display: block; }
 
 /* ── MOBILE TOPBAR ── */
-.mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 52px; background: var(--navy); z-index: 10002; align-items: center; padding: 0 16px; gap: 12px; }
+.mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 52px; background: var(--navy); z-index: 100; align-items: center; padding: 0 16px; gap: 12px; }
 .hamburger { background: none; border: none; color: #fff; cursor: pointer; padding: 4px; display: flex; align-items: center; }
 .mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+.mobile-auth-btn { margin-left: auto; padding: 5px 11px; border-radius: 7px; background: var(--blue-lt); color: #fff; border: none; font-size: 11.5px; font-weight: 600; font-family: inherit; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+.mobile-user-name { margin-left: auto; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
 
 /* ── MAIN ── */
 main { margin-left: var(--sidebar-w); flex: 1; padding: 26px 28px 40px; overflow-x: hidden; }
-.topbar { display: flex; align-items: flex-end; margin-bottom: 20px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .topbar-left h1 { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -0.03em; line-height: 1.2; }
 .topbar-left p { font-size: 12px; color: var(--muted); margin-top: 3px; }
 
@@ -86,6 +88,31 @@ main { margin-left: var(--sidebar-w); flex: 1; padding: 26px 28px 40px; overflow
 .cb-l1-name { font-weight: 700; font-size: 12.5px; color: var(--navy); }
 .cb-l2-code, .cb-l3-code { font-family: monospace; font-size: 10.5px; font-weight: 700; color: var(--blue-lt); white-space: nowrap; }
 .cb-l2-name { font-weight: 600; color: var(--navy); }
+
+/* ── SUMMARY CHARTS ── */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.summary-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 18px 20px; animation: fadeUp 0.35s ease both; }
+.summary-card-title { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
+.summary-card-sub   { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+.summary-card-icon  { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-bottom: 12px; }
+.summary-card-head  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.summary-card-head-text { flex: 1; }
+
+/* ── PIE CHART ── */
+.pie-chart-wrap { position: relative; display: flex; flex-direction: row; align-items: center; gap: 16px; }
+.pie-svg-area { width: 130px; height: 130px; flex-shrink: 0; }
+.pie-svg-area svg { width: 100%; height: 100%; overflow: visible; }
+.pie-slice { cursor: pointer; transition: opacity 0.15s, filter 0.15s; }
+.pie-slice:hover { filter: brightness(1.18) drop-shadow(0 2px 6px rgba(0,0,0,0.22)); }
+.pie-legend { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
+.pie-legend-item { display: flex; align-items: center; gap: 7px; cursor: default; padding: 3px 6px; border-radius: 7px; transition: background 0.12s; }
+.pie-legend-item:hover { background: var(--bg); }
+.pie-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.pie-legend-label { font-size: 11px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pie-legend-val { font-size: 11px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.pie-legend-pct { font-size: 10px; color: var(--muted); margin-left: 2px; }
+.pie-tooltip { position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%); background: var(--navy); color: #fff; border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 600; pointer-events: none; white-space: nowrap; opacity: 0; transition: opacity 0.15s; box-shadow: 0 4px 14px rgba(10,31,60,0.28); z-index: 10; text-align: center; }
+.pie-tooltip.show { opacity: 1; }
 
 /* ── MAIN TABLE ── */
 .panel { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; animation: fadeUp 0.35s ease both; }
@@ -159,7 +186,7 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 .modal-pane { display: none; }
 .modal-pane.active { display: block; }
 
-/* L1 section — sama kayak versi sebelumnya */
+/* L1 section */
 .l1-section { margin-bottom: 20px; }
 .l1-header { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; }
 .l1-header-murid { background: #e8f0fb; }
@@ -173,29 +200,34 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 .l1-title-murid { color: #1a4a8a; }
 .l1-title-guru  { color: #1a6b3e; }
 .l1-title-kasek { color: #8a5c00; }
-
-/* L2 label — tetap ada untuk konteks */
 .l2-labels { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .l2-label-pill { font-size: 10px; font-weight: 600; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; text-transform: uppercase; letter-spacing: 0.05em; }
-
-/* Radar canvas — satu per L1, lumayan besar */
 .radar-wrap { width: 100%; max-width: 420px; margin: 0 auto; aspect-ratio: 1; position: relative; }
 .radar-wrap canvas { width: 100% !important; height: 100% !important; }
-
-/* KKA Murid single box */
 .single-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; display: inline-block; }
 .single-box .l3-code { font-size: 9.5px; font-family: monospace; color: var(--muted); margin-bottom: 3px; }
 .single-box .l3-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
-
-/* Radar legend */
 .radar-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; font-size: 10px; color: var(--muted); }
 .radar-legend-item { display: flex; align-items: center; gap: 4px; }
 .radar-legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* ── USER BADGE ── */
+.user-badge { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.user-badge-info { text-align: right; }
+.user-badge-name { font-size: 12px; font-weight: 700; color: var(--navy); line-height: 1.3; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-badge-role { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.btn-masuk { padding: 6px 14px; border-radius: 8px; background: var(--blue-lt); color: #fff; border: none; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+.btn-masuk:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.3); }
+.btn-logout-top { padding: 5px 12px; border-radius: 7px; background: transparent; border: 1.5px solid var(--border); color: var(--muted); font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn-logout-top:hover { background: #fde8d8; color: #8a3000; border-color: #f5b89a; }
+
+/* skeleton */
 @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
 .skel { background: linear-gradient(90deg, #e8f0fb 25%, #dce6f5 50%, #e8f0fb 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite linear; border-radius: 6px; }
 
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   aside { transform: translateX(-100%); }
   aside.open { transform: translateX(0); }
@@ -209,231 +241,8 @@ td.td-nama { font-weight: 600; color: var(--navy); }
   .modal { border-radius: 16px 16px 0 0; max-width: 100%; max-height: calc(100dvh - 60px); overflow-y: auto; }
   .modal-backdrop.open { padding-top: 60px; align-items: flex-end; }
   .radar-wrap { max-width: 100%; }
-}
-
-/* ── SUMMARY CHARTS ── */
-.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-.summary-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 18px 20px; animation: fadeUp 0.35s ease both; }
-.summary-card-title { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
-.summary-card-sub   { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
-.summary-card-icon  { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-bottom: 12px; }
-.summary-card-head  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
-.summary-card-head-text { flex: 1; }
-.bar-list { display: flex; flex-direction: column; gap: 11px; }
-.bar-item { display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 12px; cursor: default; }
-.bar-label { font-size: 11.5px; font-weight: 600; color: var(--text); white-space: nowrap; }
-.bar-zero .bar-label { color: var(--muted); font-weight: 500; }
-.bar-track {
-  position: relative; height: 6px;
-  background: #e8eef7; border-radius: 99px; overflow: hidden;
-}
-.bar-fill {
-  position: absolute; left: 0; top: 0; height: 100%;
-  border-radius: 99px;
-  transition: width 0.85s cubic-bezier(.4,0,.2,1);
-}
-.bar-item:hover .bar-fill { filter: brightness(1.2); }
-.bar-count { font-size: 12px; font-weight: 700; color: var(--navy); text-align: right; white-space: nowrap; }
-.bar-pct   { font-size: 12px; color: var(--muted); font-weight: 400; }
-.bar-zero .bar-count { color: var(--muted); font-weight: 500; }
-@media (max-width: 768px) {
   .summary-grid { grid-template-columns: 1fr; }
-  .bar-item { grid-template-columns: 100px 1fr auto; gap: 8px; }
-}
-
-/* ── PIE CHART ── */
-.pie-chart-wrap { position: relative; display: flex; flex-direction: row; align-items: center; gap: 16px; }
-.pie-svg-area { width: 130px; height: 130px; flex-shrink: 0; }
-.pie-svg-area svg { width: 100%; height: 100%; overflow: visible; }
-.pie-slice { cursor: pointer; transition: opacity 0.15s, filter 0.15s; }
-.pie-slice:hover { filter: brightness(1.18) drop-shadow(0 2px 6px rgba(0,0,0,0.22)); }
-.pie-legend { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
-.pie-legend-item { display: flex; align-items: center; gap: 7px; cursor: default; padding: 3px 6px; border-radius: 7px; transition: background 0.12s; }
-.pie-legend-item:hover { background: var(--bg); }
-.pie-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.pie-legend-label { font-size: 11px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pie-legend-val { font-size: 11px; font-weight: 700; color: var(--navy); white-space: nowrap; }
-.pie-legend-pct { font-size: 10px; color: var(--muted); margin-left: 2px; }
-.pie-tooltip {
-  position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
-  background: var(--navy); color: #fff; border-radius: 8px;
-  padding: 6px 12px; font-size: 11px; font-weight: 600;
-  pointer-events: none; white-space: nowrap;
-  opacity: 0; transition: opacity 0.15s;
-  box-shadow: 0 4px 14px rgba(10,31,60,0.28);
-  z-index: 10;
-  text-align: center;
-}
-.pie-tooltip.show { opacity: 1; }
-@media (max-width: 768px) {
   .pie-svg-area { width: 110px; height: 110px; }
-  .pie-legend-label { font-size: 10px; }
-}
-
-/* ── USER BADGE (topbar kanan atas) ── */
-.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.user-badge { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.user-badge-info { text-align: right; }
-.user-badge-name { font-size: 12px; font-weight: 700; color: var(--navy); line-height: 1.3; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.user-badge-role { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
-.btn-masuk {
-  padding: 6px 14px; border-radius: 8px;
-  background: var(--blue-lt); color: #fff;
-  border: none; font-size: 12px; font-weight: 600;
-  font-family: inherit; cursor: pointer;
-  transition: all 0.15s; white-space: nowrap;
-  display: flex; align-items: center; gap: 6px;
-}
-.btn-masuk:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.3); }
-.btn-logout-top {
-  padding: 5px 12px; border-radius: 7px;
-  background: transparent; border: 1.5px solid var(--border);
-  color: var(--muted); font-size: 11px; font-weight: 600;
-  font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.btn-logout-top:hover { background: #fde8d8; color: #8a3000; border-color: #f5b89a; }
-
-/* ── MOBILE TOPBAR: tombol masuk / nama user ── */
-.mobile-auth-btn {
-  margin-left: auto;
-  padding: 5px 11px; border-radius: 7px;
-  background: var(--blue-lt); color: #fff;
-  border: none; font-size: 11.5px; font-weight: 600;
-  font-family: inherit; cursor: pointer; white-space: nowrap;
-  flex-shrink: 0;
-}
-.mobile-user-name {
-  margin-left: auto;
-  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85);
-  max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* ── LOGIN MODAL OVERLAY ── */
-.auth-modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,31,60,0.6); z-index: 20000;
-  align-items: center; justify-content: center;
-  padding: 20px;
-}
-.auth-modal-overlay.open { display: flex; }
-.auth-modal {
-  background: var(--surface); border-radius: 16px;
-  width: 100%; max-width: 400px;
-  box-shadow: 0 20px 60px rgba(10,31,60,0.3);
-  overflow: hidden; animation: fadeUp 0.2s ease both;
-}
-.auth-modal-head {
-  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
-  padding: 20px 22px; display: flex; align-items: center; gap: 12px;
-}
-.auth-modal-head-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: rgba(255,255,255,0.15);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.auth-modal-head-icon svg { color: #fff; }
-.auth-modal-head-text strong { display: block; font-size: 14px; font-weight: 800; color: #fff; }
-.auth-modal-head-text span  { font-size: 11.5px; color: rgba(255,255,255,0.65); }
-.auth-modal-close {
-  margin-left: auto; background: rgba(255,255,255,0.12);
-  border: none; border-radius: 8px; width: 30px; height: 30px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #fff; flex-shrink: 0; transition: background 0.15s;
-}
-.auth-modal-close:hover { background: rgba(255,255,255,0.22); }
-.auth-modal-body { padding: 22px; }
-
-/* Field label & input */
-.auth-field { margin-bottom: 14px; }
-.auth-field label { display: block; font-size: 11.5px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
-.auth-field input, .auth-field select {
-  width: 100%; padding: 9px 12px; border-radius: 8px;
-  border: 1.5px solid var(--border); font-size: 13px;
-  font-family: inherit; color: var(--text); background: var(--bg);
-  outline: none; transition: border-color 0.15s; appearance: none;
-}
-.auth-field input:focus, .auth-field select:focus { border-color: var(--blue-lt); background: #fff; }
-.auth-field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b83a4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px;
-}
-.auth-error {
-  background: #fde8d8; border: 1px solid #f5b89a; border-radius: 8px;
-  padding: 9px 12px; font-size: 12px; color: #8a3000;
-  margin-bottom: 14px; display: none;
-}
-.auth-error.show { display: block; }
-.btn-auth-submit {
-  width: 100%; padding: 11px; border-radius: 9px;
-  background: var(--blue-lt); color: #fff; border: none;
-  font-size: 13.5px; font-weight: 700; font-family: inherit;
-  cursor: pointer; transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn-auth-submit:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.35); }
-.btn-auth-submit:disabled { opacity: 0.6; cursor: default; transform: none; box-shadow: none; }
-.btn-auth-spinner {
-  display: none; width: 16px; height: 16px; flex-shrink: 0;
-  animation: spin 0.8s linear infinite;
-}
-.btn-auth-submit.loading .btn-auth-spinner { display: block; }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.auth-link { font-size: 11.5px; color: var(--blue-lt); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; transition: color 0.15s; display: inline-flex; align-items: center; gap: 4px; }
-.auth-link:hover { color: var(--blue); }
-.auth-divider { margin-top: 12px; text-align: left; }
-
-/* Forgot panel */
-.auth-panel { display: none; }
-.auth-panel.active { display: block; }
-.auth-success {
-  background: #e0f0e9; border: 1px solid #a8d8b9; border-radius: 8px;
-  padding: 10px 12px; font-size: 12px; color: #1a4a30;
-  margin-bottom: 14px; display: none; line-height: 1.5;
-}
-.auth-success.show { display: block; }
-
-/* Change password modal */
-.changepw-overlay {
-  display: none; position: fixed; inset: 0; z-index: 21000;
-  background: rgba(10,31,60,0.65);
-  align-items: center; justify-content: center; padding: 20px;
-}
-.changepw-overlay.open { display: flex; }
-.changepw-card {
-  background: var(--surface); border-radius: 16px;
-  width: 100%; max-width: 380px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  overflow: hidden; animation: fadeUp 0.2s ease both;
-}
-.changepw-head {
-  background: linear-gradient(115deg, #1a4a8f, #1e5fbb);
-  padding: 20px 22px; display: flex; align-items: center; gap: 12px;
-}
-.changepw-head-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: rgba(255,255,255,0.15);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.changepw-head-icon svg { color: #fff; }
-.changepw-head-text strong { display: block; font-size: 13.5px; font-weight: 800; color: #fff; }
-.changepw-head-text span  { font-size: 11px; color: rgba(255,255,255,0.65); }
-.changepw-body { padding: 20px 22px 24px; }
-.changepw-notice {
-  background: #fef3d7; border: 1px solid #f0d080; border-radius: 8px;
-  padding: 10px 12px; font-size: 12px; color: #6b4400;
-  margin-bottom: 16px; line-height: 1.5;
-}
-.changepw-notice-list { display: flex; flex-direction: column; gap: 5px; }
-.changepw-notice-item { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: #6b4400; }
-.changepw-notice-dot { flex-shrink: 0; font-size: 8px; margin-top: 4px; color: #c8860a; }
-.changepw-error { background: #fde8d8; border: 1px solid #f5b89a; border-radius: 8px; padding: 9px 12px; font-size: 12px; color: #8a3000; margin-bottom: 12px; display: none; }
-.changepw-error.show { display: block; }
-
-/* iOS font-size fix */
-@media (max-width: 768px) {
-  .auth-field input, .auth-field select,
-  #cpNewPw1, #cpNewPw2 { font-size: 16px; }
   .user-badge-info { display: none; }
 }
 </style>
@@ -442,123 +251,13 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 
 <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- ── LOGIN MODAL ── -->
-<div class="auth-modal-overlay" id="loginModalOverlay">
-  <div class="auth-modal">
-    <div class="auth-modal-head">
-      <div class="auth-modal-head-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <div class="auth-modal-head-text">
-        <strong id="authModalTitle">Masuk ke Dashboard</strong>
-        <span id="authModalSub">Sekolah Model 2026</span>
-      </div>
-      <button class="auth-modal-close" onclick="closeLoginModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="auth-modal-body">
-
-      <!-- Panel Login -->
-      <div class="auth-panel active" id="panelLogin">
-        <div class="auth-error" id="loginError"></div>
-        <div class="auth-field">
-          <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" placeholder="Masukkan email Anda" autocomplete="email">
-        </div>
-        <div class="auth-field" style="margin-bottom:16px">
-          <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" placeholder="Masukkan password" autocomplete="current-password">
-        </div>
-        <button class="btn-auth-submit" id="btnLoginSubmit" onclick="doLogin()">
-          <svg class="btn-auth-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          <span id="btnLoginText">Masuk</span>
-        </button>
-        <div class="auth-divider">
-          <button class="auth-link" onclick="showPanel('panelForgot')" style="margin-top:10px">Lupa password?</button>
-        </div>
-      </div>
-
-      <!-- Panel Lupa Password -->
-      <div class="auth-panel" id="panelForgot">
-        <button class="auth-link" onclick="showPanel('panelLogin')" style="margin-bottom:14px">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          Kembali ke login
-        </button>
-        <div class="auth-error" id="forgotError"></div>
-        <div class="auth-success" id="forgotSuccess"></div>
-        <div class="auth-field">
-          <label for="forgotEmail">Email Terdaftar</label>
-          <input type="email" id="forgotEmail" placeholder="Masukkan email akun Anda">
-        </div>
-        <div class="auth-field">
-          <label for="forgotUnsur">Unsur</label>
-          <select id="forgotUnsur" onchange="onForgotUnsurChange()">
-            <option value="">— Pilih unsur —</option>
-            <option value="provinsi">Dinas Pendidikan Provinsi</option>
-            <option value="upt">UPT</option>
-            <option value="sekolah">Sekolah</option>
-          </select>
-        </div>
-        <div class="auth-field" id="forgotProvinsiField" style="display:none">
-          <label for="forgotProvinsi">Provinsi</label>
-          <select id="forgotProvinsi"><option value="">— Pilih provinsi —</option></select>
-        </div>
-        <div class="auth-field" id="forgotNpsnField" style="display:none">
-          <label for="forgotNpsn">NPSN</label>
-          <input type="text" id="forgotNpsn" placeholder="Masukkan NPSN sekolah" maxlength="12" inputmode="numeric">
-        </div>
-        <button class="btn-auth-submit" id="btnForgotSubmit" onclick="doForgot()">
-          <svg class="btn-auth-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          <span id="btnForgotText">Reset Password</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- ── CHANGE PASSWORD MODAL (first login) ── -->
-<div class="changepw-overlay" id="changePwOverlay">
-  <div class="changepw-card">
-    <div class="changepw-head">
-      <div class="changepw-head-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <div class="changepw-head-text">
-        <strong>Buat Password Baru</strong>
-        <span>Wajib dilakukan saat pertama login</span>
-      </div>
-    </div>
-    <div class="changepw-body">
-      <div class="changepw-notice">
-        <div class="changepw-notice-list">
-          <div class="changepw-notice-item"><span class="changepw-notice-dot">●</span><span>Anda masih menggunakan password default. Silakan buat password baru untuk melanjutkan.</span></div>
-          <div class="changepw-notice-item"><span class="changepw-notice-dot">●</span><span>Gunakan password yang mudah diingat oleh seluruh tim instansi.</span></div>
-          <div class="changepw-notice-item"><span class="changepw-notice-dot">●</span><span>Password ini digunakan bersama oleh tim instansi untuk mengakses dashboard.</span></div>
-        </div>
-      </div>
-      <div class="changepw-error" id="cpError"></div>
-      <div class="auth-field">
-        <label for="cpNewPw1">Password Baru</label>
-        <input type="password" id="cpNewPw1" placeholder="Minimal 6 karakter">
-      </div>
-      <div class="auth-field" style="margin-bottom:18px">
-        <label for="cpNewPw2">Konfirmasi Password</label>
-        <input type="password" id="cpNewPw2" placeholder="Ulangi password baru">
-      </div>
-      <button class="btn-auth-submit" id="btnCpSubmit" onclick="doChangePassword()">Simpan Password</button>
-    </div>
-  </div>
-</div>
-
 <div class="mobile-topbar">
   <button class="hamburger" onclick="openSidebar()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <span class="mobile-topbar-title">Baseline Sekolah Model 2026</span>
   <span class="mobile-user-name" id="mobileUserName" style="display:none"></span>
-  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="openLoginModal()">Masuk</button>
+  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
   <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
 </div>
 
@@ -596,6 +295,11 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
       Dinas Pendidikan
     </a>
+    <div class="nav-divider nav-admin-only">Sistem</div>
+    <a href="kelola-pengguna.html" class="nav-admin-only">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Kelola Pengguna
+    </a>
   </nav>
   <div class="sidebar-footer">Data diperbarui<br>30 Mei 2026 · 20:05</div>
 </aside>
@@ -607,14 +311,12 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       <p>Data profil awal sekolah model — KKA &amp; Pembelajaran Mendalam</p>
     </div>
     <div class="user-badge" id="userBadge">
-      <!-- Belum login -->
-      <div id="badgeGuest">
-        <button class="btn-masuk" onclick="openLoginModal()">
+      <div id="badgeGuest" style="display:none">
+        <button class="btn-masuk" onclick="window.location.href='login.html'">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Masuk
         </button>
       </div>
-      <!-- Sudah login -->
       <div id="badgeUser" style="display:none;align-items:center;gap:10px">
         <div class="user-badge-info">
           <div class="user-badge-name" id="badgeEmail">—</div>
@@ -625,7 +327,7 @@ td.td-nama { font-weight: 600; color: var(--navy); }
     </div>
   </div>
 
-  <!-- CODEBOOK -->
+  <!-- PANDUAN INDIKATOR -->
   <div class="codebook-wrap" id="codebookWrap">
     <button class="codebook-toggle" onclick="toggleCodebook()">
       <div class="codebook-toggle-icon">
@@ -702,9 +404,8 @@ td.td-nama { font-weight: 600; color: var(--navy); }
     </div>
   </div>
 
-  <!-- SUMMARY CHARTS — publik, selalu tampil -->
+  <!-- PROFIL PM & KKA (pie charts, data statis) -->
   <div class="summary-grid" id="summaryGrid">
-    <!-- PM Chart -->
     <div class="summary-card">
       <div class="summary-card-head">
         <div class="summary-card-icon" style="background:#e8f0fb">
@@ -721,7 +422,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
         <div class="pie-tooltip" id="pieTooltipPM"></div>
       </div>
     </div>
-    <!-- KKA Chart -->
     <div class="summary-card">
       <div class="summary-card-head">
         <div class="summary-card-icon" style="background:#e0f0e9">
@@ -740,20 +440,18 @@ td.td-nama { font-weight: 600; color: var(--navy); }
     </div>
   </div>
 
-  <!-- INLINE AUTH — tampil kalau belum login -->
+  <!-- GUEST PLACEHOLDER — tampil kalau belum login -->
   <div class="panel" id="guestPlaceholder" style="display:none">
     <div class="panel-header" style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
       <div class="panel-title">Daftar Sekolah Model — Data Baseline</div>
-      <div class="panel-sub">Data tersedia setelah masuk</div>
+      <div class="panel-sub">Masuk untuk melihat data</div>
     </div>
     <div style="position:relative;overflow:hidden">
-      <!-- Fake filter bar -->
       <div class="table-filters" style="pointer-events:none;user-select:none;filter:blur(1.5px)">
         <div class="skel" style="flex:2;height:34px;border-radius:7px"></div>
         <div class="skel" style="flex:1;height:34px;border-radius:7px"></div>
         <div class="skel" style="flex:1;height:34px;border-radius:7px"></div>
       </div>
-      <!-- Fake table -->
       <div style="overflow-x:auto;filter:blur(4px);pointer-events:none;user-select:none">
         <table style="width:100%;border-collapse:collapse">
           <thead>
@@ -767,7 +465,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
               <th style="padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted)">Mapel KKA</th>
               <th style="padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted)">Profil PM</th>
               <th style="padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted)">Profil KKA</th>
-              <th style="width:80px"></th>
             </tr>
           </thead>
           <tbody>
@@ -781,7 +478,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:52px;border-radius:20px"></div></td>
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:64px;border-radius:20px"></div></td>
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:64px;border-radius:20px"></div></td>
-              <td style="padding:9px 14px"><div class="skel" style="height:24px;width:58px;border-radius:6px"></div></td>
             </tr>
             <tr style="border-bottom:1px solid var(--border)">
               <td style="padding:9px 14px;font-size:11px;color:var(--muted);text-align:center">2</td>
@@ -793,7 +489,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:52px;border-radius:20px"></div></td>
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:64px;border-radius:20px"></div></td>
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:64px;border-radius:20px"></div></td>
-              <td style="padding:9px 14px"><div class="skel" style="height:24px;width:58px;border-radius:6px"></div></td>
             </tr>
             <tr>
               <td style="padding:9px 14px;font-size:11px;color:var(--muted);text-align:center">3</td>
@@ -805,20 +500,18 @@ td.td-nama { font-weight: 600; color: var(--navy); }
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:52px;border-radius:20px"></div></td>
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:64px;border-radius:20px"></div></td>
               <td style="padding:9px 14px"><div class="skel" style="height:20px;width:64px;border-radius:20px"></div></td>
-              <td style="padding:9px 14px"><div class="skel" style="height:24px;width:58px;border-radius:6px"></div></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!-- Lock overlay -->
-      <div onclick="openLoginModal()" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;background:rgba(242,246,251,0.55);backdrop-filter:blur(1px)">
+      <div onclick="window.location.href='login.html'" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;background:rgba(242,246,251,0.55);backdrop-filter:blur(1px)">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--navy-mid);opacity:0.7"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span style="font-size:12.5px;font-weight:700;color:var(--navy);opacity:0.8">Masuk untuk melihat data detail</span>
+        <span style="font-size:12.5px;font-weight:700;color:var(--navy);opacity:0.8">Masuk untuk melihat data</span>
       </div>
     </div>
   </div>
 
-  <!-- TABLE — tersembunyi sampai login -->
+  <!-- DAFTAR SEKOLAH MODEL — tersembunyi sampai login -->
   <div class="panel" id="tablePanel" style="display:none">
     <div class="panel-header" style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
       <div class="panel-title">Daftar Sekolah Model — Data Baseline</div>
@@ -882,7 +575,7 @@ td.td-nama { font-weight: 600; color: var(--navy); }
   </div>
 </main>
 
-<!-- MODAL -->
+<!-- MODAL DETAIL -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
   <div class="modal" id="modalBox">
     <div class="modal-head">
@@ -896,7 +589,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       </button>
     </div>
     <div class="modal-body">
-      <!-- Profil highlight -->
       <div class="skor-row">
         <div class="skor-card">
           <div class="skor-card-label">Profil PM</div>
@@ -909,27 +601,20 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           <div class="skor-card-skor-wrap"><span class="skor-card-skor-label">Skor:</span><span class="skor-card-skor-val" id="mSkorKKA">—</span></div>
         </div>
       </div>
-
-      <!-- Tabs -->
       <div class="modal-tabs">
         <button class="modal-tab active" onclick="switchModalTab('pm',this)">Pembelajaran Mendalam (PM)</button>
         <button class="modal-tab" onclick="switchModalTab('kka',this)">Koding &amp; KA (KKA)</button>
       </div>
-
       <!-- PM pane -->
       <div class="modal-pane active" id="mpane-pm">
-        <!-- PM Murid -->
         <div class="l1-section">
           <div class="l1-header l1-header-murid">
             <span class="l1-badge l1-badge-murid">1</span>
             <span class="l1-title l1-title-murid">Murid</span>
           </div>
-          <div class="l2-labels">
-            <span class="l2-label-pill">1.1 — Budaya Belajar</span>
-          </div>
+          <div class="l2-labels"><span class="l2-label-pill">1.1 — Budaya Belajar</span></div>
           <div class="radar-wrap"><canvas id="rc-pm-murid"></canvas></div>
         </div>
-        <!-- PM Guru -->
         <div class="l1-section">
           <div class="l1-header l1-header-guru">
             <span class="l1-badge l1-badge-guru">2</span>
@@ -942,7 +627,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           </div>
           <div class="radar-wrap"><canvas id="rc-pm-guru"></canvas></div>
         </div>
-        <!-- PM Kepsek -->
         <div class="l1-section">
           <div class="l1-header l1-header-kasek">
             <span class="l1-badge l1-badge-kasek">3</span>
@@ -964,12 +648,9 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8a5c00"></div>Unggul (4)</div>
         </div>
       </div>
-
       <!-- KKA pane -->
       <div class="modal-pane" id="mpane-kka">
-        <!-- Banner Mapel KKA -->
         <div id="mMapelKKA" style="margin-bottom:14px"></div>
-        <!-- KKA Murid: kotak -->
         <div class="l1-section">
           <div class="l1-header l1-header-murid">
             <span class="l1-badge l1-badge-murid">1</span>
@@ -978,7 +659,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           <div class="l2-labels"><span class="l2-label-pill">1.1 — Budaya Belajar</span></div>
           <div id="kka-murid-box"></div>
         </div>
-        <!-- KKA Guru -->
         <div class="l1-section">
           <div class="l1-header l1-header-guru">
             <span class="l1-badge l1-badge-guru">2</span>
@@ -990,7 +670,6 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           </div>
           <div class="radar-wrap"><canvas id="rc-kka-guru"></canvas></div>
         </div>
-        <!-- KKA Kepsek -->
         <div class="l1-section">
           <div class="l1-header l1-header-kasek">
             <span class="l1-badge l1-badge-kasek">3</span>
@@ -1012,249 +691,82 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8a5c00"></div>Unggul (4)</div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const GAS_URL   = 'https://script.google.com/macros/s/AKfycbzMYVmecr4FcaODB7gn9JfVgitygGw0JExzkzqNJ-txvURw21JDifCyVD-C4lM9N64_/exec';
+const SUPA_URL  = 'https://lusytejskqevwyyffeue.supabase.co/rest/v1/sekolah_model_2026';
+const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
+const SUPA_SELECT = 'npsn,nama,provinsi,kabupaten_kota,status_sekolah,status_koding_ka,profil_pm,profil_kka,skor_pm,skor_kka,pm_1_1_1,pm_1_1_2,pm_1_1_3,pm_1_1_4,pm_1_1_5,pm_1_1_6,pm_2_1_1,pm_2_1_2,pm_2_1_3,pm_2_2_1,pm_2_2_2,pm_2_3_1,pm_2_3_2,pm_3_1_1,pm_3_1_2,pm_3_1_3,pm_3_1_4,pm_3_2_1,pm_3_2_2,pm_3_2_3,pm_3_3_1,pm_3_3_2,pm_3_4_1,pm_3_4_2,kka_1_1_1,kka_2_1_1,kka_2_1_2,kka_2_2_1,kka_3_1_1,kka_3_1_2,kka_3_2_1,kka_3_2_2,kka_3_3_1,kka_3_4_1,kka_3_4_2';
 const PAGE_SIZE = 20;
-let ALL_SCHOOLS = [];
+let ALL_SCHOOLS  = [];
 let baselinePage = 1;
 let activeCharts = {};
 
-// ── UPT multi-provinsi mapping ─────────────────────────────────────────────────
-const UPT_PROVINSI_MAP = {
-  'upt_papua'      : ['Papua','Papua Pegunungan','Papua Selatan','Papua Tengah'],
-  'upt_papuabarat' : ['Papua Barat','Papua Barat Daya'],
+const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
+
+// ── BPMP multi-provinsi mapping ───────────────────────────────────────────────
+const BPMP_PROVINSI_MAP = {
+  'Papua'       : ['Papua','Papua Pegunungan','Papua Selatan','Papua Tengah'],
+  'Papua Barat' : ['Papua Barat','Papua Barat Daya'],
 };
 
-// ── Role labels ────────────────────────────────────────────────────────────────
-const ROLE_LABEL = { nasional: 'Nasional', upt: 'BBPMP/BPMP', provinsi: 'Dinas Pendidikan', sekolah: 'Sekolah' };
+// profil user login (diisi saat init)
+let USER_PROFILE = null;
 
-// ── Provinsi lists ─────────────────────────────────────────────────────────────
-const PROVINSI_ALL = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Papua Barat Daya','Papua Pegunungan','Papua Selatan','Papua Tengah','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
-const PROVINSI_UPT = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
-
-// ── Auth constants ──────────────────────────────────────────────────────────
-const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbzMYVmecr4FcaODB7gn9JfVgitygGw0JExzkzqNJ-txvURw21JDifCyVD-C4lM9N64_/exec';
-
-// ── Session helpers ──────────────────────────────────────────────────────────
-function getSession() { try { return JSON.parse(localStorage.getItem('smAuth') || 'null'); } catch { return null; } }
-function setSession(d) { localStorage.setItem('smAuth', JSON.stringify(d)); }
-function clearSession() { localStorage.removeItem('smAuth'); }
-
-// ── Modal open/close ─────────────────────────────────────────────────────────
-function openLoginModal() {
-  showPanel('panelLogin');
-  document.getElementById('loginError').classList.remove('show');
-  document.getElementById('loginModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeLoginModal() {
-  document.getElementById('loginModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('loginModalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeLoginModal();
-});
-
-function showPanel(id) {
-  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (id === 'panelForgot') {
-    document.getElementById('authModalTitle').textContent = 'Reset Password';
-    document.getElementById('authModalSub').textContent   = 'Verifikasi identitas akun Anda';
-  } else {
-    document.getElementById('authModalTitle').textContent = 'Masuk ke Dashboard';
-    document.getElementById('authModalSub').textContent   = 'Sekolah Model 2026';
-  }
+// ── Sidebar / Codebook ────────────────────────────────────────────────────────
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function toggleCodebook() { document.getElementById('codebookWrap').classList.toggle('open'); }
+function switchCodebookTab(tab, btn) {
+  document.querySelectorAll('.codebook-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.codebook-tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cb-tab-' + tab).classList.add('active');
 }
 
-// ── Login ────────────────────────────────────────────────────────────────────
-async function doLogin() {
-  const email    = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const errEl    = document.getElementById('loginError');
-  const btn      = document.getElementById('btnLoginSubmit');
-  errEl.classList.remove('show');
-  if (!email || !password) { showAuthErr(errEl, 'Email dan password wajib diisi.'); return; }
-  btn.disabled = true; btn.classList.add('loading');
-  document.getElementById('btnLoginText').textContent = 'Memeriksa...';
-  try {
-    const res  = await fetch(`${AUTH_GAS_URL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
-    const json = await res.json();
-    if (!json.ok) { showAuthErr(errEl, json.error || 'Login gagal.'); return; }
-    setSession({ email, role: json.role, provinsi: json.provinsi, npsn: json.npsn, mustChange: json.mustChange, _tempPw: json.mustChange ? password : undefined });
-    if (json.mustChange) {
-      closeLoginModal();
-      document.getElementById('changePwOverlay').classList.add('open');
-    } else {
-      closeLoginModal();
-      updateBadge();
-      finishLogin();
-    }
-  } catch { showAuthErr(errEl, 'Gagal terhubung ke server. Coba lagi.'); }
-  finally {
-    btn.disabled = false; btn.classList.remove('loading');
-    document.getElementById('btnLoginText').textContent = 'Masuk';
-  }
+// ── Admin nav visibility ──────────────────────────────────────────────────────
+function updateAdminNav() {
+  const raw  = localStorage.getItem('sb_user');
+  const role = raw ? (JSON.parse(raw).role || '') : '';
+  const show = (role === 'superadmin' || role === 'admin');
+  document.querySelectorAll('.nav-admin-only').forEach(el => {
+    el.style.display = show ? '' : 'none';
+  });
 }
-
-// ── Change password ──────────────────────────────────────────────────────────
-let _cpSubmitting = false;
-async function doChangePassword() {
-  if (_cpSubmitting) return;
-  const pw1  = document.getElementById('cpNewPw1').value;
-  const pw2  = document.getElementById('cpNewPw2').value;
-  const errEl = document.getElementById('cpError');
-  const btn   = document.getElementById('btnCpSubmit');
-  errEl.classList.remove('show');
-  if (pw1.length < 6) { showAuthErr(errEl, 'Password minimal 6 karakter.'); return; }
-  if (pw1 !== pw2)    { showAuthErr(errEl, 'Konfirmasi password tidak cocok.'); return; }
-  const sess = getSession();
-  if (!sess) { showAuthErr(errEl, 'Sesi tidak valid, silakan login ulang.'); return; }
-  _cpSubmitting = true;
-  btn.disabled = true; btn.textContent = 'Menyimpan...';
-  try {
-    const oldPw = sess._tempPw || 'sekolahmodel123';
-    const res  = await fetch(`${AUTH_GAS_URL}?action=changePassword&email=${encodeURIComponent(sess.email)}&oldPassword=${encodeURIComponent(oldPw)}&newPassword=${encodeURIComponent(pw1)}`);
-    const json = await res.json();
-    if (!json.ok) { showAuthErr(errEl, json.error || 'Gagal menyimpan password.'); return; }
-    const { _tempPw, ...sessClean } = sess;
-    setSession({ ...sessClean, mustChange: false });
-    document.getElementById('changePwOverlay').classList.remove('open');
-    updateBadge();
-    finishLogin();
-  } catch { showAuthErr(errEl, 'Gagal terhubung ke server. Coba lagi.'); }
-  finally { _cpSubmitting = false; btn.disabled = false; btn.textContent = 'Simpan Password'; }
-}
-
-// ── Forgot password ──────────────────────────────────────────────────────────
-function onForgotUnsurChange() {
-  const val = document.getElementById('forgotUnsur').value;
-  document.getElementById('forgotProvinsiField').style.display = (val === 'provinsi' || val === 'upt') ? '' : 'none';
-  document.getElementById('forgotNpsnField').style.display     = val === 'sekolah' ? '' : 'none';
-  const sel = document.getElementById('forgotProvinsi');
-  const list = val === 'upt' ? PROVINSI_UPT : PROVINSI_ALL;
-  sel.innerHTML = '<option value="">— Pilih provinsi —</option>' + list.map(p => `<option>${p}</option>`).join('');
-}
-
-async function doForgot() {
-  const email  = document.getElementById('forgotEmail').value.trim();
-  const unsur  = document.getElementById('forgotUnsur').value;
-  const prov   = document.getElementById('forgotProvinsi').value;
-  const npsn   = document.getElementById('forgotNpsn').value.trim();
-  const errEl  = document.getElementById('forgotError');
-  const okEl   = document.getElementById('forgotSuccess');
-  const btn    = document.getElementById('btnForgotSubmit');
-  errEl.classList.remove('show'); okEl.classList.remove('show');
-  if (!email) { showAuthErr(errEl, 'Email wajib diisi.'); return; }
-  if (!unsur) { showAuthErr(errEl, 'Pilih unsur terlebih dahulu.'); return; }
-  if ((unsur === 'provinsi' || unsur === 'upt') && !prov) { showAuthErr(errEl, 'Pilih provinsi untuk validasi.'); return; }
-  if (unsur === 'sekolah' && !npsn) { showAuthErr(errEl, 'Masukkan NPSN untuk validasi.'); return; }
-  btn.disabled = true; btn.classList.add('loading');
-  document.getElementById('btnForgotText').textContent = 'Memproses...';
-  let elapsed = 0;
-  const countInterval = setInterval(() => {
-    elapsed++;
-    const el = document.getElementById('btnForgotText');
-    if (el) el.textContent = `Memproses... (${elapsed}d)`;
-  }, 1000);
-  try {
-    const params = new URLSearchParams({ action: 'resetPassword', email, unsur });
-    if (unsur === 'provinsi' || unsur === 'upt') params.set('provinsi', prov);
-    if (unsur === 'sekolah') params.set('npsn', npsn);
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 45000);
-    let res;
-    try {
-      res = await fetch(`${AUTH_GAS_URL}?${params.toString()}`, { signal: controller.signal });
-    } finally {
-      clearTimeout(timeout);
-    }
-    const json = await res.json();
-    if (json.ok) {
-      okEl.innerHTML = 'Password berhasil direset ke password default (<strong>sekolahmodel123</strong>). Silakan kembali ke login dan masuk menggunakan password default, lalu segera buat password baru.';
-      okEl.classList.add('show');
-    } else {
-      showAuthErr(errEl, json.error || 'Gagal mereset password.');
-    }
-  } catch (e) {
-    const isTimeout = e.name === 'AbortError';
-    showAuthErr(errEl, isTimeout
-      ? 'Permintaan timeout. Koneksi ke server terlalu lama — silakan coba lagi.'
-      : 'Gagal terhubung ke server. Periksa koneksi internet Anda, lalu coba lagi.'
-    );
-  } finally {
-    clearInterval(countInterval);
-    btn.disabled = false; btn.classList.remove('loading');
-    document.getElementById('btnForgotText').textContent = 'Reset Password';
-  }
-}
-
-function showAuthErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
 
 // ── Logout ───────────────────────────────────────────────────────────────────
-function doLogout() { clearSession(); location.reload(); }
+function doLogout() {
+  localStorage.removeItem('sb_user');
+  window.location.href = 'login.html';
+}
 
 // ── Update badge (desktop + mobile) ─────────────────────────────────────────
 function updateBadge() {
-  const sess = getSession();
-  const loggedIn = sess && !sess.mustChange;
+  const raw      = localStorage.getItem('sb_user');
+  const loggedIn = !!raw;
+  const sess     = loggedIn ? JSON.parse(raw) : null;
 
-  // Desktop
-  document.getElementById('badgeGuest').style.display   = loggedIn ? 'none'  : '';
+  document.getElementById('badgeGuest').style.display = loggedIn ? 'none' : '';
   const badgeUser = document.getElementById('badgeUser');
   badgeUser.style.display = loggedIn ? 'flex' : 'none';
   if (loggedIn) {
-    document.getElementById('badgeEmail').textContent = sess.email;
+    document.getElementById('badgeEmail').textContent = sess.nama || sess.email;
     document.getElementById('badgeRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
   }
 
-  // Mobile
   document.getElementById('mobileBtnMasuk').style.display  = loggedIn ? 'none' : '';
   document.getElementById('mobileBtnKeluar').style.display = loggedIn ? ''     : 'none';
   const mName = document.getElementById('mobileUserName');
   mName.style.display = loggedIn ? '' : 'none';
-  if (loggedIn) mName.textContent = sess.email.split('@')[0];
+  if (loggedIn) mName.textContent = (sess.nama || sess.email || '').split('@')[0];
+
+  updateAdminNav();
 }
 
-// ── Enter / Escape key support ────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeLoginModal(); }
-  if (e.key === 'Enter') {
-    if (document.getElementById('changePwOverlay').classList.contains('open')) { doChangePassword(); }
-    else if (document.getElementById('loginModalOverlay').classList.contains('open')) {
-      const activePanel = document.querySelector('.auth-panel.active');
-      if (activePanel?.id === 'panelLogin') doLogin();
-      else if (activePanel?.id === 'panelForgot') doForgot();
-    }
-  }
-});
-
-// ── Selesai login: tampilkan tabel ────────────────────────────────────────────
-function finishLogin() {
-  document.getElementById('guestPlaceholder').style.display = 'none';
-  document.getElementById('tablePanel').style.display = 'block';
-  loadData();
-}
-
-// ── Init ──────────────────────────────────────────────────────────────────────
-(function init() {
-  renderSummaryCharts();
-  updateBadge();
-  const sess = getSession();
-  if (sess && !sess.mustChange) {
-    finishLogin();
-  } else {
-    document.getElementById('guestPlaceholder').style.display = 'block';
-  }
-})();
-
-// ── Render summary pie charts (data statis) ──────────────────────────────────
+// ── Pie charts (data statis) ──────────────────────────────────────────────────
 function renderSummaryCharts() {
   const TOTAL = 223;
   const ORDER = ['Unggul','Maju','Berkembang','Pra-Berkembang','Tidak Terkategori'];
@@ -1265,7 +777,6 @@ function renderSummaryCharts() {
     'Pra-Berkembang'    : '#b84000',
     'Tidak Terkategori' : '#8896a8',
   };
-
   const pmRaw  = { 'Berkembang': 97, 'Maju': 113, 'Pra-Berkembang': 3, 'Unggul': 5, 'Tidak Terkategori': 5 };
   const kkaRaw = { 'Berkembang': 64, 'Pra-Berkembang': 24, 'Tidak Terkategori': 135, 'Unggul': 0, 'Maju': 0 };
 
@@ -1274,13 +785,10 @@ function renderSummaryCharts() {
     const legendEl= document.getElementById(legendId);
     const tipEl   = document.getElementById(tooltipId);
     if (!svg || !legendEl || !tipEl) return;
-
     const allData  = ORDER.map(label => ({ label, count: raw[label] || 0, color: COLOR[label] }));
-    const data     = allData.filter(d => d.count > 0); // hanya untuk slice pie
+    const data     = allData.filter(d => d.count > 0);
     const total    = data.reduce((s, d) => s + d.count, 0);
-    const cx = 100, cy = 100, r = 80, ri = 42; // donut
-
-    // Hitung sudut
+    const cx = 100, cy = 100, r = 80, ri = 42;
     let startAngle = -Math.PI / 2;
     const slices = data.map(d => {
       const angle = (d.count / total) * 2 * Math.PI;
@@ -1288,66 +796,41 @@ function renderSummaryCharts() {
       startAngle += angle;
       return s;
     });
-
-    function polarToXY(angle, radius) {
-      return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
-    }
-
+    function polarToXY(angle, radius) { return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) }; }
     function describeArc(s, e, outerR, innerR) {
       const p1 = polarToXY(s, outerR), p2 = polarToXY(e, outerR);
       const p3 = polarToXY(e, innerR), p4 = polarToXY(s, innerR);
       const large = (e - s) > Math.PI ? 1 : 0;
       return `M ${p1.x} ${p1.y} A ${outerR} ${outerR} 0 ${large} 1 ${p2.x} ${p2.y} L ${p3.x} ${p3.y} A ${innerR} ${innerR} 0 ${large} 0 ${p4.x} ${p4.y} Z`;
     }
-
-    // Render SVG slices
     svg.innerHTML = '';
-
-    // Gap kecil antar slice (dalam radian)
     const GAP = 0.018;
-
     slices.forEach(sl => {
       const path = document.createElementNS('http://www.w3.org/2000/svg','path');
       path.setAttribute('d', describeArc(sl.startAngle + GAP/2, sl.endAngle - GAP/2, r, ri));
       path.setAttribute('fill', sl.color);
       path.setAttribute('class', 'pie-slice');
-
-      // Hover: tampilkan tooltip
       path.addEventListener('mouseenter', () => {
         const pct = Math.round(sl.count / TOTAL * 100);
         tipEl.innerHTML = `<strong>${sl.label}</strong><br>${sl.count} sekolah &nbsp;·&nbsp; ${pct}%`;
         tipEl.classList.add('show');
       });
-      path.addEventListener('mouseleave', () => {
-        tipEl.classList.remove('show');
-      });
-
+      path.addEventListener('mouseleave', () => tipEl.classList.remove('show'));
       svg.appendChild(path);
     });
-
-    // Teks tengah: total
     const textGroup = document.createElementNS('http://www.w3.org/2000/svg','text');
-    textGroup.setAttribute('x', cx);
-    textGroup.setAttribute('y', cy - 6);
+    textGroup.setAttribute('x', cx); textGroup.setAttribute('y', cy - 6);
     textGroup.setAttribute('text-anchor', 'middle');
     textGroup.setAttribute('font-family', "'Plus Jakarta Sans', sans-serif");
-    textGroup.setAttribute('font-size', '22');
-    textGroup.setAttribute('font-weight', '800');
-    textGroup.setAttribute('fill', '#0a1f3c');
-    textGroup.textContent = total;
+    textGroup.setAttribute('font-size', '22'); textGroup.setAttribute('font-weight', '800');
+    textGroup.setAttribute('fill', '#0a1f3c'); textGroup.textContent = total;
     svg.appendChild(textGroup);
-
     const textSub = document.createElementNS('http://www.w3.org/2000/svg','text');
-    textSub.setAttribute('x', cx);
-    textSub.setAttribute('y', cy + 12);
+    textSub.setAttribute('x', cx); textSub.setAttribute('y', cy + 12);
     textSub.setAttribute('text-anchor', 'middle');
     textSub.setAttribute('font-family', "'Plus Jakarta Sans', sans-serif");
-    textSub.setAttribute('font-size', '9');
-    textSub.setAttribute('fill', '#6b83a4');
-    textSub.textContent = 'sekolah';
-    svg.appendChild(textSub);
-
-    // Legend — pakai allData supaya kategori 0% tetap tampil
+    textSub.setAttribute('font-size', '9'); textSub.setAttribute('fill', '#6b83a4');
+    textSub.textContent = 'sekolah'; svg.appendChild(textSub);
     legendEl.innerHTML = allData.map(d => {
       const pct = Math.round(d.count / TOTAL * 100);
       const isZero = d.count === 0;
@@ -1360,26 +843,11 @@ function renderSummaryCharts() {
       </div>`;
     }).join('');
   }
-
   buildPie('pieSvgPM',  'pieLegendPM',  'pieTooltipPM',  pmRaw);
   buildPie('pieSvgKKA', 'pieLegendKKA', 'pieTooltipKKA', kkaRaw);
 }
 
-
-
-// ── Nilai ─────────────────────────────────────────────────────────────────────
-function toScore(v) {
-  if (!v || v.trim() === '') return 0;
-  const l = v.toLowerCase().trim();
-  if (l.startsWith('pra'))       return 1;
-  if (l.includes('unggul'))      return 4;
-  if (l.includes('maju'))        return 3;
-  if (l.includes('berkembang'))  return 2;
-  return 0;
-}
-const SCORE_LABEL = ['—','Pra Berkembang','Berkembang','Maju','Unggul'];
-
-// ── Tag ───────────────────────────────────────────────────────────────────────
+// ── Tag helpers ───────────────────────────────────────────────────────────────
 function profil_tag(v) {
   if (!v || v.trim() === '') return '<span class="tag tag-tt">Tidak Terkategori</span>';
   const l = v.toLowerCase();
@@ -1389,20 +857,26 @@ function profil_tag(v) {
   if (l.includes('berkembang'))                   return `<span class="tag tag-berk">${v}</span>`;
   return '<span class="tag tag-tt">Tidak Terkategori</span>';
 }
-
 function mapel_kka_tag(v) {
   const sudah = v && v.toLowerCase().trim() === 'sudah';
-  return sudah
-    ? '<span class="tag tag-mapel-sudah">Sudah</span>'
-    : '<span class="tag tag-mapel-belum">Belum</span>';
+  return sudah ? '<span class="tag tag-mapel-sudah">Sudah</span>' : '<span class="tag tag-mapel-belum">Belum</span>';
 }
-
 function mapel_kka_label(v) {
-  const sudah = v && v.toLowerCase().trim() === 'sudah';
-  return sudah ? 'Sudah ada Mata Pelajaran KKA' : 'Belum ada Mata Pelajaran KKA';
+  return (v && v.toLowerCase().trim() === 'sudah') ? 'Sudah ada Mata Pelajaran KKA' : 'Belum ada Mata Pelajaran KKA';
 }
 
 // ── Radar ─────────────────────────────────────────────────────────────────────
+function toScore(v) {
+  if (!v || v.trim() === '') return 0;
+  const l = v.toLowerCase().trim();
+  if (l.startsWith('pra'))      return 1;
+  if (l.includes('unggul'))     return 4;
+  if (l.includes('maju'))       return 3;
+  if (l.includes('berkembang')) return 2;
+  return 0;
+}
+const SCORE_LABEL = ['—','Pra Berkembang','Berkembang','Maju','Unggul'];
+
 function drawRadar(canvasId, labels, rawVals, color) {
   if (activeCharts[canvasId]) { activeCharts[canvasId].destroy(); delete activeCharts[canvasId]; }
   const ctx = document.getElementById(canvasId);
@@ -1426,60 +900,33 @@ function drawRadar(canvasId, labels, rawVals, color) {
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: true,
+      responsive: true, maintainAspectRatio: true,
       scales: {
         r: {
           min: 0, max: 4,
-          ticks: {
-            stepSize: 1,
-            font: { size: 8.5, family: 'Plus Jakarta Sans' },
-            color: '#6b83a4',
-            backdropColor: 'transparent',
-            callback: v => ['','Pra','Berk','Maju','Unggul'][v] || ''
-          },
-          pointLabels: {
-            font: { size: 9.5, family: 'Plus Jakarta Sans' },
-            color: '#0d1f38'
-          },
-          grid: { color: '#dce6f5' },
-          angleLines: { color: '#dce6f5' }
+          ticks: { stepSize: 1, font: { size: 8.5, family: 'Plus Jakarta Sans' }, color: '#6b83a4', backdropColor: 'transparent', callback: v => ['','Pra','Berk','Maju','Unggul'][v] || '' },
+          pointLabels: { font: { size: 9.5, family: 'Plus Jakarta Sans' }, color: '#0d1f38' },
+          grid: { color: '#dce6f5' }, angleLines: { color: '#dce6f5' }
         }
       },
       plugins: {
         legend: { display: false },
         tooltip: {
-          callbacks: {
-            title: ctx => labels[ctx[0].dataIndex],
-            label: ctx => ' ' + (SCORE_LABEL[ctx.raw] || '—')
-          },
-          titleFont: { size: 11, family: 'Plus Jakarta Sans' },
-          bodyFont:  { size: 11, family: 'Plus Jakarta Sans' }
+          callbacks: { title: ctx => labels[ctx[0].dataIndex], label: ctx => ' ' + (SCORE_LABEL[ctx.raw] || '—') },
+          titleFont: { size: 11, family: 'Plus Jakarta Sans' }, bodyFont: { size: 11, family: 'Plus Jakarta Sans' }
         }
       }
     }
   });
 }
 
-// ── Sidebar / Codebook ────────────────────────────────────────────────────────
-function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
-function toggleCodebook() { document.getElementById('codebookWrap').classList.toggle('open'); }
-function switchCodebookTab(tab, btn) {
-  document.querySelectorAll('.codebook-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.codebook-tab-pane').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('cb-tab-' + tab).classList.add('active');
-}
-
-// ── Modal ─────────────────────────────────────────────────────────────────────
+// ── Modal detail ──────────────────────────────────────────────────────────────
 function switchModalTab(tab, btn) {
   document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.modal-pane').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('mpane-' + tab).classList.add('active');
 }
-
 function fill(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
 
 function openModal(r) {
@@ -1506,51 +953,33 @@ function openModal(r) {
     <span style="font-size:12.5px;font-weight:700;color:${sudahKKA?'#1a6b3e':'#8a5c00'}">${mapel_kka_label(r.status_pel)}</span>
   </div>`);
 
-  // KKA Murid kotak
   fill('kka-murid-box', `<div class="single-box">
     <div class="l3-code">1.1.1</div>
     <div class="l3-name">Projek Koding dan KA yang dikembangkan murid</div>
     ${profil_tag(r.kka_1_1_1)}
   </div>`);
 
-  // Reset ke tab PM
   document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', i===0));
   document.querySelectorAll('.modal-pane').forEach((p,i) => p.classList.toggle('active', i===0));
-
   document.getElementById('modalBackdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
 
   requestAnimationFrame(() => {
-    // PM Murid — 6 sumbu
     drawRadar('rc-pm-murid',
       ['Memuliakan','Berkesadaran','Bermakna','Menggembirakan','Otonomi Belajar','Refleksi'],
-      [r.pm_1_1_1,r.pm_1_1_2,r.pm_1_1_3,r.pm_1_1_4,r.pm_1_1_5,r.pm_1_1_6],
-      '#2b72d8'
-    );
-    // PM Guru — 7 sumbu
+      [r.pm_1_1_1,r.pm_1_1_2,r.pm_1_1_3,r.pm_1_1_4,r.pm_1_1_5,r.pm_1_1_6], '#2b72d8');
     drawRadar('rc-pm-guru',
       ['Memuliakan','Pengelolaan Pembelajaran','Refleksi','Formatif','Sumatif','Belajar Mandiri','Belajar Komunitas'],
-      [r.pm_2_1_1,r.pm_2_1_2,r.pm_2_1_3,r.pm_2_2_1,r.pm_2_2_2,r.pm_2_3_1,r.pm_2_3_2],
-      '#1a6b3e'
-    );
-    // PM Kepsek — 11 sumbu
+      [r.pm_2_1_1,r.pm_2_1_2,r.pm_2_1_3,r.pm_2_2_1,r.pm_2_2_2,r.pm_2_3_1,r.pm_2_3_2], '#1a6b3e');
     drawRadar('rc-pm-kasek',
       ['Memimpin Impl. PM','Visi Misi','Supervisi','Memimpin Refleksi','Kembangkan & Kuatkan','Optimalisasi SDM','Manajemen Sekolah','Kembangkan Kemitraan','Lingk. Belajar Saling','Kembangkan Infrastruktur','Kapasitas Pendidik'],
-      [r.pm_3_1_1,r.pm_3_1_2,r.pm_3_1_3,r.pm_3_1_4,r.pm_3_2_1,r.pm_3_2_2,r.pm_3_2_3,r.pm_3_3_1,r.pm_3_3_2,r.pm_3_4_1,r.pm_3_4_2],
-      '#8a5c00'
-    );
-    // KKA Guru — 3 sumbu (segitiga)
+      [r.pm_3_1_1,r.pm_3_1_2,r.pm_3_1_3,r.pm_3_1_4,r.pm_3_2_1,r.pm_3_2_2,r.pm_3_2_3,r.pm_3_3_1,r.pm_3_3_2,r.pm_3_4_1,r.pm_3_4_2], '#8a5c00');
     drawRadar('rc-kka-guru',
       ['Literasi Digital','Teknologi Pembelajaran','Teknologi Penilaian'],
-      [r.kka_2_1_1,r.kka_2_1_2,r.kka_2_2_1],
-      '#1a6b3e'
-    );
-    // KKA Kepsek — 7 sumbu
+      [r.kka_2_1_1,r.kka_2_1_2,r.kka_2_2_1], '#1a6b3e');
     drawRadar('rc-kka-kasek',
       ['Memimpin Impl. KKA','Supervisi KKA','Kapasitas Komunitas','Sumber Belajar KKA','Kemitraan KKA','Sarpras Digital','Pemanfaatan Teknologi'],
-      [r.kka_3_1_1,r.kka_3_1_2,r.kka_3_2_1,r.kka_3_2_2,r.kka_3_3_1,r.kka_3_4_1,r.kka_3_4_2],
-      '#8a5c00'
-    );
+      [r.kka_3_1_1,r.kka_3_1_2,r.kka_3_2_1,r.kka_3_2_2,r.kka_3_3_1,r.kka_3_4_1,r.kka_3_4_2], '#8a5c00');
   });
 }
 
@@ -1561,61 +990,92 @@ function closeModal() {
 function closeModalOutside(e) { if (e.target === document.getElementById('modalBackdrop')) closeModal(); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// ── Data ──────────────────────────────────────────────────────────────────────
+// ── Fetch profil user dari Supabase ──────────────────────────────────────────
+async function fetchUserProfile(email) {
+  try {
+    const res = await fetch(
+      `https://lusytejskqevwyyffeue.supabase.co/rest/v1/user_dasbor_sekolah_model?email=eq.${encodeURIComponent(email)}&select=unsur,provinsi,bpmp,npsn&limit=1`,
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    const rows = await res.json();
+    return rows && rows.length > 0 ? rows[0] : null;
+  } catch { return null; }
+}
+
+// ── Tampilkan / sembunyikan tabel ─────────────────────────────────────────────
+function showTable()  {
+  document.getElementById('guestPlaceholder').style.display = 'none';
+  document.getElementById('tablePanel').style.display       = 'block';
+}
+function showGuest() {
+  document.getElementById('guestPlaceholder').style.display = 'block';
+  document.getElementById('tablePanel').style.display       = 'none';
+}
+
+// ── Data — load dari Supabase ─────────────────────────────────────────────────
 async function loadData() {
   try {
-    const res  = await fetch(GAS_URL + '?action=all');
-    const json = await res.json();
-    if (!json.ok) throw new Error(json.error || 'API error');
+    const res = await fetch(
+      `${SUPA_URL}?select=${SUPA_SELECT}&order=nama.asc`,
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
 
-    const sess = getSession();
-    let schools = json.schools || [];
+    const raw  = localStorage.getItem('sb_user');
+    const sess = raw ? JSON.parse(raw) : null;
+    const role = sess ? (sess.role || '') : '';
 
-    // Filter berdasarkan role
-    if (sess) {
-      if (sess.role === 'upt' || sess.role === 'provinsi') {
-        const provList = sess.provinsi || [];
+    let schools = rows.map((r, i) => ({
+      ...r,
+      no        : i + 1,
+      kabkota   : r.kabupaten_kota,
+      status_sek: r.status_sekolah,
+      status_pel: r.status_koding_ka,
+    }));
+
+    // Filter berdasarkan role + unsur
+    if (role === 'viewer' && USER_PROFILE) {
+      const unsur = (USER_PROFILE.unsur || '').trim();
+      if (unsur === 'Dinas Pendidikan') {
+        const prov = USER_PROFILE.provinsi || '';
+        schools = schools.filter(r => r.provinsi === prov);
+      } else if (unsur === 'BBPMP/BPMP') {
+        const bpmp = USER_PROFILE.bpmp || '';
+        const provList = BPMP_PROVINSI_MAP[bpmp] || [bpmp];
         schools = schools.filter(r => provList.includes(r.provinsi));
-      } else if (sess.role === 'sekolah') {
-        schools = schools.filter(r => String(r.npsn) === String(sess.npsn));
+      } else if (unsur === 'Sekolah') {
+        const npsn = String(USER_PROFILE.npsn || '');
+        schools = schools.filter(r => String(r.npsn) === npsn);
       }
-      // role nasional: tampilkan semua, tidak difilter
+      // unsur Direktorat: tampil semua
     }
+    // role superadmin / admin: tampil semua
 
     ALL_SCHOOLS = schools;
     populateFilters();
     renderBaselineTable();
   } catch (e) {
     document.getElementById('baselineTbody').innerHTML =
-      `<tr><td colspan="9" style="padding:32px;text-align:center;color:#c0392b">Gagal memuat data: ${e.message}</td></tr>`;
+      `<tr><td colspan="10" style="padding:32px;text-align:center;color:#c0392b">Gagal memuat data: ${e.message}</td></tr>`;
     document.getElementById('baselineCount').textContent = 'Gagal memuat';
   }
 }
 
 function populateFilters() {
-  const sess = getSession();
-  const role = sess ? sess.role : 'nasional';
+  const raw  = localStorage.getItem('sb_user');
+  const role = raw ? (JSON.parse(raw).role || '') : '';
+  const unsur = USER_PROFILE ? (USER_PROFILE.unsur || '').trim() : '';
 
-  // Role sekolah: sembunyikan semua filter
-  if (role === 'sekolah') {
-    document.getElementById('baselineSearch').closest('.table-filters').style.display = 'none';
-    return;
-  }
+  // Sembunyikan filter provinsi untuk viewer dinas/bpmp (sudah otomatis terfilter)
+  const isFiltered = role === 'viewer' && (unsur === 'Dinas Pendidikan' || unsur === 'BBPMP/BPMP' || unsur === 'Sekolah');
+  document.getElementById('baselineProvFilter').style.display = isFiltered ? 'none' : '';
 
-  // Role upt/provinsi: sembunyikan filter provinsi (sudah otomatis terfilter)
-  const provFilterWrap = document.getElementById('baselineProvFilter');
-  if (role === 'upt' || role === 'provinsi') {
-    provFilterWrap.style.display = 'none';
-    document.querySelector('.btn-reset-filter') && (document.querySelector('.btn-reset-filter').style.display = 'none');
-  }
-
-  // Hanya populate provinsi untuk nasional
-  if (role === 'nasional') {
-    const provs = [...new Set(ALL_SCHOOLS.map(r => r.provinsi).filter(Boolean))].sort();
-    const sel = document.getElementById('baselineProvFilter');
-    sel.innerHTML = '<option value="">Semua Provinsi</option>' +
-      provs.map(v => `<option value="${v}">${v}</option>`).join('');
-  }
+  // Populate dropdown provinsi dari data yang sudah terfilter
+  const provs = [...new Set(ALL_SCHOOLS.map(r => r.provinsi).filter(Boolean))].sort();
+  const sel = document.getElementById('baselineProvFilter');
+  sel.innerHTML = '<option value="">Semua Provinsi</option>' +
+    provs.map(v => `<option value="${v}">${v}</option>`).join('');
 }
 
 function matchProfil(val, filterVal) {
@@ -1679,40 +1139,61 @@ function renderBaselineTable() {
 
 function filterBaseline()      { baselinePage=1; renderBaselineTable(); }
 function resetBaselineFilter() {
-  document.getElementById('baselineSearch').value='';
-  document.getElementById('baselineProvFilter').value='';
+  document.getElementById('baselineSearch').value = '';
+  document.getElementById('baselineProvFilter').value = '';
   const fPM = document.getElementById('baselineProfilPMFilter');
   const fKKA = document.getElementById('baselineProfilKKAFilter');
-  if (fPM) fPM.value='';
-  if (fKKA) fKKA.value='';
   const fMapel = document.getElementById('baselineMapelKKAFilter');
-  if (fMapel) fMapel.value='';
-  baselinePage=1; renderBaselineTable();
+  if (fPM) fPM.value = '';
+  if (fKKA) fKKA.value = '';
+  if (fMapel) fMapel.value = '';
+  baselinePage = 1; renderBaselineTable();
 }
 
 function renderPager(containerId, current, total, onClick) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  if (total<=1) { el.innerHTML=''; return; }
+  if (total <= 1) { el.innerHTML = ''; return; }
   let btns = `<button onclick="(${onClick.toString()})(${current-1})" ${current===1?'disabled':''}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>`;
-  const pages=[];
-  if (total<=7) { for(let i=1;i<=total;i++) pages.push(i); }
+  const pages = [];
+  if (total <= 7) { for (let i=1; i<=total; i++) pages.push(i); }
   else {
     pages.push(1);
-    if(current>3) pages.push('…');
-    for(let i=Math.max(2,current-1);i<=Math.min(total-1,current+1);i++) pages.push(i);
-    if(current<total-2) pages.push('…');
+    if (current > 3) pages.push('…');
+    for (let i=Math.max(2,current-1); i<=Math.min(total-1,current+1); i++) pages.push(i);
+    if (current < total-2) pages.push('…');
     pages.push(total);
   }
   pages.forEach(p => {
-    if(p==='…') btns+=`<button disabled style="cursor:default">…</button>`;
-    else btns+=`<button class="${p===current?'cur':''}" onclick="(${onClick.toString()})(${p})">${p}</button>`;
+    if (p === '…') btns += `<button disabled style="cursor:default">…</button>`;
+    else btns += `<button class="${p===current?'cur':''}" onclick="(${onClick.toString()})(${p})">${p}</button>`;
   });
-  btns+=`<button onclick="(${onClick.toString()})(${current+1})" ${current===total?'disabled':''}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
-  el.innerHTML=btns;
+  btns += `<button onclick="(${onClick.toString()})(${current+1})" ${current===total?'disabled':''}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+  el.innerHTML = btns;
 }
 
+// ── Init ──────────────────────────────────────────────────────────────────────
+(async function init() {
+  renderSummaryCharts();
+  updateBadge();
 
+  const raw  = localStorage.getItem('sb_user');
+  const sess = raw ? JSON.parse(raw) : null;
+
+  if (!sess) {
+    // Belum login — tampilkan blur placeholder
+    showGuest();
+    return;
+  }
+
+  // Sudah login — fetch profil user kalau viewer
+  if (sess.role === 'viewer') {
+    USER_PROFILE = await fetchUserProfile(sess.email);
+  }
+
+  showTable();
+  loadData();
+})();
 </script>
 </body>
 </html>
