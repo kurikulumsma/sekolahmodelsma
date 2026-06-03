@@ -309,7 +309,7 @@ select.finput{appearance:none}
 
   <!-- STATS (4 cards: total + status breakdown) -->
   <div class="stats-grid" id="statsGrid">
-    <div class="stat-card"><div class="stat-label">Total Kegiatan</div><div class="stat-value" id="stTotal">—</div><div class="stat-sub" id="stTotalSub">dari semua provinsi</div></div>
+    <div class="stat-card"><div class="stat-label">Total Intervensi</div><div class="stat-value" id="stTotal">—</div><div class="stat-sub" id="stTotalSub">dari semua provinsi</div></div>
     <div class="stat-card st-ren"><div class="stat-label">Direncanakan</div><div class="stat-value" id="stRen">—</div><div class="stat-sub">kegiatan</div></div>
     <div class="stat-card st-proses"><div class="stat-label">Dalam Proses</div><div class="stat-value" id="stProses">—</div><div class="stat-sub">kegiatan</div></div>
     <div class="stat-card st-selesai"><div class="stat-label">Selesai</div><div class="stat-value" id="stSelesai">—</div><div class="stat-sub">kegiatan</div></div>
@@ -326,7 +326,7 @@ select.finput{appearance:none}
   <div class="panel">
     <div class="panel-header" style="padding-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div><div class="panel-title">Data Rencana Intervensi Dinas</div><div class="panel-sub">Klik status di baris untuk memperbarui progres kegiatan</div></div>
-      <button class="btn-add" onclick="openModal('add')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Data</button>
+      <button class="btn-add" onclick="openModal('add')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Intervensi</button>
     </div>
     <div class="filter-bar">
       <div class="fg"><div class="fg-lbl">Provinsi/Kab/Kota</div><select id="fltProv" onchange="applyFilter()"><option value="">Semua</option></select></div>
@@ -367,7 +367,7 @@ select.finput{appearance:none}
 <!-- EDIT MODAL -->
 <div class="modal-ov" id="modalOv" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <div class="modal-hd"><div class="modal-title" id="modalTitle">Tambah Data</div><button class="modal-x" onclick="closeModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-hd"><div class="modal-title" id="modalTitle">Tambah Intervensi</div><button class="modal-x" onclick="closeModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="modal-bd">
       <input type="hidden" id="mId">
       <div class="frow">
@@ -727,7 +727,7 @@ async function setStatus(id, newStatus, wrap) {
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
 function openModal(mode, id) {
-  document.getElementById('modalTitle').textContent = mode==='add'?'Tambah Data':'Edit Data';
+  document.getElementById('modalTitle').textContent = mode==='add'?'Tambah Intervensi':'Edit Data';
   document.getElementById('mId').value = mode==='add'?'':id;
   selUnsurModal=[];
   document.querySelectorAll('#mUnsurDrop input[type=checkbox]').forEach(c=>c.checked=false);
