@@ -5,692 +5,840 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Intervensi Dinas Pendidikan — Sekolah Model 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --navy:      #0a1f3c;
-  --navy-mid:  #0e2d57;
-  --blue:      #1a56a0;
-  --blue-lt:   #2b72d8;
-  --accent:    #f0a500;
-  --accent-lt: #ffc840;
-  --bg:        #f2f6fb;
-  --surface:   #ffffff;
-  --border:    #dce6f5;
-  --text:      #0d1f38;
-  --muted:     #6b83a4;
-  --sidebar-w: 220px;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1f3c;--navy-mid:#0e2d57;--blue:#1a56a0;--blue-lt:#2b72d8;
+  --accent:#f0a500;--accent-lt:#ffc840;--bg:#f2f6fb;--surface:#ffffff;
+  --border:#dce6f5;--text:#0d1f38;--muted:#6b83a4;--sidebar-w:220px;
 }
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  display: flex;
-  min-height: 100vh;
-  font-size: 13.5px;
-}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:13.5px}
 
-/* ── SIDEBAR ── */
-aside {
-  width: var(--sidebar-w);
-  background: var(--navy);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 200;
-  transition: transform 0.25s ease;
-}
-.sidebar-logo {
-  padding: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.sidebar-logo img {
-  width: 100%;
-  max-width: 160px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-.sidebar-close {
-  display: none;
-  background: none; border: none;
-  color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px;
-  flex-shrink: 0; margin-left: 8px;
-}
-nav {
-  flex: 1; padding: 14px 10px;
-  display: flex; flex-direction: column; gap: 2px;
-  overflow-y: auto;
-}
-nav a {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px; border-radius: 8px;
-  color: rgba(255,255,255,0.55);
-  text-decoration: none; font-size: 12.5px; font-weight: 500;
-  transition: background 0.15s, color 0.15s; cursor: pointer;
-}
-nav a svg { flex-shrink: 0; opacity: 0.65; }
-nav a:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
-nav a.active { background: var(--blue-lt); color: #fff; }
-nav a.active svg { opacity: 1; }
-.nav-admin-only { display: none; }
-.nav-divider {
-  padding: 10px 12px 4px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: rgba(255,255,255,0.22);
-}
-.sidebar-footer {
-  padding: 14px 16px;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  font-size: 11px; color: rgba(255,255,255,0.28); line-height: 1.6;
-}
-.sidebar-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 150;
-}
-.sidebar-overlay.show { display: block; }
+/* SIDEBAR */
+aside{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .25s ease}
+.sidebar-logo{padding:16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between}
+.sidebar-logo img{width:100%;max-width:160px;height:auto;object-fit:contain;display:block}
+.sidebar-close{display:none;background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;padding:4px;flex-shrink:0;margin-left:8px}
+nav{flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:rgba(255,255,255,.55);text-decoration:none;font-size:12.5px;font-weight:500;transition:background .15s,color .15s;cursor:pointer}
+nav a svg{flex-shrink:0;opacity:.65}
+nav a:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
+nav a.active{background:var(--blue-lt);color:#fff}
+nav a.active svg{opacity:1}
+.nav-admin-only{display:none}
+.nav-divider{padding:10px 12px 4px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.22)}
+.sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07);font-size:11px;color:rgba(255,255,255,.28);line-height:1.6}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150}
+.sidebar-overlay.show{display:block}
 
-/* ── MOBILE TOPBAR ── */
-.mobile-topbar {
-  display: none; position: fixed;
-  top: 0; left: 0; right: 0; height: 52px;
-  background: var(--navy); z-index: 100;
-  align-items: center; padding: 0 16px; gap: 12px;
-}
-.hamburger {
-  background: none; border: none; color: #fff;
-  cursor: pointer; padding: 4px; display: flex; align-items: center;
-}
-.mobile-topbar-title { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+/* MOBILE */
+.mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;height:52px;background:var(--navy);z-index:100;align-items:center;padding:0 16px;gap:12px}
+.hamburger{background:none;border:none;color:#fff;cursor:pointer;padding:4px;display:flex;align-items:center}
+.mobile-topbar-title{font-size:13px;font-weight:700;color:#fff;flex:1}
 
-/* ── MAIN ── */
-main {
-  margin-left: var(--sidebar-w);
-  flex: 1; padding: 26px 28px 40px;
-  overflow-x: hidden; transition: margin-left 0.25s;
-}
+/* MAIN */
+main{margin-left:var(--sidebar-w);flex:1;padding:26px 28px 40px;overflow-x:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.topbar-left h1{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1.2}
+.topbar-left p{font-size:12px;color:var(--muted);margin-top:3px}
 
-/* TOPBAR */
-.topbar { display: flex; align-items: center; margin-bottom: 20px; }
-.topbar-left h1 {
-  font-size: 22px; font-weight: 800; color: var(--navy);
-  letter-spacing: -0.03em; line-height: 1.2;
-}
-.topbar-left p { font-size: 12px; color: var(--muted); margin-top: 3px; }
-
-/* HERO */
-.hero {
-  background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%);
-  border-radius: 14px; padding: 20px 24px;
-  display: grid; grid-template-columns: 1fr auto;
-  gap: 16px; align-items: center;
-  margin-bottom: 18px; position: relative; overflow: hidden;
-}
-.hero::before {
-  content: ''; position: absolute; right: -50px; top: -50px;
-  width: 220px; height: 220px; border-radius: 50%;
-  background: rgba(255,255,255,0.04); pointer-events: none;
-}
-.hero-text h2 { font-size: 13.5px; font-weight: 700; color: var(--accent-lt); margin-bottom: 5px; }
-.hero-text p { font-size: 12px; color: rgba(255,255,255,0.72); line-height: 1.65; max-width: 560px; }
-.hero-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-.hero-btn {
-  text-decoration: none; padding: 7px 14px; border-radius: 8px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  border: none; font-family: inherit; transition: all 0.2s ease;
-}
-.hero-btn-primary { background: var(--accent); color: var(--navy); }
-.hero-btn-primary:hover {
-  background: var(--accent-lt);
-  box-shadow: 0 0 16px rgba(240,165,0,0.5), 0 0 30px rgba(240,165,0,0.18);
-  transform: translateY(-1px);
-}
-.hero-btn-ghost { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
-.hero-btn-ghost:hover {
-  background: rgba(255,255,255,0.18);
-  box-shadow: 0 0 16px rgba(255,255,255,0.14), 0 0 28px rgba(100,160,255,0.18);
-  border-color: rgba(255,255,255,0.4); transform: translateY(-1px);
-}
-.hero-visual { z-index: 1; }
+/* PANEL */
+.panel{background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden;animation:fadeUp .35s ease both;transition:border-color .15s}
+.panel:hover{border-color:var(--blue-lt)}
+.panel-header{padding:14px 16px 0}
+.panel-title{font-size:13px;font-weight:700;color:var(--navy)}
+.panel-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.panel-body{padding:12px 16px 16px}
 
 /* STATS */
-.stats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 12px; margin-bottom: 16px;
-}
-.stat-card {
-  background: var(--surface); border-radius: 12px;
-  padding: 15px 16px; border: 1px solid var(--border);
-  transition: border-color 0.15s; animation: fadeUp 0.35s ease both;
-  display: flex; flex-direction: column; gap: 4px;
-}
-.stat-card:hover { border-color: var(--blue-lt); }
-.stat-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.stat-icon {
-  width: 34px; height: 34px; border-radius: 8px;
-  background: #eef4ff; display: flex; align-items: center;
-  justify-content: center; flex-shrink: 0;
-}
-.stat-icon svg { color: var(--blue-lt); }
-.stat-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.stat-value { font-size: 26px; font-weight: 800; color: var(--blue-lt); letter-spacing: -0.03em; line-height: 1; }
-.stat-sub { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
-.dot-neg { background: #2b72d8; }
-.dot-swa { background: var(--accent); }
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat-card{background:var(--surface);border-radius:12px;padding:15px 16px;border:1px solid var(--border);transition:border-color .15s;animation:fadeUp .35s ease both}
+.stat-card:hover{border-color:var(--blue-lt)}
+.stat-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.stat-value{font-size:26px;font-weight:800;color:var(--blue-lt);letter-spacing:-.03em;line-height:1}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.stat-card.st-ren .stat-value{color:#2b72d8}
+.stat-card.st-proses .stat-value{color:#c07a00}
+.stat-card.st-selesai .stat-value{color:#1a6b3e}
 
-/* ANALYTICS ROW */
-.analytics-row {
-  display: grid; grid-template-columns: 1fr 2fr;
-  gap: 14px; margin-bottom: 16px;
-  align-items: stretch;
-}
-.analytics-left { display: flex; flex-direction: column; gap: 14px; }
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:1fr 1.4fr 1.6fr;gap:14px;margin-bottom:16px}
 
-.panel {
-  background: var(--surface); border-radius: 12px;
-  border: 1px solid var(--border); overflow: hidden;
-  animation: fadeUp 0.35s ease both;
-  transition: border-color 0.15s;
-}
-.panel:hover { border-color: var(--blue-lt); }
-.panel-header { padding: 14px 16px 0; }
-.panel-title { font-size: 13px; font-weight: 700; color: var(--navy); }
-.panel-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.panel-body { padding: 12px 16px 16px; }
+/* STATUS DROPDOWN */
+.status-wrap{position:relative;display:inline-block}
+.status-drop{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(10,31,60,.15);z-index:400;min-width:140px;padding:5px 0;overflow:hidden}
+.status-wrap.open .status-drop{display:block}
+.status-opt{display:flex;align-items:center;gap:7px;padding:7px 12px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text);transition:background .1s;white-space:nowrap}
+.status-opt:hover{background:var(--bg)}
+.status-opt.active{font-weight:700}
+.donut-wrap{display:flex;align-items:center;gap:12px}
+.donut-svg-pos{position:relative;flex-shrink:0}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut-center-num{font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-.03em}
+.donut-center-txt{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.donut-legend{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.dleg{display:flex;align-items:flex-start;gap:6px}
+.dleg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.dleg-lbl{font-size:10px;color:var(--muted);line-height:1.3;flex:1;min-width:0}
+.dleg-val{font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0}
+.hbar-list{display:flex;flex-direction:column;gap:7px}
+.hbar-item{display:flex;align-items:center;gap:8px}
+.hbar-lbl{font-size:10.5px;color:var(--muted);width:110px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbar-track{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.hbar-num{font-size:10.5px;font-weight:700;color:var(--navy);width:22px;text-align:right;flex-shrink:0}
+.tl-row{display:flex;align-items:center;height:26px}
+.tl-lbl{width:34px;flex-shrink:0;font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;text-align:right;padding-right:8px}
+.tl-bars{flex:1;display:flex;gap:2px;align-items:center}
+.tl-b{height:15px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;min-width:18px;padding:0 4px;white-space:nowrap;cursor:default;transition:opacity .15s}
+.tl-b:hover{opacity:.85}
+.tl-divider{border-top:1px dashed var(--border);width:100%}
+.tl-legend{display:flex;gap:12px;margin-top:8px}
+.tl-li{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.tl-li-dot{width:12px;height:7px;border-radius:3px}
 
-/* DONUT */
-.donut-wrap { display: flex; align-items: center; gap: 14px; }
-.legend { display: flex; flex-direction: column; gap: 6px; flex: 1; }
-.leg-item { display: flex; align-items: flex-start; gap: 7px; }
-.leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
-.leg-pct { font-weight: 700; color: var(--navy); min-width: 34px; font-size: 11.5px; }
-.leg-label { color: var(--muted); font-size: 11px; line-height: 1.3; }
-
-/* MAP */
-.map-panel { display: flex; flex-direction: column; }
-.map-panel .panel-body { padding: 10px 14px 12px; display: flex; flex-direction: column; flex: 1; }
-#map {
-  flex: 1; min-height: 0;
-  border-radius: 8px; z-index: 1;
-}
-.map-legend {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 8px; font-size: 10.5px; color: var(--muted); flex-shrink: 0;
-}
-.map-legend-bar {
-  flex: 1; height: 5px; border-radius: 99px;
-  background: linear-gradient(90deg, #d6e8ff, #2b72d8, #0a1f3c);
-}
+/* STATUS INLINE */
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;white-space:nowrap;user-select:none;font-family:inherit;background:none}
+.status-null{background:#f0f2f5;color:#888;border-color:#e0e4ea}
+.status-null:hover{border-color:#2b72d8;color:#2b72d8}
+.status-Direncanakan{background:#eef4ff;color:#1a4a8a;border-color:#c5d8f8}
+.status-Direncanakan:hover{background:#dbeafe;border-color:#2b72d8}
+.status-DalamProses{background:#fff8e6;color:#7a4f00;border-color:#fce0a0}
+.status-DalamProses:hover{background:#fef3d7;border-color:#f0a500}
+.status-Selesai{background:#e0f0e9;color:#1a6b3e;border-color:#a8d8be}
+.status-Selesai:hover{background:#d1edd9;border-color:#1a8a50}
+.status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 
 /* TABLE */
-.table-filters {
-  padding: 12px 16px; display: flex; gap: 10px;
-  border-bottom: 1px solid var(--border); flex-wrap: wrap;
-}
-.search-input { flex: 1.5; min-width: 160px; }
-.filter-select { flex: 1; min-width: 120px; }
-select, input {
-  width: 100%; padding: 7px 10px; border-radius: 7px;
-  border: 1.5px solid var(--border); font-size: 12px;
-  font-family: inherit; color: var(--text); background: var(--bg);
-  appearance: none; outline: none; transition: border-color 0.15s;
-}
-select:focus, input:focus { border-color: var(--blue-lt); }
-table { width: 100%; border-collapse: collapse; }
-thead tr { border-bottom: 2px solid var(--border); }
-thead th {
-  padding: 10px 14px; text-align: left;
-  font-size: 10.5px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
-}
-tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-tbody tr:hover { background: var(--bg); }
-tbody tr:last-child { border-bottom: none; }
-td { padding: 9px 14px; font-size: 12.5px; }
-td.npsn { font-family: monospace; font-size: 11.5px; color: var(--muted); }
-td.nama { font-weight: 600; color: var(--navy); }
-.tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-/* Kolom Profil KKA & PM — pastikan tidak wrap di semua tabel */
-#baselineTable th:nth-child(6),
-#baselineTable th:nth-child(7),
-#baselineTable td:nth-child(6),
-#baselineTable td:nth-child(7),
-#berandaTbody td:nth-child(9),
-#berandaTbody td:nth-child(10),
-#suratTable td:nth-last-child(2),
-#suratTable td:nth-last-child(1) { min-width: 140px; white-space: nowrap; }
-.tag-maju { background: #e0f0e9; color: #1a6b3e; }
-.tag-berk { background: #e8f0fb; color: #1a4a8a; }
-.tag-ung  { background: #fef3d7; color: #8a5c00; }
-.tag-tt   { background: #f0f2f5; color: #556; }
-.table-footer {
-  padding: 11px 14px; display: flex; align-items: center;
-  justify-content: space-between; border-top: 1px solid var(--border);
-}
-.table-footer .info { font-size: 12px; color: var(--muted); }
-.btn-reset-filter {
-  padding: 7px 12px; border-radius: 7px; font-size: 12px; font-weight: 600;
-  border: 1.5px solid var(--border); background: var(--surface);
-  color: var(--muted); cursor: pointer; font-family: inherit;
-  white-space: nowrap; transition: all 0.15s;
-  flex-shrink: 0;
-}
-.btn-reset-filter:hover { border-color: var(--blue-lt); color: var(--blue-lt); background: #eef4ff; }
-.pager { display: flex; gap: 4px; }
-.pager button {
-  width: 28px; height: 28px; border-radius: 6px;
-  border: 1.5px solid var(--border); background: var(--surface);
-  font-size: 12px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text); transition: background 0.1s, border-color 0.1s;
-  font-family: inherit;
-}
-.pager button:hover { background: var(--bg); border-color: var(--blue-lt); }
-.pager button.cur { background: var(--blue); color: #fff; border-color: var(--blue); }
+.filter-bar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+select,input[type=text]{padding:7px 10px;border-radius:7px;border:1.5px solid var(--border);font-size:12px;font-family:inherit;color:var(--text);background:var(--bg);appearance:none;outline:none;transition:border-color .15s;min-width:130px}
+select:focus,input[type=text]:focus{border-color:var(--blue-lt)}
+.ms-wrap{position:relative}
+.ms-trigger{padding:7px 10px;border-radius:7px;border:1.5px solid var(--border);font-size:12px;font-family:inherit;color:var(--text);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:160px;user-select:none;transition:border-color .15s}
+.ms-trigger:hover,.ms-wrap.open .ms-trigger{border-color:var(--blue-lt)}
+.ms-trigger svg{flex-shrink:0;color:var(--muted);transition:transform .2s}
+.ms-wrap.open .ms-trigger svg{transform:rotate(180deg)}
+.ms-drop{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(10,31,60,.12);z-index:300;min-width:200px;max-height:240px;overflow-y:auto;padding:6px 0}
+.ms-wrap.open .ms-drop{display:block}
+.ms-item{display:flex;align-items:center;gap:8px;padding:6px 14px;cursor:pointer;font-size:12px;color:var(--text);transition:background .1s}
+.ms-item:hover{background:var(--bg)}
+.ms-item input[type=checkbox]{width:14px;height:14px;min-width:14px;cursor:pointer;accent-color:var(--blue-lt);border:none;padding:0}
+.ms-actions{display:flex;gap:6px;padding:8px 14px 6px;border-top:1px solid var(--border);margin-top:4px}
+.ms-btn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
+.ms-btn:hover{border-color:var(--blue-lt);color:var(--blue-lt)}
+.btn-reset{padding:7px 12px;border-radius:7px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
+.btn-reset:hover{border-color:var(--blue-lt);color:var(--blue-lt);background:#eef4ff}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl-scroll table{min-width:1100px;width:100%;border-collapse:collapse}
+thead tr{border-bottom:2px solid var(--border)}
+thead th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:hover{background:var(--bg)}
+tbody tr:last-child{border-bottom:none}
+td{padding:9px 14px;font-size:12.5px;vertical-align:top}
+td.c-prov{font-weight:600;color:var(--navy);white-space:nowrap}
+td.c-ren{font-weight:600;color:var(--navy);min-width:180px}
+td.c-txt{min-width:180px;font-size:12px;color:var(--muted);line-height:1.5}
+td.c-pj{min-width:120px;font-size:12px}
+td.c-bln{white-space:nowrap;font-size:12px}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.t-sos{background:#eef4ff;color:#1a4a8a}
+.t-koor{background:#f0f7ee;color:#1a5e30}
+.t-ren{background:#fef3d7;color:#8a5c00}
+.t-pen{background:#e8f0fb;color:#1a4a8a}
+.t-lat{background:#fce8f9;color:#7a1a70}
+.t-pend{background:#e8f5fa;color:#0a4a6a}
+.t-mon{background:#f0f9ff;color:#075985}
+.t-lap{background:#f5f0ff;color:#4a1a8a}
+.t-lain{background:#f0f2f5;color:#556}
+.btag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
+.bmulai{background:#e8f5fa;color:#0a4a6a}
+.bselesai{background:#fff8e6;color:#7a4f00}
+.bempty{background:#f0f2f5;color:#999;font-style:italic}
+.chips{display:flex;flex-wrap:wrap;gap:3px;min-width:150px}
+.chip{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10.5px;font-weight:600;background:#eef4ff;color:#1a4a8a}
+.tbl-footer{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border)}
+.tbl-info{font-size:12px;color:var(--muted)}
+.pager{display:flex;gap:4px}
+.pager button{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:background .1s,border-color .1s;font-family:inherit}
+.pager button:hover{background:var(--bg);border-color:var(--blue-lt)}
+.pager button.cur{background:var(--blue);color:#fff;border-color:var(--blue)}
 
-/* Leaflet overrides */
-.leaflet-container { font-family: 'Plus Jakarta Sans', sans-serif !important; background: #f2f6fb !important; }
-.leaflet-control-zoom a { font-family: 'Plus Jakarta Sans', sans-serif !important; border-radius: 6px !important; }
-.leaflet-control-zoom { border: 1px solid var(--border) !important; border-radius: 7px !important; box-shadow: none !important; }
-.map-tip {
-  background: var(--navy) !important; color: #fff !important;
-  padding: 6px 10px !important; border-radius: 7px !important;
-  font-size: 11.5px !important; font-family: 'Plus Jakarta Sans', sans-serif !important;
-  border: none !important; box-shadow: none !important; white-space: nowrap !important;
-}
-.map-tip::before { display: none !important; }
-.leaflet-attribution { display: none !important; }
+/* ACTION BTNS */
+.btn-act{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;color:var(--muted);font-family:inherit}
+.btn-act:hover{border-color:var(--blue-lt);color:var(--blue-lt);background:#eef4ff}
+.btn-act.del:hover{border-color:#f5b89a;color:#c0392b;background:#fde8d8}
+.btn-add{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:var(--blue-lt);color:#fff;border:none;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s}
+.btn-add:hover{background:var(--blue);box-shadow:0 4px 14px rgba(43,114,216,.3);transform:translateY(-1px)}
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(10,31,60,.5);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-ov.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;box-shadow:0 24px 60px rgba(10,31,60,.2);width:620px;max-width:calc(100vw - 32px);max-height:calc(100vh - 40px);overflow-y:auto;animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.modal-hd{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:14px;font-weight:800;color:var(--navy)}
+.modal-x{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:background .15s;display:flex}
+.modal-x:hover{background:var(--bg);color:var(--text)}
+.modal-bd{padding:20px;display:flex;flex-direction:column;gap:14px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+.fgrp.full{grid-column:1/-1}
+.flbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.finput{padding:8px 11px;border-radius:8px;border:1.5px solid var(--border);font-size:12.5px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s;width:100%}
+.finput:focus{border-color:var(--blue-lt)}
+textarea.finput{resize:vertical;min-height:68px}
+select.finput{appearance:none}
+.modal-ft{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.btn-cancel{padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-cancel:hover{border-color:var(--blue-lt);color:var(--blue-lt)}
+.btn-save{padding:8px 18px;border-radius:8px;background:var(--blue-lt);color:#fff;border:none;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-save:hover{background:var(--blue);box-shadow:0 4px 14px rgba(43,114,216,.3)}
 
-/* ── PAGE SECTIONS ── */
-.page-section { display: none; }
-.page-section.active { display: block; }
+/* DELETE MODAL */
+.del-icon{width:52px;height:52px;border-radius:50%;background:#fde8d8;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.del-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:6px;text-align:center}
+.del-sub{font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
+.del-ft{padding:0 20px 20px;display:flex;gap:8px;justify-content:center}
+.btn-del{padding:8px 20px;border-radius:8px;background:#c0392b;color:#fff;border:none;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-del:hover{background:#a93226}
 
-/* SURAT DUKUNGAN - CHART ROW */
-.chart-row-2 {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 14px; margin-bottom: 16px;
-}
-/* 4-chart row: 2 groups of 2 */
-.chart-section { margin-bottom: 16px; }
-.chart-group-label {
-  font-size: 11px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--muted);
-  padding: 0 2px 8px; display: flex; align-items: center; gap: 8px;
-}
-.chart-group-label::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-.chart-row-4 {
-  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 12px; margin-bottom: 16px;
-}
-/* filter tab pills */
-.filter-tabs {
-  display: flex; gap: 6px; flex-wrap: wrap;
-  padding: 0 0 14px;
-}
-.filter-tab {
-  padding: 5px 14px; border-radius: 20px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  border: 1.5px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  font-family: inherit; transition: all 0.15s;
-}
-.filter-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
-.filter-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
-/* compact donut for 4-grid */
-.donut-wrap-sm { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.legend-sm { display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.leg-item-sm { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
-.leg-item-sm .leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.chart-label { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.4; padding: 0 4px; }
-/* two-line table header */
-th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
-/* fix wide table scroll */
-.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.tbl-scroll table { min-width: 900px; }
-.pie-legend-grid { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+/* USER BADGE */
+.user-badge{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ub-info{text-align:right}
+.ub-name{font-size:12px;font-weight:700;color:var(--navy);line-height:1.3;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ub-role{font-size:10.5px;color:var(--muted);margin-top:1px}
+.btn-masuk{padding:6px 14px;border-radius:8px;background:var(--blue-lt);color:#fff;border:none;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.btn-masuk:hover{background:var(--blue);transform:translateY(-1px)}
+.bdrop{position:relative}
+.btrigger{display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 6px;border-radius:8px;transition:background .15s}
+.btrigger:hover{background:var(--border)}
+.bavatar{width:32px;height:32px;border-radius:50%;background:var(--blue-lt);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.bchev{color:var(--muted);transition:transform .2s}
+.bdrop.open .bchev{transform:rotate(180deg)}
+.bmenu{display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(10,31,60,.12);min-width:180px;z-index:500;overflow:hidden}
+.bdrop.open .bmenu{display:block}
+.bmenu-hd{padding:12px 14px 10px;border-bottom:1px solid var(--border)}
+.bmenu-name{font-size:12.5px;font-weight:700;color:var(--navy)}
+.bmenu-email{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.bmenu a,.bmenu button{display:flex;align-items:center;gap:9px;width:100%;padding:9px 14px;font-size:12.5px;font-weight:500;color:var(--text);text-decoration:none;background:none;border:none;font-family:inherit;cursor:pointer;text-align:left;transition:background .12s}
+.bmenu a:hover,.bmenu button:hover{background:var(--bg)}
+.bmenu .logout{color:#c0392b}
+.bmenu .logout:hover{background:#fde8d8}
+.mob-auth{margin-left:auto;padding:5px 11px;border-radius:7px;background:var(--blue-lt);color:#fff;border:none;font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.mob-uname{margin-left:auto;font-size:11px;font-weight:700;color:rgba(255,255,255,.85);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;flex-shrink:0}
 
-@media (max-width: 1024px) {
-  .chart-row-4 { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 768px) {
-  .chart-row-2 { grid-template-columns: 1fr; }
-  .chart-row-4 { grid-template-columns: 1fr 1fr; }
-}
-.btn-lihat {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 11px; border-radius: 7px;
-  background: var(--blue-lt); color: #fff;
-  font-size: 11.5px; font-weight: 600;
-  text-decoration: none; border: none; cursor: pointer;
-  font-family: inherit; transition: all 0.15s ease;
-}
-.btn-lihat:hover {
-  background: var(--blue);
-  box-shadow: 0 0 12px rgba(43,114,216,0.35);
-  transform: translateY(-1px);
-}
-.btn-lihat svg { flex-shrink: 0; }
+/* SKELETON */
+@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.skel{background:linear-gradient(90deg,#e8f0fb 25%,#dce6f5 50%,#e8f0fb 75%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;border-radius:6px}
 
-/* STATUS BADGE */
-.badge-ada { background: #e0f0e9; color: #1a6b3e; display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
-.badge-belum { background: #fef3d7; color: #8a5c00; display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-size:12.5px;font-weight:600;z-index:900;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.toast.ok{background:#1a6b3e}
+.toast.err{background:#c0392b}
 
-@media (max-width: 768px) {
-  .chart-row-2 { grid-template-columns: 1fr; }
-}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 1024px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .analytics-row { grid-template-columns: 1fr; }
-}
-@media (max-width: 768px) {
-  aside { transform: translateX(-100%); }
-  aside.open { transform: translateX(0); }
-  .sidebar-close { display: flex; }
-  .mobile-topbar { display: flex; }
-  main { margin-left: 0; padding: 70px 14px 40px; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .stat-value { font-size: 22px; }
-  .topbar { display: none; }
-  .hero { grid-template-columns: 1fr; padding: 16px 18px; }
-  .hero-visual { display: none; }
-  #map { min-height: 240px; }
-  .table-filters { flex-direction: column; }
-  thead th:nth-child(4), thead th:nth-child(5), td:nth-child(4), td:nth-child(5) { display: none; }
-}
-@media (max-width: 480px) {
-  .hero-actions { flex-direction: column; }
-  .hero-btn { text-align: center; }
-}
-
-/* ── SKELETON LOADING ── */
-@keyframes shimmer {
-  0%   { background-position: -600px 0; }
-  100% { background-position:  600px 0; }
-}
-.skel {
-  background: linear-gradient(90deg, #e8f0fb 25%, #dce6f5 50%, #e8f0fb 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-  border-radius: 6px;
-}
-.skel-circle {
-  border-radius: 50%;
-}
-.skel-stat-val  { height: 32px; width: 80px; margin-bottom: 8px; }
-.skel-stat-sub  { height: 12px; width: 120px; }
-.skel-donut     { width: 90px; height: 90px; flex-shrink: 0; }
-.skel-donut-sm  { width: 100px; height: 100px; }
-.skel-leg       { height: 11px; border-radius: 4px; margin-bottom: 5px; }
-.skel-tbl-row td { padding: 9px 14px; }
-.skel-tbl-cell  { height: 14px; border-radius: 4px; }
-.skel-panel-title { height: 16px; width: 160px; border-radius: 4px; margin-bottom: 6px; }
-.skel-panel-sub   { height: 11px; width: 100px; border-radius: 4px; }
-
-/* ── USER BADGE (topbar kanan atas) ── */
-.topbar { justify-content: space-between; align-items: center; }
-.user-badge {
-  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-}
-.user-badge-info { text-align: right; }
-.user-badge-name { font-size: 12px; font-weight: 700; color: var(--navy); line-height: 1.3; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.user-badge-role { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
-.btn-masuk {
-  padding: 6px 14px; border-radius: 8px;
-  background: var(--blue-lt); color: #fff;
-  border: none; font-size: 12px; font-weight: 600;
-  font-family: inherit; cursor: pointer;
-  transition: all 0.15s; white-space: nowrap;
-  display: flex; align-items: center; gap: 6px;
-}
-.btn-masuk:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(43,114,216,0.3); }
-.btn-logout-top {
-  padding: 5px 12px; border-radius: 7px;
-  background: transparent; border: 1.5px solid var(--border);
-  color: var(--muted); font-size: 11px; font-weight: 600;
-  font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.btn-logout-top:hover { background: #fde8d8; color: #8a3000; border-color: #f5b89a; }
-.badge-dropdown-wrap { position: relative; }
-.badge-trigger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 6px; border-radius: 8px; transition: background 0.15s; }
-.badge-trigger:hover { background: var(--border); }
-.badge-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue-lt); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
-.badge-chevron { color: var(--muted); transition: transform 0.2s; }
-.badge-dropdown-wrap.open .badge-chevron { transform: rotate(180deg); }
-.badge-menu { display: none; position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(10,31,60,0.12); min-width: 180px; z-index: 500; overflow: hidden; }
-.badge-dropdown-wrap.open .badge-menu { display: block; }
-.badge-menu-header { padding: 12px 14px 10px; border-bottom: 1px solid var(--border); }
-.badge-menu-name { font-size: 12.5px; font-weight: 700; color: var(--navy); }
-.badge-menu-email { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-.badge-menu a, .badge-menu button { display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 14px; font-size: 12.5px; font-weight: 500; color: var(--text); text-decoration: none; background: none; border: none; font-family: inherit; cursor: pointer; text-align: left; transition: background 0.12s; }
-.badge-menu a:hover, .badge-menu button:hover { background: var(--bg); }
-.badge-menu .menu-logout { color: #c0392b; }
-.badge-menu .menu-logout:hover { background: #fde8d8; }
-
-/* ── MOBILE TOPBAR: tombol masuk / nama user ── */
-.mobile-auth-btn {
-  margin-left: auto;
-  padding: 5px 11px; border-radius: 7px;
-  background: var(--blue-lt); color: #fff;
-  border: none; font-size: 11.5px; font-weight: 600;
-  font-family: inherit; cursor: pointer; white-space: nowrap;
-  flex-shrink: 0;
-}
-.mobile-user-name {
-  margin-left: auto;
-  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85);
-  max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none;
-  flex-shrink: 0;
-}
-
-/* iOS font-size fix */
-@media (max-width: 768px) {
-  .user-badge-info { display: none; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:1280px){.charts-row{grid-template-columns:1fr 1fr}.charts-row .panel:nth-child(3){grid-column:span 1}}
+@media(max-width:1024px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){
+  aside{transform:translateX(-100%)}aside.open{transform:translateX(0)}
+  .sidebar-close{display:flex}.mobile-topbar{display:flex}
+  main{margin-left:0;padding:70px 14px 40px}.topbar{display:none}
+  .charts-row{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .filter-bar{flex-direction:column}.frow{grid-template-columns:1fr}
+  .ub-info{display:none}
 }
 </style>
 </head>
 <body>
 
 <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
-
-
 <div class="mobile-topbar">
-  <button class="hamburger" onclick="openSidebar()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-  <span class="mobile-topbar-title">Daftar Sekolah Model SMA 2026</span>
-  <a class="mobile-user-name" id="mobileUserName" href="profil.html" style="display:none"></a>
-  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
-  <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
+  <button class="hamburger" onclick="openSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+  <span class="mobile-topbar-title">Intervensi Dinas Pendidikan</span>
+  <a class="mob-uname" id="mobUname" href="profil.html" style="display:none"></a>
+  <button class="mob-auth" id="mobBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
+  <button class="mob-auth" id="mobBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.85)">Keluar</button>
 </div>
 
 <aside id="sidebar">
   <div class="sidebar-logo">
-    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo Kemendikdasmen">
-    <button class="sidebar-close" onclick="closeSidebar()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
+    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo">
+    <button class="sidebar-close" onclick="closeSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <nav>
-
     <div class="nav-divider">Program</div>
-    <a href="beranda.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Beranda
-    </a>
-    <a href="surat-dukungan.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Surat Dukungan
-    </a>
-    <a href="baseline.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Baseline Sekolah
-    </a>
+    <a href="beranda.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Beranda</a>
+    <a href="surat-dukungan.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Surat Dukungan</a>
+    <a href="baseline.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Baseline Sekolah</a>
     <div class="nav-divider">Intervensi</div>
-    <a href="intervensi-direktorat.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Direktorat SMA
-    </a>
-    <a href="intervensi-upt.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-      BBPMP/BPMP
-    </a>
-    <a href="intervensi-dinas.html" class="active">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
-      Dinas Pendidikan
-    </a>
+    <a href="intervensi-direktorat.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Direktorat SMA</a>
+    <a href="intervensi-upt.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>BBPMP/BPMP</a>
+    <a href="intervensi-dinas.html" class="active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>Dinas Pendidikan</a>
     <div class="nav-divider nav-admin-only">Sistem</div>
-    <a href="kelola-pengguna.html" class="nav-admin-only">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Kelola Pengguna
-    </a>
+    <a href="kelola-pengguna.html" class="nav-admin-only"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Kelola Pengguna</a>
   </nav>
   <div class="sidebar-footer">Data diperbarui<br>30 Mei 2026 · 20:05</div>
 </aside>
 
 <main>
-  <div id="intervensi-dinas">
-    <div class="topbar">
-      <div class="topbar-left">
-        <h1>Intervensi Dinas Pendidikan</h1>
-        <p>Sekolah Model Implementasi Pembelajaran Mendalam &amp; KKA</p>
-      </div>
-      <div class="user-badge" id="userBadge">
-        <!-- Belum login -->
-        <div id="badgeGuest" style="display:none">
-          <button class="btn-masuk" onclick="window.location.href='login.html'">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Masuk
-          </button>
-        </div>
-        <!-- Sudah login -->
-        <div class="badge-dropdown-wrap" id="badgeUser" style="display:none">
-          <div class="badge-trigger" onclick="toggleBadgeMenu()">
-            <div class="user-badge-info">
-              <div class="user-badge-name" id="badgeEmail">—</div>
-              <div class="user-badge-role" id="badgeRole">—</div>
-            </div>
-            <div class="badge-avatar" id="badgeAvatar">?</div>
-            <svg class="badge-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div class="badge-menu">
-            <div class="badge-menu-header">
-              <div class="badge-menu-name" id="menuName">—</div>
-              <div class="badge-menu-email" id="menuEmail">—</div>
-            </div>
-            <a href="profil.html">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Profil &amp; Kata Sandi
-            </a>
-            <button class="menu-logout" onclick="doLogout()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Keluar
-            </button>
-          </div>
-        </div>
-      </div>
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Intervensi Dinas Pendidikan</h1>
+      <p>Sekolah Model Implementasi Pembelajaran Mendalam &amp; KKA</p>
     </div>
-
-    <div class="panel" style="margin-bottom:0; margin-top: 12px;">
-      <div class="panel-body" style="padding: 60px 24px; text-align: center;">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 20px; display: block;">
-          <circle cx="12" cy="12" r="10"/>
-          <polyline points="12 6 12 12 16 14"/>
-        </svg>
-        <div style="font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px;">Sedang Dalam Pengembangan</div>
-        <div style="font-size: 13px; color: var(--muted); max-width: 420px; margin: 0 auto; line-height: 1.7;">
-          Halaman <strong>Dinas Pendidikan</strong> sedang dalam tahap pengembangan. Fitur ini akan segera tersedia.
+    <div class="user-badge">
+      <div id="badgeGuest" style="display:none"><button class="btn-masuk" onclick="window.location.href='login.html'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Masuk</button></div>
+      <div class="bdrop" id="badgeUser" style="display:none">
+        <div class="btrigger" onclick="toggleBadgeMenu()">
+          <div class="ub-info"><div class="ub-name" id="badgeEmail">—</div><div class="ub-role" id="badgeRole">—</div></div>
+          <div class="bavatar" id="badgeAvatar">?</div>
+          <svg class="bchev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="bmenu">
+          <div class="bmenu-hd"><div class="bmenu-name" id="menuName">—</div><div class="bmenu-email" id="menuEmail">—</div></div>
+          <a href="profil.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil &amp; Kata Sandi</a>
+          <button class="logout" onclick="doLogout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Keluar</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- STATS (4 cards: total + status breakdown) -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="stat-label">Total Kegiatan</div><div class="stat-value" id="stTotal">—</div><div class="stat-sub" id="stTotalSub">dari semua provinsi</div></div>
+    <div class="stat-card st-ren"><div class="stat-label">Direncanakan</div><div class="stat-value" id="stRen">—</div><div class="stat-sub">kegiatan</div></div>
+    <div class="stat-card st-proses"><div class="stat-label">Dalam Proses</div><div class="stat-value" id="stProses">—</div><div class="stat-sub">kegiatan</div></div>
+    <div class="stat-card st-selesai"><div class="stat-label">Selesai</div><div class="stat-value" id="stSelesai">—</div><div class="stat-sub">kegiatan</div></div>
+  </div>
+
+  <!-- CHARTS (3 charts: kategori, unsur terlibat top15, jadwal) -->
+  <div class="charts-row" id="chartsRow">
+    <div class="panel"><div class="panel-header"><div class="panel-title">Distribusi Kategori</div><div class="panel-sub">Per jenis intervensi</div></div><div class="panel-body"><div class="donut-wrap" id="cKat"><div style="color:var(--muted);font-size:12px">Memuat…</div></div></div></div>
+    <div class="panel"><div class="panel-header"><div class="panel-title">Unsur Terlibat</div><div class="panel-sub">Top 15 · hover Lainnya untuk detail</div></div><div class="panel-body"><div class="hbar-list" id="cUnsur"><div style="color:var(--muted);font-size:12px">Memuat…</div></div></div></div>
+    <div class="panel"><div class="panel-header"><div class="panel-title">Jadwal Aktivitas Bulanan</div><div class="panel-sub">Mulai &amp; selesai per bulan</div></div><div class="panel-body"><div id="cTimeline"><div style="color:var(--muted);font-size:12px">Memuat…</div></div><div class="tl-legend"><div class="tl-li"><div class="tl-li-dot" style="background:var(--blue-lt)"></div>Mulai</div><div class="tl-li"><div class="tl-li-dot" style="background:var(--accent)"></div>Selesai</div></div></div></div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="panel">
+    <div class="panel-header" style="padding-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div><div class="panel-title">Data Rencana Intervensi Dinas</div><div class="panel-sub">Klik status di baris untuk memperbarui progres kegiatan</div></div>
+      <button class="btn-add" onclick="openModal('add')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Data</button>
+    </div>
+    <div class="filter-bar">
+      <div class="fg"><div class="fg-lbl">Provinsi/Kab/Kota</div><select id="fltProv" onchange="applyFilter()"><option value="">Semua</option></select></div>
+      <div class="fg"><div class="fg-lbl">Kategori</div><select id="fltKat" onchange="applyFilter()"><option value="">Semua</option></select></div>
+      <div class="fg"><div class="fg-lbl">Status</div><select id="fltStatus" onchange="applyFilter()"><option value="">Semua</option><option value="null">Belum ditandai</option><option value="Direncanakan">Direncanakan</option><option value="Dalam Proses">Dalam Proses</option><option value="Selesai">Selesai</option></select></div>
+      <div class="fg"><div class="fg-lbl">Unsur Terlibat</div>
+        <div class="ms-wrap" id="msWrap">
+          <div class="ms-trigger" onclick="toggleMs()"><span id="msLbl">Semua Unsur</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="ms-drop" id="msDrop"></div>
+        </div>
+      </div>
+      <div class="fg" style="flex:1;min-width:160px"><div class="fg-lbl">Cari</div><input type="text" id="fltQ" placeholder="Cari kegiatan…" oninput="applyFilter()" style="width:100%;min-width:0"></div>
+      <div class="fg" style="justify-content:flex-end;padding-top:18px"><button class="btn-reset" onclick="resetFilter()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>Reset</button></div>
+    </div>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr>
+          <th style="width:36px">#</th>
+          <th style="width:130px">Status</th>
+          <th>Provinsi/Kab/Kota</th>
+          <th>Kategori</th>
+          <th>Rencana Kegiatan</th>
+          <th>Deskripsi Kegiatan</th>
+          <th>Indikator Keberhasilan</th>
+          <th>Unsur Terlibat</th>
+          <th>Penanggung Jawab</th>
+          <th>Bulan Mulai</th>
+          <th>Bulan Selesai</th>
+          <th style="width:72px">Aksi</th>
+        </tr></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+    <div class="tbl-footer"><div class="tbl-info" id="tblInfo">—</div><div class="pager" id="pager"></div></div>
+  </div>
 </main>
 
+<!-- EDIT MODAL -->
+<div class="modal-ov" id="modalOv" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title" id="modalTitle">Tambah Data</div><button class="modal-x" onclick="closeModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-bd">
+      <input type="hidden" id="mId">
+      <div class="frow">
+        <div class="fgrp"><label class="flbl">Provinsi/Kab/Kota</label><input type="text" class="finput" id="mProv" placeholder="cth. Jawa Barat"></div>
+        <div class="fgrp"><label class="flbl">Kategori</label>
+          <select class="finput" id="mKat">
+            <option value="">Pilih Kategori</option>
+            <option>Sosialisasi &amp; Advokasi</option><option>Koordinasi</option>
+            <option>Perencanaan &amp; Kebijakan</option><option>Penetapan &amp; Persiapan Sekolah Model</option>
+            <option>Pelatihan &amp; Peningkatan Kompetensi</option><option>Pendampingan &amp; Implementasi</option>
+            <option>Monitoring &amp; Evaluasi</option><option>Pelaporan &amp; Dokumentasi</option><option>Lainnya</option>
+          </select>
+        </div>
+      </div>
+      <div class="fgrp full"><label class="flbl">Rencana Kegiatan</label><input type="text" class="finput" id="mRencana" placeholder="Nama kegiatan"></div>
+      <div class="fgrp full"><label class="flbl">Deskripsi Kegiatan</label><textarea class="finput" id="mDesk" placeholder="Uraian kegiatan…"></textarea></div>
+      <div class="fgrp full"><label class="flbl">Indikator Keberhasilan</label><textarea class="finput" id="mIndik" placeholder="Indikator keberhasilan…"></textarea></div>
+      <div class="fgrp full">
+        <label class="flbl">Unsur Terlibat</label>
+        <div class="ms-wrap" id="mUnsurWrap" style="width:100%">
+          <div class="ms-trigger" onclick="toggleMsModal()" style="width:100%"><span id="mUnsurLbl">Pilih unsur terlibat…</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="ms-drop" id="mUnsurDrop" style="width:100%"></div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fgrp"><label class="flbl">Penanggung Jawab</label><input type="text" class="finput" id="mPJ" placeholder="Nama/jabatan PJ"></div>
+        <div class="fgrp" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end">
+          <div><label class="flbl">Bulan Mulai</label><select class="finput" id="mMulai"><option value="">—</option><option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option><option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option></select></div>
+          <div><label class="flbl">Bulan Selesai</label><select class="finput" id="mSelesai"><option value="">—</option><option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option><option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option></select></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-ft"><button class="btn-cancel" onclick="closeModal()">Batal</button><button class="btn-save" onclick="saveModal()">Simpan</button></div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-ov" id="delOv" onclick="if(event.target===this)closeDelModal()">
+  <div class="modal" style="width:380px">
+    <div class="modal-bd" style="padding:24px 20px 16px;text-align:center">
+      <div class="del-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+      <div class="del-title">Hapus Data?</div>
+      <div class="del-sub" id="delDesc">Data ini akan dihapus permanen.</div>
+    </div>
+    <div class="del-ft"><button class="btn-cancel" onclick="closeDelModal()">Batal</button><button class="btn-del" onclick="confirmDel()">Ya, Hapus</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
-// ── Auth constants ──────────────────────────────────────────────────────────
-const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const SB_URL = 'https://lusytejskqevwyyffeue.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
+const TABLE  = 'intervensi_dinas';
 
-const PROVINSI_ALL = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Papua Barat Daya','Papua Pegunungan','Papua Selatan','Papua Tengah','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
-const PROVINSI_UPT = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const BULAN_SHORT = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"];
+const UNSUR_LIST = ["Guru","Kepala Sekolah","Wakil Kepala Sekolah","Pengawas","Dinas Pendidikan","Satuan Pendidikan","BPMP","BBPMP","KCD","Bappeda","Inspektorat","Biro Hukum","Universitas","Mitra","MGMP","MKKS","UPT","Kelembagaan","Dinas Infokom","Bendahara"];
+const KAT_COLORS = {"Sosialisasi & Advokasi":"#2b72d8","Koordinasi":"#1a8a50","Perencanaan & Kebijakan":"#f0a500","Penetapan & Persiapan Sekolah Model":"#8b45c6","Pelatihan & Peningkatan Kompetensi":"#c026a3","Pendampingan & Implementasi":"#0891b2","Monitoring & Evaluasi":"#075985","Pelaporan & Dokumentasi":"#6366f1","Lainnya":"#94a3b8"};
+const KAT_CLASS  = {"Sosialisasi & Advokasi":"t-sos","Koordinasi":"t-koor","Perencanaan & Kebijakan":"t-ren","Penetapan & Persiapan Sekolah Model":"t-pen","Pelatihan & Peningkatan Kompetensi":"t-lat","Pendampingan & Implementasi":"t-pend","Monitoring & Evaluasi":"t-mon","Pelaporan & Dokumentasi":"t-lap","Lainnya":"t-lain"};
+const STATUS_CFG = {
+  null:          {label:'—',         cls:'status-null',     dot:'#ccc'},
+  'Direncanakan':{label:'Direncanakan',cls:'status-Direncanakan',dot:'#2b72d8'},
+  'Dalam Proses':{label:'Dalam Proses',cls:'status-DalamProses', dot:'#f0a500'},
+  'Selesai':     {label:'Selesai',    cls:'status-Selesai',   dot:'#1a8a50'},
+};
+const STATUS_CYCLE = [null, 'Direncanakan', 'Dalam Proses', 'Selesai'];
 
-// ── Admin nav visibility ──────────────────────────────────────────────────────
-function updateAdminNav() {
-  const raw  = localStorage.getItem('sb_user');
-  const role = raw ? (JSON.parse(raw).role || '') : '';
-  const show = (role === 'superadmin' || role === 'admin');
-  document.querySelectorAll('.nav-admin-only').forEach(el => {
-    el.style.display = show ? (el.tagName === 'A' ? 'flex' : 'block') : 'none';
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let ALL = [], FILTERED = [];
+let page = 1;
+const PER = 15;
+let delId = null;
+let selUnsur = [];
+let selUnsurModal = [];
+
+// ── SUPABASE HELPERS ──────────────────────────────────────────────────────────
+async function sbFetch(path, opts={}) {
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation', ...opts.headers },
+    ...opts
   });
+  if (!res.ok) { const e = await res.text(); throw new Error(e); }
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
 }
 
-// ── Logout ───────────────────────────────────────────────────────────────────
-function toggleBadgeMenu() {
-  document.getElementById('badgeUser').classList.toggle('open');
-}
-document.addEventListener('click', e => {
-  const wrap = document.getElementById('badgeUser');
-  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  buildFilterDropdowns();
+  buildMsModal();
+  loadData();
+  updateBadge();
+  document.addEventListener('click', e => {
+    if (!document.getElementById('msWrap').contains(e.target)) document.getElementById('msWrap').classList.remove('open');
+    if (!e.target.closest('.status-wrap')) document.querySelectorAll('.status-wrap.open').forEach(w=>w.classList.remove('open'));
+    if (!document.getElementById('mUnsurWrap').contains(e.target)) document.getElementById('mUnsurWrap').classList.remove('open');
+    if (!document.getElementById('badgeUser').contains(e.target)) document.getElementById('badgeUser').classList.remove('open');
+  });
 });
 
-function doLogout() {
-  localStorage.removeItem('sb_user');
-  window.location.href = 'login.html';
+async function loadData() {
+  showSkeleton();
+  try {
+    ALL = await sbFetch(`${TABLE}?select=*&order=id.asc`);
+    if (!ALL) ALL = [];
+    populateFilterOptions();
+    applyFilter();
+  } catch(e) {
+    console.error(e);
+    showToast('Gagal memuat data: ' + e.message, 'err');
+    ALL = SAMPLE;
+    populateFilterOptions();
+    applyFilter();
+  }
 }
 
-// ── Update badge (desktop + mobile) ─────────────────────────────────────────
-function updateBadge() {
-  const raw      = localStorage.getItem('sb_user');
-  const loggedIn = !!raw;
-  const sess     = loggedIn ? JSON.parse(raw) : null;
+// ── SAMPLE DATA (fallback 5 baris) ───────────────────────────────────────────
+const SAMPLE = [
+  {id:1,provinsi:"Banten",kategori:"Sosialisasi & Advokasi",rencana_kegiatan:"Sosialisasi kepada seluruh stakeholder sekolah model PM dan KKA",deskripsi_kegiatan:"Mengadakan pertemuan tatap muka/daring untuk memaparkan konsep dan tujuan program kepada sekolah sasaran.",indikator_keberhasilan:"Terlaksananya sosialisasi yang dihadiri 100% perwakilan stakeholder.",unsur_terlibat:["Guru","Kepala Sekolah","Pengawas","Dinas Pendidikan","BPMP"],penanggung_jawab:"Dindik",bulan_mulai:"Maret",bulan_selesai:"Maret",status:null},
+  {id:2,provinsi:"Banten",kategori:"Koordinasi",rencana_kegiatan:"Penandatanganan Piagam Komitmen Sekolah Model PM dan KKA",deskripsi_kegiatan:"Penandatanganan kesepakatan bersama antara Dinas, pengawas, dan Kepala Sekolah.",indikator_keberhasilan:"Tersedianya dokumen Piagam Komitmen yang ditandatangani.",unsur_terlibat:["Kepala Sekolah","Pengawas","Dinas Pendidikan"],penanggung_jawab:"Dindik",bulan_mulai:"Mei",bulan_selesai:"Mei",status:"Direncanakan"},
+  {id:3,provinsi:"Jawa Barat",kategori:"Pendampingan & Implementasi",rencana_kegiatan:"Pendampingan program sekmod PM KKA kepada pemda dan satuan pendidikan",deskripsi_kegiatan:"Memastikan pemda melakukan tindak lanjut program pendampingan sekmod PM KKA ke satuan pendidikan.",indikator_keberhasilan:"Program pendampingan terlaksana dan laporan capaian terealisasi.",unsur_terlibat:["Pengawas","Kepala Sekolah","Guru"],penanggung_jawab:"PJ. Pembelajaran dan Penilaian",bulan_mulai:"Mei",bulan_selesai:"Oktober",status:"Dalam Proses"},
+  {id:4,provinsi:"Jawa Timur",kategori:"Monitoring & Evaluasi",rencana_kegiatan:"Monitoring dan Evaluasi Berkala",deskripsi_kegiatan:"Monitoring capaian program dan evaluasi berbasis data mutu.",indikator_keberhasilan:"Tersusunnya laporan Monev dan rekomendasi perbaikan.",unsur_terlibat:["Dinas Pendidikan","BBPMP"],penanggung_jawab:"BBPMP, Dinas Pendidikan",bulan_mulai:"Juni",bulan_selesai:"Agustus",status:"Selesai"},
+  {id:5,provinsi:"Sulawesi Utara",kategori:"Perencanaan & Kebijakan",rencana_kegiatan:"Penyusunan Roadmap & Desain Pendampingan",deskripsi_kegiatan:"Dinas menyusun kebijakan daerah; BPMP menyusun desain teknis pendampingan.",indikator_keberhasilan:"Dokumen roadmap dan desain pendampingan tersedia.",unsur_terlibat:["Dinas Pendidikan","BPMP"],penanggung_jawab:"Dinas & BPMP",bulan_mulai:"Januari",bulan_selesai:"Februari",status:null},
+];
 
-  // Desktop
-  document.getElementById('badgeGuest').style.display = loggedIn ? 'none' : '';
-  const badgeUser = document.getElementById('badgeUser');
-  badgeUser.style.display = loggedIn ? 'flex' : 'none';
-  if (loggedIn) {
-    const nama = sess.nama || sess.email;
-    document.getElementById('badgeEmail').textContent = nama;
-    document.getElementById('badgeRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
-    const parts = nama.trim().split(' ');
-    const initial = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : nama[0].toUpperCase();
-    const av = document.getElementById('badgeAvatar');
-    if (av) av.textContent = initial;
-    const mn = document.getElementById('menuName');
-    const me = document.getElementById('menuEmail');
-    if (mn) mn.textContent = nama;
-    if (me) me.textContent = sess.email;
+// ── FILTER DROPDOWNS ──────────────────────────────────────────────────────────
+function buildFilterDropdowns() {
+  // multi-checkbox filter unsur
+  const drop = document.getElementById('msDrop');
+  drop.innerHTML = '';
+  UNSUR_LIST.forEach(u => {
+    const d = document.createElement('div'); d.className = 'ms-item';
+    d.innerHTML = `<input type="checkbox" value="${u}" onchange="onUnsurFilter(this)"> <span>${u}</span>`;
+    drop.appendChild(d);
+  });
+  const act = document.createElement('div'); act.className = 'ms-actions';
+  act.innerHTML = `<button class="ms-btn" onclick="msAll()">Semua</button><button class="ms-btn" onclick="msClear()">Hapus</button>`;
+  drop.appendChild(act);
+}
+function buildMsModal() {
+  const drop = document.getElementById('mUnsurDrop');
+  drop.innerHTML = '';
+  UNSUR_LIST.forEach(u => {
+    const d = document.createElement('div'); d.className = 'ms-item';
+    d.innerHTML = `<input type="checkbox" id="mu_${u.replace(/\s/g,'_')}" value="${u}" onchange="onUnsurModal(this)"> <span>${u}</span>`;
+    drop.appendChild(d);
+  });
+  const act = document.createElement('div'); act.className = 'ms-actions';
+  act.innerHTML = `<button class="ms-btn" onclick="msModalAll()">Semua</button><button class="ms-btn" onclick="msModalClear()">Hapus</button>`;
+  drop.appendChild(act);
+}
+function populateFilterOptions() {
+  const provs = [...new Set(ALL.map(d=>d.provinsi))].sort();
+  const kats  = [...new Set(ALL.map(d=>d.kategori))].sort();
+  const fp = document.getElementById('fltProv'), fk = document.getElementById('fltKat');
+  fp.innerHTML = '<option value="">Semua</option>';
+  kats.forEach(k => { const o=document.createElement('option'); o.value=k; o.textContent=k; fk.appendChild(o); });
+  provs.forEach(p => { const o=document.createElement('option'); o.value=p; o.textContent=p; fp.appendChild(o); });
+}
+
+function toggleMs() { document.getElementById('msWrap').classList.toggle('open'); }
+function toggleMsModal() { document.getElementById('mUnsurWrap').classList.toggle('open'); }
+function onUnsurFilter(c) { c.checked ? selUnsur.push(c.value) : (selUnsur = selUnsur.filter(u=>u!==c.value)); updateMsLbl(); applyFilter(); }
+function updateMsLbl() { document.getElementById('msLbl').textContent = selUnsur.length===0?'Semua Unsur':selUnsur.length===1?selUnsur[0]:`${selUnsur.length} unsur dipilih`; }
+function msAll() { document.querySelectorAll('#msDrop input[type=checkbox]').forEach(c=>{c.checked=true;if(!selUnsur.includes(c.value))selUnsur.push(c.value)}); updateMsLbl(); applyFilter(); }
+function msClear() { document.querySelectorAll('#msDrop input[type=checkbox]').forEach(c=>c.checked=false); selUnsur=[]; updateMsLbl(); applyFilter(); }
+function onUnsurModal(c) { c.checked ? selUnsurModal.push(c.value) : (selUnsurModal = selUnsurModal.filter(u=>u!==c.value)); updateMsModalLbl(); }
+function updateMsModalLbl() { document.getElementById('mUnsurLbl').textContent = selUnsurModal.length===0?'Pilih unsur terlibat…':selUnsurModal.join(', '); }
+function msModalAll() { document.querySelectorAll('#mUnsurDrop input[type=checkbox]').forEach(c=>{c.checked=true;if(!selUnsurModal.includes(c.value))selUnsurModal.push(c.value)}); updateMsModalLbl(); }
+function msModalClear() { document.querySelectorAll('#mUnsurDrop input[type=checkbox]').forEach(c=>c.checked=false); selUnsurModal=[]; updateMsModalLbl(); }
+
+// ── APPLY FILTER ──────────────────────────────────────────────────────────────
+function applyFilter() {
+  const prov = document.getElementById('fltProv').value;
+  const kat  = document.getElementById('fltKat').value;
+  const stat = document.getElementById('fltStatus').value;
+  const q    = document.getElementById('fltQ').value.toLowerCase();
+  FILTERED = ALL.filter(d => {
+    if (prov && d.provinsi !== prov) return false;
+    if (kat  && d.kategori !== kat)  return false;
+    if (stat === 'null' && d.status !== null) return false;
+    if (stat && stat !== 'null' && d.status !== stat) return false;
+    if (selUnsur.length && !selUnsur.some(u=>(d.unsur_terlibat||[]).includes(u))) return false;
+    if (q && ![d.rencana_kegiatan,d.provinsi,d.kategori,d.penanggung_jawab].some(f=>(f||'').toLowerCase().includes(q))) return false;
+    return true;
+  });
+  page = 1;
+  renderStats();
+  renderCharts();
+  renderTable();
+}
+function resetFilter() {
+  document.getElementById('fltProv').value=''; document.getElementById('fltKat').value='';
+  document.getElementById('fltStatus').value=''; document.getElementById('fltQ').value='';
+  document.querySelectorAll('#msDrop input[type=checkbox]').forEach(c=>c.checked=false);
+  selUnsur=[]; updateMsLbl(); FILTERED=[...ALL]; page=1; renderStats(); renderCharts(); renderTable();
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────────────
+function renderStats() {
+  const d = FILTERED;
+  document.getElementById('stTotal').textContent = d.length;
+  document.getElementById('stTotalSub').textContent = d.length===ALL.length?'dari semua provinsi':`difilter dari ${ALL.length}`;
+  document.getElementById('stRen').textContent    = d.filter(r=>r.status==='Direncanakan').length;
+  document.getElementById('stProses').textContent = d.filter(r=>r.status==='Dalam Proses').length;
+  document.getElementById('stSelesai').textContent= d.filter(r=>r.status==='Selesai').length;
+}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────────
+function renderCharts() { renderDonut('cKat', katData(), 'kegiatan'); renderHbar(); renderTimeline(); }
+
+function katData() {
+  const c={};
+  FILTERED.forEach(d=>{ c[d.kategori]=(c[d.kategori]||0)+1; });
+  return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({label:k,val:v,color:KAT_COLORS[k]||'#94a3b8'}));
+}
+
+function renderDonut(elId, items, centerTxt) {
+  const el = document.getElementById(elId);
+  const total = items.reduce((s,i)=>s+i.val,0);
+  if (!total) { el.innerHTML='<div style="color:var(--muted);font-size:12px">Tidak ada data</div>'; return; }
+  const cx=50,cy=50,R=40,r=24;
+  let ang = -Math.PI/2, paths='';
+  items.forEach(item => {
+    const a = (item.val/total)*2*Math.PI;
+    const x1=cx+R*Math.cos(ang),y1=cy+R*Math.sin(ang);
+    const x2=cx+R*Math.cos(ang+a),y2=cy+R*Math.sin(ang+a);
+    const x3=cx+r*Math.cos(ang+a),y3=cy+r*Math.sin(ang+a);
+    const x4=cx+r*Math.cos(ang),y4=cy+r*Math.sin(ang);
+    const lg=a>Math.PI?1:0;
+    paths+=`<path d="M${x1} ${y1}A${R} ${R} 0 ${lg} 1 ${x2} ${y2}L${x3} ${y3}A${r} ${r} 0 ${lg} 0 ${x4} ${y4}Z" fill="${item.color}" opacity=".9"><title>${item.label}: ${item.val}</title></path>`;
+    ang+=a;
+  });
+  const leg = items.map(i=>`<div class="dleg"><div class="dleg-dot" style="background:${i.color}"></div><div class="dleg-lbl">${i.label}</div><div class="dleg-val">${i.val}</div></div>`).join('');
+  el.innerHTML=`<div class="donut-svg-pos"><svg width="100" height="100" viewBox="0 0 100 100">${paths}</svg><div class="donut-center"><div class="donut-center-num">${total}</div><div class="donut-center-txt">${centerTxt}</div></div></div><div class="donut-legend">${leg}</div>`;
+}
+
+function renderHbar() {
+  const c={};
+  FILTERED.forEach(d=>(d.unsur_terlibat||[]).forEach(u=>{c[u]=(c[u]||0)+1}));
+  const sorted=Object.entries(c).sort((a,b)=>b[1]-a[1]);
+  if (!sorted.length) { document.getElementById('cUnsur').innerHTML='<div style="color:var(--muted);font-size:12px">Tidak ada data</div>'; return; }
+  const TOP14 = sorted.slice(0,14);
+  const rest  = sorted.slice(14);
+  const restTotal = rest.reduce((s,[,n])=>s+n, 0);
+  const display = rest.length > 0 ? [...TOP14, ['Lainnya', restTotal, rest.map(([u])=>u)]] : TOP14;
+  const max = display[0]?.[1]||1;
+  const COLS=["#2b72d8","#1a56a0","#0891b2","#1a8a50","#f0a500","#8b45c6","#c026a3","#075985","#6366f1","#94a3b8","#2b72d8","#1a8a50","#c026a3","#6366f1","#94a3b8"];
+  document.getElementById('cUnsur').innerHTML = display.map(([u,n,others],i)=>{
+    const isLain = u==='Lainnya' && others;
+    const tooltip = isLain ? `Lainnya: ${others.join(', ')}` : u;
+    const lbl = isLain
+      ? `<div class="hbar-lbl" title="${tooltip}" style="color:var(--blue-lt);cursor:help;text-decoration:underline dotted">${u}</div>`
+      : `<div class="hbar-lbl" title="${u}">${u}</div>`;
+    return `<div class="hbar-item">${lbl}<div class="hbar-track"><div class="hbar-fill" style="width:${Math.round(n/max*100)}%;background:${isLain?'#94a3b8':COLS[i%COLS.length]}"></div></div><div class="hbar-num">${n}</div></div>`;
+  }).join('');
+}
+
+function renderTimeline() {
+  const m={},s={};
+  BULAN.forEach(b=>{m[b]=0;s[b]=0;});
+  FILTERED.forEach(d=>{if(d.bulan_mulai&&m[d.bulan_mulai]!==undefined)m[d.bulan_mulai]++;if(d.bulan_selesai&&s[d.bulan_selesai]!==undefined)s[d.bulan_selesai]++;});
+  const mx=Math.max(...Object.values(m),...Object.values(s),1);
+  let html='';
+  BULAN.forEach((b,i)=>{
+    const mc=m[b],sc=s[b],mw=Math.round(mc/mx*100),sw=Math.round(sc/mx*100);
+    html+=`<div class="tl-row"><div class="tl-lbl">${BULAN_SHORT[i]}</div><div class="tl-bars">${mc>0?`<div class="tl-b" style="width:${Math.max(mw,7)}%;background:var(--blue-lt);color:#fff" title="${b}: ${mc} mulai">${mc}</div>`:''}${sc>0?`<div class="tl-b" style="width:${Math.max(sw,7)}%;background:var(--accent);color:var(--navy)" title="${b}: ${sc} selesai">${sc}</div>`:''}</div></div>`;
+    if(i<11) html+=`<div class="tl-divider"></div>`;
+  });
+  document.getElementById('cTimeline').innerHTML = html || '<div style="color:var(--muted);font-size:12px">Tidak ada data</div>';
+}
+
+
+// ── TABLE ─────────────────────────────────────────────────────────────────────
+function renderTable() {
+  const total=FILTERED.length, pages=Math.max(1,Math.ceil(total/PER));
+  page=Math.min(page,pages);
+  const slice=FILTERED.slice((page-1)*PER, page*PER);
+  const body=document.getElementById('tblBody');
+  if (!slice.length) { body.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data yang cocok.</td></tr>`; }
+  else {
+    body.innerHTML = slice.map((r,i)=>{
+      const kc=KAT_CLASS[r.kategori]||'t-lain';
+      const sc=STATUS_CFG[r.status]||STATUS_CFG[null];
+      const chips=(r.unsur_terlibat||[]).map(u=>`<span class="chip">${u}</span>`).join('');
+      const bm=r.bulan_mulai?`<span class="btag bmulai">${r.bulan_mulai}</span>`:`<span class="btag bempty">—</span>`;
+      const bs=r.bulan_selesai?`<span class="btag bselesai">${r.bulan_selesai}</span>`:`<span class="btag bempty">—</span>`;
+      return `<tr>
+        <td style="color:var(--muted);font-size:11px">${(page-1)*PER+i+1}</td>
+        <td><div class="status-wrap" id="sw_${r.id}"><button class="status-pill ${sc.cls}" onclick="openStatusDrop(${r.id}, this.closest('.status-wrap'))"><span class="status-dot" style="background:${sc.dot}"></span>${sc.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg></button><div class="status-drop">${STATUS_CYCLE.map(s=>{const cfg=STATUS_CFG[s]||STATUS_CFG[null];return `<div class="status-opt${r.status===s?' active':''}" data-val="${s||''}" onclick="setStatus(${r.id},'${s||''}',document.getElementById('sw_${r.id}'))"><span class="status-dot" style="background:${cfg.dot}"></span>${cfg.label}</div>`;}).join('')}</div></div></td>
+        <td class="c-prov">${r.provinsi||''}</td>
+        <td><span class="tag ${kc}">${r.kategori||''}</span></td>
+        <td class="c-ren">${r.rencana_kegiatan||''}</td>
+        <td class="c-txt">${r.deskripsi_kegiatan||''}</td>
+        <td class="c-txt">${r.indikator_keberhasilan||''}</td>
+        <td><div class="chips">${chips}</div></td>
+        <td class="c-pj">${r.penanggung_jawab||''}</td>
+        <td class="c-bln">${bm}</td>
+        <td class="c-bln">${bs}</td>
+        <td><div style="display:flex;gap:4px">
+          <button class="btn-act" title="Edit" onclick="openModal('edit',${r.id})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn-act del" title="Hapus" onclick="openDelModal(${r.id},'${(r.rencana_kegiatan||'').replace(/'/g,"\\'")}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+        </div></td>
+      </tr>`;
+    }).join('');
   }
+  document.getElementById('tblInfo').textContent=`${total} kegiatan${total!==ALL.length?' (difilter dari '+ALL.length+')':''}`;
+  renderPager(pages);
+}
+function renderPager(pages) {
+  const el=document.getElementById('pager'); el.innerHTML='';
+  if(pages<=1) return;
+  const add=(lbl,p,cur,dis)=>{const b=document.createElement('button');b.innerHTML=lbl;if(cur)b.classList.add('cur');if(dis){b.disabled=true;b.style.opacity='.4';}b.onclick=()=>{page=p;renderTable()};el.appendChild(b);};
+  add('‹',page-1,false,page===1);
+  const rng=[];for(let p=1;p<=pages;p++){if(p===1||p===pages||Math.abs(p-page)<=1)rng.push(p);else if(rng[rng.length-1]!=='…')rng.push('…');}
+  rng.forEach(p=>p==='…'?el.appendChild(Object.assign(document.createElement('button'),{textContent:'…',disabled:true,style:'opacity:.4'})):add(p,p,p===page,false));
+  add('›',page+1,false,page===pages);
+}
+function showSkeleton() {
+  document.getElementById('tblBody').innerHTML=Array(5).fill(0).map(()=>`<tr>${Array(12).fill(0).map(()=>`<td><div class="skel" style="height:14px;width:${40+Math.random()*50}%"></div></td>`).join('')}</tr>`).join('');
+}
 
-  // Mobile
-  document.getElementById('mobileBtnMasuk').style.display  = loggedIn ? 'none' : '';
-  document.getElementById('mobileBtnKeluar').style.display = loggedIn ? ''     : 'none';
-  const mName = document.getElementById('mobileUserName');
-  mName.style.display = loggedIn ? '' : 'none';
-  if (loggedIn) mName.textContent = (sess.nama || sess.email || '').split('@')[0];
+// ── STATUS DROPDOWN (inline) ─────────────────────────────────────────────────
+function openStatusDrop(id, wrap) {
+  document.querySelectorAll('.status-wrap.open').forEach(w=>{ if(w!==wrap) w.classList.remove('open'); });
+  wrap.classList.toggle('open');
+}
+async function setStatus(id, newStatus, wrap) {
+  wrap.classList.remove('open');
+  const row = ALL.find(r=>r.id===id); if(!row) return;
+  const prev = row.status;
+  if (prev === newStatus) return;
+  row.status = newStatus;
+  const sc = STATUS_CFG[newStatus]||STATUS_CFG[null];
+  const pill = wrap.querySelector('.status-pill');
+  pill.className=`status-pill ${sc.cls}`;
+  pill.innerHTML=`<span class="status-dot" style="background:${sc.dot}"></span>${sc.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>`;
+  // update active state in dropdown
+  wrap.querySelectorAll('.status-opt').forEach(o=>{
+    o.classList.toggle('active', o.dataset.val===(newStatus||''));
+  });
+  try {
+    await sbFetch(`${TABLE}?id=eq.${id}`, { method:'PATCH', body: JSON.stringify({status: newStatus, updated_at: new Date().toISOString()}) });
+    showToast('Status diperbarui', 'ok');
+    renderStats(); renderCharts();
+  } catch(e) {
+    row.status = prev;
+    const sc2=STATUS_CFG[prev]||STATUS_CFG[null];
+    pill.className=`status-pill ${sc2.cls}`;
+    pill.innerHTML=`<span class="status-dot" style="background:${sc2.dot}"></span>${sc2.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>`;
+    showToast('Gagal simpan status', 'err');
+  }
+}
 
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(mode, id) {
+  document.getElementById('modalTitle').textContent = mode==='add'?'Tambah Data':'Edit Data';
+  document.getElementById('mId').value = mode==='add'?'':id;
+  selUnsurModal=[];
+  document.querySelectorAll('#mUnsurDrop input[type=checkbox]').forEach(c=>c.checked=false);
+  if (mode==='edit') {
+    const d=ALL.find(r=>r.id===id); if(!d) return;
+    document.getElementById('mProv').value=d.provinsi||'';
+    document.getElementById('mKat').value=d.kategori||'';
+    document.getElementById('mRencana').value=d.rencana_kegiatan||'';
+    document.getElementById('mDesk').value=d.deskripsi_kegiatan||'';
+    document.getElementById('mIndik').value=d.indikator_keberhasilan||'';
+    document.getElementById('mPJ').value=d.penanggung_jawab||'';
+    document.getElementById('mMulai').value=d.bulan_mulai||'';
+    document.getElementById('mSelesai').value=d.bulan_selesai||'';
+    selUnsurModal=(d.unsur_terlibat||[]).slice();
+    selUnsurModal.forEach(u=>{const c=document.getElementById(`mu_${u.replace(/\s/g,'_')}`);if(c)c.checked=true;});
+    updateMsModalLbl();
+  } else {
+    ['mProv','mRencana','mDesk','mIndik','mPJ'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('mKat').value=''; document.getElementById('mMulai').value=''; document.getElementById('mSelesai').value='';
+    updateMsModalLbl();
+  }
+  document.getElementById('modalOv').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOv').classList.remove('open'); }
+
+async function saveModal() {
+  const id  = document.getElementById('mId').value;
+  const obj = {
+    provinsi:              document.getElementById('mProv').value.trim(),
+    kategori:              document.getElementById('mKat').value,
+    rencana_kegiatan:      document.getElementById('mRencana').value.trim(),
+    deskripsi_kegiatan:    document.getElementById('mDesk').value.trim(),
+    indikator_keberhasilan:document.getElementById('mIndik').value.trim(),
+    unsur_terlibat:        selUnsurModal,
+    penanggung_jawab:      document.getElementById('mPJ').value.trim(),
+    bulan_mulai:           document.getElementById('mMulai').value,
+    bulan_selesai:         document.getElementById('mSelesai').value,
+    updated_at:            new Date().toISOString()
+  };
+  if (!obj.provinsi||!obj.rencana_kegiatan) { showToast('Provinsi dan Rencana Kegiatan wajib diisi','err'); return; }
+  try {
+    if (!id) {
+      const res = await sbFetch(`${TABLE}`, { method:'POST', body: JSON.stringify(obj) });
+      if (res && res[0]) ALL.push(res[0]);
+      showToast('Data berhasil ditambahkan','ok');
+    } else {
+      await sbFetch(`${TABLE}?id=eq.${id}`, { method:'PATCH', body: JSON.stringify(obj) });
+      const idx=ALL.findIndex(r=>r.id===parseInt(id));
+      if (idx>=0) ALL[idx]={...ALL[idx],...obj};
+      showToast('Data berhasil disimpan','ok');
+    }
+    closeModal(); applyFilter();
+  } catch(e) { showToast('Gagal simpan: '+e.message,'err'); }
+}
+
+// ── DELETE ────────────────────────────────────────────────────────────────────
+function openDelModal(id, nama) {
+  delId=id;
+  document.getElementById('delDesc').textContent=`"${nama}" akan dihapus permanen dari Supabase.`;
+  document.getElementById('delOv').classList.add('open');
+}
+function closeDelModal() { document.getElementById('delOv').classList.remove('open'); delId=null; }
+async function confirmDel() {
+  if (!delId) return;
+  try {
+    await sbFetch(`${TABLE}?id=eq.${delId}`, { method:'DELETE' });
+    ALL = ALL.filter(r=>r.id!==delId);
+    closeDelModal(); applyFilter();
+    showToast('Data dihapus','ok');
+  } catch(e) { showToast('Gagal hapus: '+e.message,'err'); }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type='ok') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast ${type} show`;
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+const ROLE_LABEL={superadmin:'Super Admin',admin:'Admin',viewer:'Pengguna'};
+function updateAdminNav() {
+  const raw=localStorage.getItem('sb_user'), role=raw?(JSON.parse(raw).role||''):'';
+  const show=role==='superadmin'||role==='admin';
+  document.querySelectorAll('.nav-admin-only').forEach(el=>el.style.display=show?(el.tagName==='A'?'flex':'block'):'none');
+}
+function toggleBadgeMenu() { document.getElementById('badgeUser').classList.toggle('open'); }
+function doLogout() { localStorage.removeItem('sb_user'); window.location.href='login.html'; }
+function updateBadge() {
+  const raw=localStorage.getItem('sb_user'), loggedIn=!!raw, sess=loggedIn?JSON.parse(raw):null;
+  document.getElementById('badgeGuest').style.display=loggedIn?'none':'';
+  document.getElementById('badgeUser').style.display=loggedIn?'flex':'none';
+  if(loggedIn){
+    const nama=sess.nama||sess.email;
+    document.getElementById('badgeEmail').textContent=nama;
+    document.getElementById('badgeRole').textContent=ROLE_LABEL[sess.role]||sess.role;
+    const parts=nama.trim().split(' ');
+    const ini=parts.length>=2?(parts[0][0]+parts[parts.length-1][0]).toUpperCase():nama[0].toUpperCase();
+    const av=document.getElementById('badgeAvatar'); if(av) av.textContent=ini;
+    const mn=document.getElementById('menuName'), me=document.getElementById('menuEmail');
+    if(mn)mn.textContent=nama; if(me)me.textContent=sess.email;
+  }
+  document.getElementById('mobBtnMasuk').style.display=loggedIn?'none':'';
+  document.getElementById('mobBtnKeluar').style.display=loggedIn?'':'none';
+  const mn=document.getElementById('mobUname'); mn.style.display=loggedIn?'':'none';
+  if(loggedIn)mn.textContent=(sess.nama||sess.email||'').split('@')[0];
   updateAdminNav();
 }
-
-// ── Init auth badge on load ───────────────────────────────────────────────────
-updateBadge();
-
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show')}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
 </script>
 </body>
 </html>
