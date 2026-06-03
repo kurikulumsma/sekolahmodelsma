@@ -241,6 +241,16 @@ select.finput{appearance:none}
 .toast.err{background:#c0392b}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* LINK LAPORAN */
+.btn-lihat-lap{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:#eef4ff;color:#1a4a8a;border:1.5px solid #c5d8f8;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:all .15s;white-space:nowrap}
+.btn-lihat-lap:hover{background:#dbeafe;border-color:#2b72d8}
+.btn-lihat-lap svg{flex-shrink:0}
+.no-link-txt{font-size:11px;color:#ccc;font-style:italic}
+
+
+/* LINK MODAL */
+.link-modal-info{background:#eef4ff;border-radius:8px;padding:10px 13px;font-size:12px;color:#1a4a8a;line-height:1.6}
+
 @media(max-width:1280px){.charts-row{grid-template-columns:1fr 1fr}.charts-row .panel:nth-child(3){grid-column:span 1}}
 @media(max-width:1024px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:768px){
@@ -355,6 +365,7 @@ select.finput{appearance:none}
           <th>Penanggung Jawab</th>
           <th>Bulan Mulai</th>
           <th>Bulan Selesai</th>
+          <th style="width:90px">Laporan</th>
           <th style="width:72px">Aksi</th>
         </tr></thead>
         <tbody id="tblBody"></tbody>
@@ -416,6 +427,32 @@ select.finput{appearance:none}
   </div>
 </div>
 
+
+<!-- LINK LAPORAN MODAL -->
+<div class="modal-ov" id="linkOv" onclick="if(event.target===this)closeLinkModal()">
+  <div class="modal" style="width:480px">
+    <div class="modal-hd">
+      <div class="modal-title">Tambahkan Link Laporan</div>
+      <button class="modal-x" onclick="closeLinkModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-bd">
+      <div class="link-modal-info">
+        <strong>Kegiatan ini akan ditandai Selesai.</strong><br>
+        Opsional: masukkan link Google Drive folder laporan kegiatan ini.<br>
+        <span style="color:#c07a00">⚠️ Pastikan link sudah diatur sebagai <strong>view only</strong> (siapa saja yang punya link dapat melihat).</span>
+      </div>
+      <div class="fgrp full" style="margin-top:4px">
+        <label class="flbl">Link Google Drive <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(opsional)</span></label>
+        <input type="url" class="finput" id="linkInput" placeholder="https://drive.google.com/drive/folders/...">
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeLinkModal()">Batal</button>
+      <button class="btn-save" onclick="saveLinkModal()">Tandai Selesai</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -437,6 +474,47 @@ const STATUS_CFG = {
   'Selesai':     {label:'Selesai',    cls:'status-Selesai',   dot:'#1a8a50'},
 };
 const STATUS_CYCLE = [null, 'Direncanakan', 'Dalam Proses', 'Selesai'];
+
+// ── PAPUA KABKOT → PROVINSI MAPPING ──────────────────────────────────────────
+const PAPUA_KABKOT_PROV = {
+  'Kota Jayapura' : 'Papua',
+  'Kab. Fak Fak'  : 'Papua Barat',
+  'Kota Sorong'   : 'Papua Barat Daya',
+  'Kab. Jayawijaya': 'Papua Pegunungan',
+  'Kab. Merauke'  : 'Papua Selatan',
+  'Kab. Nabire'   : 'Papua Tengah',
+};
+const PAPUA_KABKOT_SET = new Set(Object.keys(PAPUA_KABKOT_PROV));
+
+// ── SESSION & ROLE HELPERS ────────────────────────────────────────────────────
+function getSess() {
+  const raw = localStorage.getItem('sb_user');
+  return raw ? JSON.parse(raw) : null;
+}
+// Role aktual dari DB: superadmin / admin / viewer
+// Unsur: 'Dinas Pendidikan' / 'BBPMP/BPMP' / 'Sekolah' / 'Direktorat' dll
+function getRole()  { const s=getSess(); return s ? (s.role||'') : ''; }
+function getUnsur() { const s=getSess(); return s ? (s.unsur||'') : ''; }
+
+// canEdit: superadmin, admin, atau viewer dengan unsur Dinas Pendidikan
+function canEdit() {
+  const r=getRole(), u=getUnsur();
+  return r==='superadmin' || r==='admin' || (r==='viewer' && u==='Dinas Pendidikan');
+}
+// canAdd: sama dengan canEdit
+function canAdd() { return canEdit(); }
+
+// getProvFilter: null = lihat semua, string = filter by provinsi ini
+function getProvFilter() {
+  const s=getSess(); if(!s) return null;
+  const role=s.role||'', unsur=s.unsur||'', prov=s.provinsi||'';
+  // superadmin / admin: lihat semua
+  if(role==='superadmin'||role==='admin') return null;
+  // viewer: semua unsur difilter by provinsi
+  // kalau provinsi di session adalah kabkot Papua, map ke nama provinsi
+  if(PAPUA_KABKOT_SET.has(prov)) return PAPUA_KABKOT_PROV[prov];
+  return prov || null;
+}
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let ALL = [], FILTERED = [];
@@ -473,8 +551,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
 async function loadData() {
   showSkeleton();
+  applyRoleUI();
   try {
-    ALL = await sbFetch(`${TABLE}?select=*&order=id.asc`);
+    const provFilter = getProvFilter();
+    let url = `${TABLE}?select=*&order=id.asc`;
+    if (provFilter) url += `&provinsi=eq.${encodeURIComponent(provFilter)}`;
+    ALL = await sbFetch(url);
     if (!ALL) ALL = [];
     populateFilterOptions();
     applyFilter();
@@ -484,6 +566,19 @@ async function loadData() {
     ALL = SAMPLE;
     populateFilterOptions();
     applyFilter();
+  }
+}
+
+function applyRoleUI() {
+  const add = canAdd();
+  // Tombol tambah: hanya kalau bisa edit
+  const btnAdd = document.querySelector('.btn-add');
+  if (btnAdd) btnAdd.style.display = add ? '' : 'none';
+  // Filter provinsi: sembunyikan jika sudah di-filter otomatis
+  const provFilter = getProvFilter();
+  if (provFilter) {
+    const fltProvEl = document.getElementById('fltProv');
+    if (fltProvEl) fltProvEl.closest('.fg').style.display = 'none';
   }
 }
 
@@ -650,17 +745,40 @@ function renderTable() {
   page=Math.min(page,pages);
   const slice=FILTERED.slice((page-1)*PER, page*PER);
   const body=document.getElementById('tblBody');
-  if (!slice.length) { body.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data yang cocok.</td></tr>`; }
-  else {
+  const edit=canEdit();
+  if (!slice.length) {
+    body.innerHTML=`<tr><td colspan="13" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data yang cocok.</td></tr>`;
+  } else {
     body.innerHTML = slice.map((r,i)=>{
-      const kc=KAT_CLASS[r.kategori]||'t-lain';
-      const sc=STATUS_CFG[r.status]||STATUS_CFG[null];
-      const chips=(r.unsur_terlibat||[]).map(u=>`<span class="chip">${u}</span>`).join('');
-      const bm=r.bulan_mulai?`<span class="btag bmulai">${r.bulan_mulai}</span>`:`<span class="btag bempty">—</span>`;
-      const bs=r.bulan_selesai?`<span class="btag bselesai">${r.bulan_selesai}</span>`:`<span class="btag bempty">—</span>`;
+      const kc  = KAT_CLASS[r.kategori]||'t-lain';
+      const sc  = STATUS_CFG[r.status]||STATUS_CFG[null];
+      const chips = (r.unsur_terlibat||[]).map(u=>`<span class="chip">${u}</span>`).join('');
+      const bm  = r.bulan_mulai   ? `<span class="btag bmulai">${r.bulan_mulai}</span>`   : `<span class="btag bempty">—</span>`;
+      const bs  = r.bulan_selesai ? `<span class="btag bselesai">${r.bulan_selesai}</span>` : `<span class="btag bempty">—</span>`;
+
+      // Status: dropdown kalau canEdit, pill statis kalau view-only
+      const dropOpts = STATUS_CYCLE.map(s => {
+        const cfg = STATUS_CFG[s]||STATUS_CFG[null];
+        return `<div class="status-opt${r.status===s?' active':''}" data-val="${s||''}" onclick="setStatus(${r.id},'${s||''}',document.getElementById('sw_${r.id}'))"><span class="status-dot" style="background:${cfg.dot}"></span>${cfg.label}</div>`;
+      }).join('');
+      const chevron = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>`;
+      const statusCell = edit
+        ? `<div class="status-wrap" id="sw_${r.id}"><button class="status-pill ${sc.cls}" onclick="openStatusDrop(${r.id},this.closest('.status-wrap'))"><span class="status-dot" style="background:${sc.dot}"></span>${sc.label}${chevron}</button><div class="status-drop">${dropOpts}</div></div>`
+        : `<span class="status-pill ${sc.cls}" style="cursor:default"><span class="status-dot" style="background:${sc.dot}"></span>${sc.label}</span>`;
+
+      // Laporan: tombol lihat kalau ada link
+      const lapCell = r.link_laporan
+        ? `<a href="${r.link_laporan}" target="_blank" rel="noopener" class="btn-lihat-lap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Lihat</a>`
+        : `<span class="no-link-txt">—</span>`;
+
+      // Aksi: edit & hapus kalau canEdit, kosong kalau view-only
+      const aksiCell = edit
+        ? `<div style="display:flex;gap:4px"><button class="btn-act" title="Edit" onclick="openModal('edit',${r.id})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-act del" title="Hapus" onclick="openDelModal(${r.id},'${(r.rencana_kegiatan||'').replace(/'/g,"\'")}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button></div>`
+        : '';
+
       return `<tr>
         <td style="color:var(--muted);font-size:11px">${(page-1)*PER+i+1}</td>
-        <td><div class="status-wrap" id="sw_${r.id}"><button class="status-pill ${sc.cls}" onclick="openStatusDrop(${r.id}, this.closest('.status-wrap'))"><span class="status-dot" style="background:${sc.dot}"></span>${sc.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg></button><div class="status-drop">${STATUS_CYCLE.map(s=>{const cfg=STATUS_CFG[s]||STATUS_CFG[null];return `<div class="status-opt${r.status===s?' active':''}" data-val="${s||''}" onclick="setStatus(${r.id},'${s||''}',document.getElementById('sw_${r.id}'))"><span class="status-dot" style="background:${cfg.dot}"></span>${cfg.label}</div>`;}).join('')}</div></div></td>
+        <td>${statusCell}</td>
         <td class="c-prov">${r.provinsi||''}</td>
         <td><span class="tag ${kc}">${r.kategori||''}</span></td>
         <td class="c-ren">${r.rencana_kegiatan||''}</td>
@@ -670,10 +788,8 @@ function renderTable() {
         <td class="c-pj">${r.penanggung_jawab||''}</td>
         <td class="c-bln">${bm}</td>
         <td class="c-bln">${bs}</td>
-        <td><div style="display:flex;gap:4px">
-          <button class="btn-act" title="Edit" onclick="openModal('edit',${r.id})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="btn-act del" title="Hapus" onclick="openDelModal(${r.id},'${(r.rencana_kegiatan||'').replace(/'/g,"\\'")}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
-        </div></td>
+        <td>${lapCell}</td>
+        <td>${aksiCell}</td>
       </tr>`;
     }).join('');
   }
@@ -690,7 +806,7 @@ function renderPager(pages) {
   add('›',page+1,false,page===pages);
 }
 function showSkeleton() {
-  document.getElementById('tblBody').innerHTML=Array(5).fill(0).map(()=>`<tr>${Array(12).fill(0).map(()=>`<td><div class="skel" style="height:14px;width:${40+Math.random()*50}%"></div></td>`).join('')}</tr>`).join('');
+  document.getElementById('tblBody').innerHTML=Array(5).fill(0).map(()=>`<tr>${Array(13).fill(0).map(()=>`<td><div class="skel" style="height:14px;width:${40+Math.random()*50}%"></div></td>`).join('')}</tr>`).join('');
 }
 
 // ── STATUS DROPDOWN (inline) ─────────────────────────────────────────────────
@@ -703,26 +819,63 @@ async function setStatus(id, newStatus, wrap) {
   const row = ALL.find(r=>r.id===id); if(!row) return;
   const prev = row.status;
   if (prev === newStatus) return;
+  // Jika set ke Selesai, tampilkan popup link laporan dulu
+  if (newStatus === 'Selesai') {
+    openLinkModal(id, wrap, newStatus);
+    return;
+  }
+  await doSetStatus(id, newStatus, wrap, null);
+}
+
+async function doSetStatus(id, newStatus, wrap, linkLaporan) {
+  const row = ALL.find(r=>r.id===id); if(!row) return;
+  const prev = row.status;
   row.status = newStatus;
+  if (linkLaporan !== null && linkLaporan !== undefined) row.link_laporan = linkLaporan;
   const sc = STATUS_CFG[newStatus]||STATUS_CFG[null];
-  const pill = wrap.querySelector('.status-pill');
-  pill.className=`status-pill ${sc.cls}`;
-  pill.innerHTML=`<span class="status-dot" style="background:${sc.dot}"></span>${sc.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>`;
-  // update active state in dropdown
-  wrap.querySelectorAll('.status-opt').forEach(o=>{
-    o.classList.toggle('active', o.dataset.val===(newStatus||''));
-  });
+  if (wrap) {
+    const pill = wrap.querySelector('.status-pill');
+    if (pill) {
+      pill.className=`status-pill ${sc.cls}`;
+      pill.innerHTML=`<span class="status-dot" style="background:${sc.dot}"></span>${sc.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>`;
+    }
+    wrap.querySelectorAll('.status-opt').forEach(o=>{
+      o.classList.toggle('active', o.dataset.val===(newStatus||''));
+    });
+  }
   try {
-    await sbFetch(`${TABLE}?id=eq.${id}`, { method:'PATCH', body: JSON.stringify({status: newStatus, updated_at: new Date().toISOString()}) });
+    const payload = {status: newStatus, updated_at: new Date().toISOString()};
+    if (linkLaporan !== null && linkLaporan !== undefined) payload.link_laporan = linkLaporan;
+    await sbFetch(`${TABLE}?id=eq.${id}`, { method:'PATCH', body: JSON.stringify(payload) });
     showToast('Status diperbarui', 'ok');
-    renderStats(); renderCharts();
+    renderStats(); renderCharts(); renderTable();
   } catch(e) {
     row.status = prev;
     const sc2=STATUS_CFG[prev]||STATUS_CFG[null];
-    pill.className=`status-pill ${sc2.cls}`;
-    pill.innerHTML=`<span class="status-dot" style="background:${sc2.dot}"></span>${sc2.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>`;
+    if (wrap) {
+      const pill = wrap.querySelector('.status-pill');
+      if (pill) {
+        pill.className=`status-pill ${sc2.cls}`;
+        pill.innerHTML=`<span class="status-dot" style="background:${sc2.dot}"></span>${sc2.label}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>`;
+      }
+    }
     showToast('Gagal simpan status', 'err');
   }
+}
+
+// ── LINK LAPORAN MODAL ────────────────────────────────────────────────────────
+let _linkModalId=null, _linkModalWrap=null, _linkModalStatus=null;
+function openLinkModal(id, wrap, newStatus) {
+  _linkModalId=id; _linkModalWrap=wrap; _linkModalStatus=newStatus;
+  const row=ALL.find(r=>r.id===id);
+  document.getElementById('linkInput').value = row?.link_laporan||'';
+  document.getElementById('linkOv').classList.add('open');
+}
+function closeLinkModal() { document.getElementById('linkOv').classList.remove('open'); }
+async function saveLinkModal() {
+  const link = document.getElementById('linkInput').value.trim();
+  closeLinkModal();
+  await doSetStatus(_linkModalId, _linkModalStatus, _linkModalWrap, link||null);
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
@@ -745,8 +898,22 @@ function openModal(mode, id) {
     selUnsurModal.forEach(u=>{const c=document.getElementById(`mu_${u.replace(/\s/g,'_')}`);if(c)c.checked=true;});
     updateMsModalLbl();
   } else {
-    ['mProv','mRencana','mDesk','mIndik','mPJ'].forEach(id=>document.getElementById(id).value='');
+    ['mRencana','mDesk','mIndik','mPJ'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('mKat').value=''; document.getElementById('mMulai').value=''; document.getElementById('mSelesai').value='';
+    // Auto-fill provinsi dari session
+    const sess=getSess();
+    const sessRole=sess?.role||'';
+    const sessProv=sess?.provinsi||'';
+    let autoFillProv='';
+    if(sessRole==='dinas'||sessRole==='viewer'){
+      // Map kabkot Papua ke nama provinsi
+      autoFillProv = PAPUA_KABKOT_SET.has(sessProv) ? PAPUA_KABKOT_PROV[sessProv] : sessProv;
+    }
+    const mProvEl=document.getElementById('mProv');
+    mProvEl.value=autoFillProv;
+    // Disable jika dinas (provinsinya sudah fixed)
+    mProvEl.disabled=(sessRole==='dinas'&&!!autoFillProv);
+    mProvEl.style.opacity=mProvEl.disabled?'0.6':'1';
     updateMsModalLbl();
   }
   document.getElementById('modalOv').classList.add('open');
@@ -811,8 +978,8 @@ function showToast(msg, type='ok') {
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 const ROLE_LABEL={superadmin:'Super Admin',admin:'Admin',viewer:'Pengguna'};
 function updateAdminNav() {
-  const raw=localStorage.getItem('sb_user'), role=raw?(JSON.parse(raw).role||''):'';
-  const show=role==='superadmin'||role==='admin';
+  const raw=localStorage.getItem('sb_user'), sess=raw?JSON.parse(raw):{}, role=sess.role||'', bpmp=sess.bpmp||'';
+  const show=role==='superadmin'||role==='admin'||bpmp;
   document.querySelectorAll('.nav-admin-only').forEach(el=>el.style.display=show?(el.tagName==='A'?'flex':'block'):'none');
 }
 function toggleBadgeMenu() { document.getElementById('badgeUser').classList.toggle('open'); }
@@ -824,7 +991,7 @@ function updateBadge() {
   if(loggedIn){
     const nama=sess.nama||sess.email;
     document.getElementById('badgeEmail').textContent=nama;
-    document.getElementById('badgeRole').textContent=ROLE_LABEL[sess.role]||sess.role;
+    document.getElementById('badgeRole').textContent=sess.unsur||ROLE_LABEL[sess.role]||sess.role;
     const parts=nama.trim().split(' ');
     const ini=parts.length>=2?(parts[0][0]+parts[parts.length-1][0]).toUpperCase():nama[0].toUpperCase();
     const av=document.getElementById('badgeAvatar'); if(av) av.textContent=ini;

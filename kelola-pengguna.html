@@ -339,6 +339,7 @@ tr:hover td { background: #fafcff; }
   .sidebar-close { display: flex; }
   main { margin-left: 0; padding: 70px 16px 40px; }
   .mobile-topbar { display: flex; }
+  .topbar { display: none; }
   .stats-row { grid-template-columns: 1fr; }
   .table-wrap { overflow-x: auto; }
   table { min-width: 640px; }
@@ -722,12 +723,13 @@ async function init() {
   if (!raw) { window.location.href = 'login.html'; return; }
   currentUser = JSON.parse(raw);
 
-  // Guard: hanya superadmin & admin
-  if (!['superadmin','admin'].includes(currentUser.role)) {
+  // Guard: hanya superadmin, admin, dan UPT (BBPMP/BPMP)
+  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  if (!['superadmin','admin'].includes(currentUser.role) && !isUPT) {
     document.body.innerHTML = `<div class="access-denied">
       <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#b91c1c" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
       <div style="font-size:18px;font-weight:800;color:#0d1f38">Akses Ditolak</div>
-      <div style="font-size:13px;color:#6b83a4">Halaman ini hanya dapat diakses oleh admin.</div>
+      <div style="font-size:13px;color:#6b83a4">Halaman ini hanya dapat diakses oleh admin atau UPT (BBPMP/BPMP).</div>
       <a href="beranda.html" style="margin-top:8px;color:#2b72d8;font-weight:600;font-size:13px">Kembali ke Beranda</a>
     </div>`;
     return;
@@ -735,10 +737,19 @@ async function init() {
 
   updateBadge();
 
-  // Sembunyikan tombol Tambah Admin untuk role admin biasa
+  // Sembunyikan tombol Tambah Admin & Export untuk non-superadmin / UPT
   if (currentUser.role !== 'superadmin') {
     const btn = document.getElementById('btnTambahAdmin');
     if (btn) btn.style.display = 'none';
+  }
+  if (isUPT) {
+    const btnExport = document.querySelector('.btn-export');
+    if (btnExport) btnExport.style.display = 'none';
+    // Tambahkan info wilayah UPT di bawah judul
+    const topbarLeft = document.querySelector('.topbar-left p');
+    if (topbarLeft) {
+      topbarLeft.innerHTML = `Kelola persetujuan akun sekolah di wilayah <strong>BPMP ${esc(currentUser.bpmp || '—')}</strong>`;
+    }
   }
 
   await loadAll();
@@ -758,9 +769,17 @@ async function loadAll() {
 
   if (error) { showToast('Gagal memuat data: ' + error.message, 'error'); return; }
 
-  allPending     = data.filter(u => u.status === 'pending');
-  allApproved    = data.filter(u => u.status === 'approved');
-  allDeactivated = data.filter(u => u.status === 'deactivated');
+  // UPT hanya bisa lihat & kelola sekolah di provinsinya
+  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  const uptProvinsi = currentUser.bpmp || '';
+  function uptFilter(rows) {
+    if (!isUPT) return rows;
+    return rows.filter(u => u.unsur === 'Sekolah' && (u.provinsi || '') === uptProvinsi);
+  }
+
+  allPending     = uptFilter(data.filter(u => u.status === 'pending'));
+  allApproved    = uptFilter(data.filter(u => u.status === 'approved'));
+  allDeactivated = uptFilter(data.filter(u => u.status === 'deactivated'));
 
   updateStats(data);
   renderPending();
@@ -769,9 +788,14 @@ async function loadAll() {
 }
 
 function updateStats(data) {
-  const pending     = data.filter(u => u.status === 'pending').length;
-  const approved    = data.filter(u => u.status === 'approved').length;
-  const deactivated = data.filter(u => u.status === 'deactivated').length;
+  // Untuk UPT, stats hanya menghitung sekolah di wilayahnya
+  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  const statsData = isUPT
+    ? data.filter(u => u.unsur === 'Sekolah' && (u.provinsi || '') === (currentUser.bpmp || ''))
+    : data;
+  const pending     = statsData.filter(u => u.status === 'pending').length;
+  const approved    = statsData.filter(u => u.status === 'approved').length;
+  const deactivated = statsData.filter(u => u.status === 'deactivated').length;
   document.getElementById('statPending').textContent  = pending;
   document.getElementById('statApproved').textContent = approved;
   document.getElementById('statTotal').textContent    = data.length;
@@ -854,9 +878,11 @@ function renderApproved() {
   }
 
   // Superadmin hanya bisa ubah role user lain; tidak bisa nonaktifkan diri sendiri
+  // UPT tidak bisa ubah role atau nonaktifkan
+  const isUPT_render = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
   tbody.innerHTML = data.map(u => {
     const isSelf = u.email === currentUser.email;
-    const canChangeRole = currentUser.role === 'superadmin';
+    const canChangeRole = currentUser.role === 'superadmin' && !isUPT_render;
     const roleOptions = ['superadmin','admin','viewer'].map(r =>
       `<option value="${r}" ${u.role===r?'selected':''}>${r}</option>`).join('');
     return `
@@ -877,7 +903,7 @@ function renderApproved() {
           : `<span class="badge badge-${u.role}">${u.role}</span>`}
       </td>
       <td>
-        ${!isSelf && currentUser.role === 'superadmin' ? `
+        ${!isSelf && currentUser.role === 'superadmin' && !isUPT_render ? `
         <button class="btn-icon danger" title="Nonaktifkan" onclick="openNonaktif(${u.id}, '${esc(u.nama)}')">
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
         </button>` : '<span style="font-size:11px;color:var(--muted)">—</span>'}
@@ -888,6 +914,15 @@ function renderApproved() {
 
 // ── ACTIONS ───────────────────────────────────────────────
 async function doApprove(id, nama) {
+  // UPT hanya bisa approve sekolah di provinsinya
+  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  if (isUPT) {
+    const target = allPending.find(u => u.id === id);
+    if (!target || target.unsur !== 'Sekolah' || (target.provinsi || '') !== (currentUser.bpmp || '')) {
+      showToast('Anda hanya bisa menyetujui sekolah di wilayah Anda', 'error'); return;
+    }
+  }
+
   const { error } = await getSb()
     .from('user_dasbor_sekolah_model')
     .update({ status: 'approved', approved_by: currentUser.email, approved_at: new Date().toISOString() })
@@ -899,6 +934,13 @@ async function doApprove(id, nama) {
 }
 
 function openTolak(id, nama) {
+  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  if (isUPT) {
+    const target = allPending.find(u => u.id === id);
+    if (!target || target.unsur !== 'Sekolah' || (target.provinsi || '') !== (currentUser.bpmp || '')) {
+      showToast('Anda hanya bisa menolak sekolah di wilayah Anda', 'error'); return;
+    }
+  }
   actionId = id;
   document.getElementById('modalTolakNama').textContent = nama;
   document.getElementById('modalTolakCatatan').value = '';
@@ -919,6 +961,8 @@ async function confirmTolak() {
 }
 
 function openNonaktif(id, nama) {
+  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  if (isUPT) { showToast('UPT tidak memiliki akses untuk menonaktifkan pengguna', 'error'); return; }
   actionId = id;
   document.getElementById('modalNonaktifNama').textContent = nama;
   openModal('modalNonaktif');
@@ -937,6 +981,8 @@ async function confirmNonaktif() {
 }
 
 async function updateRole(id, role, nama) {
+  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  if (isUPT) { showToast('UPT tidak memiliki akses untuk mengubah role', 'error'); await loadAll(); return; }
   const { error } = await getSb()
     .from('user_dasbor_sekolah_model')
     .update({ role })
@@ -1169,6 +1215,11 @@ function exportExcel() {
 // ── USER BADGE ────────────────────────────────────────────
 const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
 
+function getUserRoleLabel(user) {
+  if (user.role === 'viewer' && user.unsur === 'BBPMP/BPMP') return 'UPT (BPMP)';
+  return ROLE_LABEL[user.role] || user.role;
+}
+
 function updateBadge() {
   const raw = localStorage.getItem('sb_user');
   const loggedIn = !!raw;
@@ -1179,7 +1230,7 @@ function updateBadge() {
     const sess = JSON.parse(raw);
     const nama = sess.nama || sess.email;
     document.getElementById('badgeEmail').textContent = nama;
-    document.getElementById('badgeRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
+    document.getElementById('badgeRole').textContent  = sess.unsur || getUserRoleLabel(sess);
     const parts = nama.trim().split(' ');
     const initial = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : nama[0].toUpperCase();
     const av = document.getElementById('badgeAvatar');

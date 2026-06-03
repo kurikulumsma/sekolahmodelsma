@@ -1384,8 +1384,10 @@ const PROVINSI_UPT = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI J
 // ── Admin nav visibility ──────────────────────────────────────────────────────
 function updateAdminNav() {
   const raw  = localStorage.getItem('sb_user');
-  const role = raw ? (JSON.parse(raw).role || '') : '';
-  const show = (role === 'superadmin' || role === 'admin');
+  const sess = raw ? JSON.parse(raw) : {};
+  const role = sess.role || '';
+  const bpmp = sess.bpmp || '';
+  const show = (role === 'superadmin' || role === 'admin' || bpmp);
   document.querySelectorAll('.nav-admin-only').forEach(el => {
     el.style.display = show ? (el.tagName === 'A' ? 'flex' : 'block') : 'none';
   });
@@ -1413,7 +1415,7 @@ function updateBadge() {
   if (loggedIn) {
     const nama = sess.nama || sess.email;
     document.getElementById('badgeEmail').textContent = nama;
-    document.getElementById('badgeRole').textContent  = ROLE_LABEL[sess.role] || sess.role;
+    document.getElementById('badgeRole').textContent  = sess.unsur || ROLE_LABEL[sess.role] || sess.role;
     // Avatar inisial
     const parts = nama.trim().split(' ');
     const initial = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : nama[0].toUpperCase();
