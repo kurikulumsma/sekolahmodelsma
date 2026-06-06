@@ -161,6 +161,18 @@ body {
   padding: 10px 12px; font-size: 11.5px; color: var(--blue);
   margin-bottom: 16px; line-height: 1.5;
 }
+
+.autocomplete-wrap { position: relative; }
+.autocomplete-list { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1.5px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(10,31,60,.12); z-index: 500; max-height: 220px; overflow-y: auto; }
+.autocomplete-list.show { display: block; }
+.autocomplete-item { padding: 9px 12px; cursor: pointer; border-bottom: 1px solid var(--border); }
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover { background: var(--bg); }
+.ac-npsn { display: block; font-size: 11px; font-weight: 700; color: var(--blue-lt); font-family: monospace; }
+.ac-nama { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin: 2px 0; }
+.ac-wil  { display: block; font-size: 11px; color: var(--muted); }
+.autocomplete-loading { padding: 10px 12px; font-size: 12px; color: var(--muted); }
+.sekolah-terpilih { margin-top: 6px; padding: 8px 10px; background: #eef4ff; border-radius: 8px; font-size: 12px; color: var(--blue-lt); font-weight: 600; display: none; }
 </style>
 </head>
 <body>
@@ -297,11 +309,16 @@ body {
       </div>
     </div>
     <div class="field" id="fieldNpsn" style="display:none">
-      <label>NPSN Sekolah</label>
-      <div class="input-wrap">
-        <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
-        <input type="text" id="daftarNpsn" placeholder="8 digit NPSN" maxlength="8" inputmode="numeric">
+      <label>Cari NPSN Sekolah Model</label>
+      <div class="input-wrap autocomplete-wrap">
+        <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="search" id="daftarNpsnInput" placeholder="Ketik NPSN atau nama sekolah..." autocomplete="off" oninput="onNpsnInput(this.value)" onkeyup="onNpsnInput(this.value)">
+        <div class="autocomplete-list" id="npsnList"></div>
       </div>
+      <input type="hidden" id="daftarNpsn">
+      <input type="hidden" id="daftarNamaSekolah">
+      <input type="hidden" id="daftarProvinsiSekolah">
+      <div class="sekolah-terpilih" id="sekolahTerpilih"></div>
     </div>
 
     <div class="field">
@@ -498,6 +515,70 @@ async function doLogin() {
   }
 }
 
+
+let npsnTimer = null;
+
+function onNpsnInput(val) {
+  clearNpsn();
+  clearTimeout(npsnTimer);
+  const list = document.getElementById('npsnList');
+  if (val.length < 3) { list.classList.remove('show'); return; }
+  list.innerHTML = '<div class="autocomplete-loading">Mencari...</div>';
+  list.classList.add('show');
+  npsnTimer = setTimeout(() => fetchNpsn(val), 300);
+}
+
+async function fetchNpsn(val) {
+  const list = document.getElementById('npsnList');
+  try {
+    const sb = getSb();
+    const isNum = /^\d+$/.test(val);
+    let q = sb.from('sekolah_model_2026').select('npsn,nama,provinsi,kabupaten_kota').limit(8);
+    q = isNum ? q.ilike('npsn', val + '%') : q.ilike('nama', '%' + val + '%');
+    const { data, error } = await q;
+    if (error || !data?.length) {
+      list.innerHTML = '<div class="autocomplete-loading">Sekolah tidak ditemukan</div>';
+      return;
+    }
+    list.innerHTML = data.map(s =>
+      `<div class="autocomplete-item" onclick="pilihSekolah('${s.npsn}','${s.nama.replace(/'/g,"\\'")}','${s.provinsi}','${s.kabupaten_kota}')">
+        <span class="ac-npsn">${s.npsn}</span>
+        <span class="ac-nama">${s.nama}</span>
+        <span class="ac-wil">${s.kabupaten_kota}, ${s.provinsi}</span>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="autocomplete-loading">Gagal memuat data</div>';
+  }
+}
+
+function pilihSekolah(npsn, nama, provinsi, kabkota) {
+  document.getElementById('daftarNpsnInput').value       = npsn;
+  document.getElementById('daftarNpsn').value             = npsn;
+  document.getElementById('daftarNamaSekolah').value      = nama;
+  document.getElementById('daftarProvinsiSekolah').value  = provinsi;
+  document.getElementById('npsnList').classList.remove('show');
+  const box = document.getElementById('sekolahTerpilih');
+  box.textContent = npsn + ' — ' + nama + ' (' + kabkota + ', ' + provinsi + ')';
+  box.style.display = 'block';
+}
+
+function clearNpsn() {
+  ['daftarNpsn','daftarNamaSekolah','daftarProvinsiSekolah'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const box = document.getElementById('sekolahTerpilih');
+  if (box) box.style.display = 'none';
+  const input = document.getElementById('daftarNpsnInput');
+  if (input) input.value = '';
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    const list = document.getElementById('npsnList');
+    if (list) list.classList.remove('show');
+  }
+});
+
 async function doDaftar() {
   const nama   = document.getElementById('daftarNama').value.trim();
   const email  = document.getElementById('daftarEmail').value.trim().toLowerCase();
@@ -511,7 +592,9 @@ async function doDaftar() {
   if (!unsur) { showErr(err, 'Pilih unsur terlebih dahulu.'); return; }
   const dinasVal = document.getElementById('daftarProvinsi')?.value || '';
   const bpmpVal  = document.getElementById('daftarBpmp')?.value || '';
-  const npsn     = document.getElementById('daftarNpsn')?.value || '';
+  const npsn         = document.getElementById('daftarNpsn')?.value || '';
+  const namaSekolah  = document.getElementById('daftarNamaSekolah')?.value || '';
+  const provSekolah  = document.getElementById('daftarProvinsiSekolah')?.value || '';
   if (unsur === 'Dinas Pendidikan' && !dinasVal) { showErr(err, 'Pilih instansi Dinas Pendidikan.'); return; }
   if (unsur === 'BBPMP/BPMP'       && !bpmpVal)  { showErr(err, 'Pilih instansi BBPMP/BPMP.'); return; }
   const btn = document.getElementById('btnDaftar');
@@ -532,6 +615,10 @@ async function doDaftar() {
     } else if (unsur === 'BBPMP/BPMP') {
       provinsi = bpmpVal;
       instansi = BPMP_LIST.find(b => b.value === bpmpVal)?.label || bpmpVal;
+    } else if (unsur === 'Sekolah') {
+      provinsi = provSekolah || null;
+      nama_sekolah = namaSekolah || null;
+      instansi = namaSekolah || '';
     }
     const { error: ie } = await sb.from('user_db_sekmodel').insert({
       user_id: userId, nama, email, instansi, jabatan, unsur, role,
