@@ -162,12 +162,7 @@ body {
   margin-bottom: 16px; line-height: 1.5;
 }
 
-.autocomplete-wrap { position: relative; }
-.autocomplete-list { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1.5px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(10,31,60,.12); z-index: 500; max-height: 220px; overflow-y: auto; }
-.autocomplete-list.show { display: block; }
-.autocomplete-item { padding: 9px 12px; cursor: pointer; border-bottom: 1px solid var(--border); }
-.autocomplete-item:last-child { border-bottom: none; }
-.autocomplete-item:hover { background: var(--bg); }
+/* autocomplete CSS removed — diganti dropdown provinsi+sekolah */
 .ac-npsn { display: block; font-size: 11px; font-weight: 700; color: var(--blue-lt); font-family: monospace; }
 .ac-nama { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin: 2px 0; }
 .ac-wil  { display: block; font-size: 11px; color: var(--muted); }
@@ -308,12 +303,25 @@ body {
         <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
       </div>
     </div>
-    <div class="field" id="fieldNpsn" style="display:none">
-      <label>Cari NPSN Sekolah Model</label>
-      <div class="input-wrap autocomplete-wrap">
-        <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-        <input type="search" id="daftarNpsnInput" placeholder="Ketik NPSN atau nama sekolah..." autocomplete="off" oninput="onNpsnInput(this.value)" onkeyup="onNpsnInput(this.value)">
-        <div class="autocomplete-list" id="npsnList"></div>
+    <div class="field" id="fieldProvSekolah" style="display:none">
+      <label>Provinsi Sekolah Model</label>
+      <div class="input-wrap">
+        <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+        <select id="daftarProvSekolah" onchange="onProvSekolahChange()">
+          <option value="">-- Pilih Provinsi --</option>
+        </select>
+        <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+      </div>
+    </div>
+
+    <div class="field" id="fieldPilihSekolah" style="display:none">
+      <label>Pilih Sekolah Model</label>
+      <div class="input-wrap">
+        <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 3.741-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
+        <select id="daftarSekolahSelect" onchange="onSekolahSelectChange()">
+          <option value="">-- Pilih Sekolah --</option>
+        </select>
+        <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
       </div>
       <input type="hidden" id="daftarNpsn">
       <input type="hidden" id="daftarNamaSekolah">
@@ -472,14 +480,15 @@ function onUnsurChange() {
   const unsur = document.getElementById('daftarUnsur').value;
   const show = id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; };
   const hide = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
-  ['fieldInstansi','fieldProvinsi','fieldKabkot','fieldBpmp','fieldNpsn'].forEach(hide);
+  ['fieldInstansi','fieldProvinsi','fieldKabkot','fieldBpmp','fieldProvSekolah','fieldPilihSekolah'].forEach(hide);
   const selDinas = document.getElementById('daftarProvinsi');
   const selBpmp  = document.getElementById('daftarBpmp');
   if (selDinas) selDinas.value = '';
   if (selBpmp)  selBpmp.value  = '';
   if (unsur === 'Dinas Pendidikan')  { show('fieldProvinsi'); }
   else if (unsur === 'BBPMP/BPMP')   { show('fieldBpmp'); }
-  else if (unsur === 'Sekolah')      { show('fieldNpsn'); }
+  else if (unsur === 'Sekolah')      { show('fieldProvSekolah'); loadProvinsiSekolah(); }
+  clearNpsn();
 }
 
 async function doLogin() {
@@ -516,49 +525,59 @@ async function doLogin() {
 }
 
 
-let npsnTimer = null;
+// ── Dropdown Provinsi & Sekolah ──────────────────────────
+let _provinsiLoaded = false;
 
-function onNpsnInput(val) {
-  clearNpsn();
-  clearTimeout(npsnTimer);
-  const list = document.getElementById('npsnList');
-  if (val.length < 3) { list.classList.remove('show'); return; }
-  list.innerHTML = '<div class="autocomplete-loading">Mencari...</div>';
-  list.classList.add('show');
-  npsnTimer = setTimeout(() => fetchNpsn(val), 300);
-}
-
-async function fetchNpsn(val) {
-  const list = document.getElementById('npsnList');
+async function loadProvinsiSekolah() {
+  if (_provinsiLoaded) return;
+  const sel = document.getElementById('daftarProvSekolah');
+  sel.innerHTML = '<option value="">Memuat provinsi...</option>';
   try {
-    const sb = getSb();
-    const isNum = /^\d+$/.test(val);
-    let q = sb.from('sekolah_model_2026').select('npsn,nama,provinsi,kabupaten_kota').limit(8);
-    q = isNum ? q.ilike('npsn', val + '%') : q.ilike('nama', '%' + val + '%');
-    const { data, error } = await q;
-    if (error || !data?.length) {
-      list.innerHTML = '<div class="autocomplete-loading">Sekolah tidak ditemukan</div>';
-      return;
-    }
-    list.innerHTML = data.map(s =>
-      `<div class="autocomplete-item" onclick="pilihSekolah('${s.npsn}','${s.nama.replace(/'/g,"\\'")}','${s.provinsi}','${s.kabupaten_kota}')">
-        <span class="ac-npsn">${s.npsn}</span>
-        <span class="ac-nama">${s.nama}</span>
-        <span class="ac-wil">${s.kabupaten_kota}, ${s.provinsi}</span>
-      </div>`).join('');
+    const { data, error } = await getSb()
+      .from('sekolah_model_2026')
+      .select('provinsi')
+      .order('provinsi', { ascending: true });
+    if (error || !data?.length) { sel.innerHTML = '<option value="">Gagal memuat</option>'; return; }
+    const provs = [...new Set(data.map(r => r.provinsi))].sort();
+    sel.innerHTML = '<option value="">-- Pilih Provinsi --</option>' +
+      provs.map(p => `<option value="${p}">${p}</option>`).join('');
+    _provinsiLoaded = true;
   } catch(e) {
-    list.innerHTML = '<div class="autocomplete-loading">Gagal memuat data</div>';
+    sel.innerHTML = '<option value="">Gagal memuat</option>';
   }
 }
 
-function pilihSekolah(npsn, nama, provinsi, kabkota) {
-  document.getElementById('daftarNpsnInput').value       = npsn;
-  document.getElementById('daftarNpsn').value             = npsn;
-  document.getElementById('daftarNamaSekolah').value      = nama;
-  document.getElementById('daftarProvinsiSekolah').value  = provinsi;
-  document.getElementById('npsnList').classList.remove('show');
+async function onProvSekolahChange() {
+  const prov = document.getElementById('daftarProvSekolah').value;
+  const fieldSekolah = document.getElementById('fieldPilihSekolah');
+  const selSekolah   = document.getElementById('daftarSekolahSelect');
+  clearNpsn();
+  if (!prov) { fieldSekolah.style.display = 'none'; return; }
+  fieldSekolah.style.display = 'block';
+  selSekolah.innerHTML = '<option value="">Memuat sekolah...</option>';
+  try {
+    const { data, error } = await getSb()
+      .from('sekolah_model_2026')
+      .select('npsn,nama,kabupaten_kota')
+      .eq('provinsi', prov)
+      .order('nama', { ascending: true });
+    if (error || !data?.length) { selSekolah.innerHTML = '<option value="">Tidak ada data</option>'; return; }
+    selSekolah.innerHTML = '<option value="">-- Pilih Sekolah --</option>' +
+      data.map(s => `<option value="${s.npsn}" data-nama="${s.nama}" data-prov="${prov}" data-kab="${s.kabupaten_kota}">${s.nama}</option>`).join('');
+  } catch(e) {
+    selSekolah.innerHTML = '<option value="">Gagal memuat</option>';
+  }
+}
+
+function onSekolahSelectChange() {
+  const sel = document.getElementById('daftarSekolahSelect');
+  const opt = sel.options[sel.selectedIndex];
+  if (!opt || !opt.value) { clearNpsn(); return; }
+  document.getElementById('daftarNpsn').value            = opt.value;
+  document.getElementById('daftarNamaSekolah').value     = opt.dataset.nama;
+  document.getElementById('daftarProvinsiSekolah').value = opt.dataset.prov;
   const box = document.getElementById('sekolahTerpilih');
-  box.textContent = npsn + ' — ' + nama + ' (' + kabkota + ', ' + provinsi + ')';
+  box.textContent = opt.value + ' — ' + opt.dataset.nama + ' (' + opt.dataset.kab + ', ' + opt.dataset.prov + ')';
   box.style.display = 'block';
 }
 
@@ -568,16 +587,10 @@ function clearNpsn() {
   });
   const box = document.getElementById('sekolahTerpilih');
   if (box) box.style.display = 'none';
-  const input = document.getElementById('daftarNpsnInput');
-  if (input) input.value = '';
+  const selSekolah = document.getElementById('daftarSekolahSelect');
+  if (selSekolah) selSekolah.value = '';
 }
 
-document.addEventListener('click', e => {
-  if (!e.target.closest('.autocomplete-wrap')) {
-    const list = document.getElementById('npsnList');
-    if (list) list.classList.remove('show');
-  }
-});
 
 async function doDaftar() {
   const nama   = document.getElementById('daftarNama').value.trim();
