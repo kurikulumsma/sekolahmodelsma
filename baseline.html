@@ -262,63 +262,13 @@ td.td-nama { font-weight: 600; color: var(--navy); }
   .user-badge-info { display: none; }
 }
 </style>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script src="sidebar.js"></script>
 </head>
 <body>
 
-<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
-
-<div class="mobile-topbar">
-  <button class="hamburger" onclick="openSidebar()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-  <span class="mobile-topbar-title">Baseline Sekolah Model 2026</span>
-  <a class="mobile-user-name" id="mobileUserName" href="profil.html" style="display:none"></a>
-  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
-  <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
-</div>
-
-<aside id="sidebar">
-  <div class="sidebar-logo">
-    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo Kemendikdasmen">
-    <button class="sidebar-close" onclick="closeSidebar()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-  </div>
-  <nav>
-    <div class="nav-divider">Program</div>
-    <a href="beranda.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Beranda
-    </a>
-    <a href="surat-dukungan.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Surat Dukungan
-    </a>
-    <a href="baseline.html" class="active">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Baseline Sekolah
-    </a>
-    <div class="nav-divider">Intervensi</div>
-    <a href="intervensi-direktorat.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Direktorat SMA
-    </a>
-    <a href="intervensi-upt.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-      BBPMP/BPMP
-    </a>
-    <a href="intervensi-dinas.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
-      Dinas Pendidikan
-    </a>
-    <div class="nav-divider nav-admin-only">Sistem</div>
-    <a href="kelola-pengguna.html" class="nav-admin-only">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Kelola Pengguna
-    </a>
-  </nav>
-  <div class="sidebar-footer">Data diperbarui<br>30 Mei 2026 · 20:05</div>
-</aside>
+<div id="sidebar-root"></div>
 
 <main>
   <div class="topbar">
@@ -730,34 +680,20 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const SUPA_URL  = 'https://lusytejskqevwyyffeue.supabase.co/rest/v1/sekolah_model_2026';
-const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
+// SUPA_URL/KEY → config.js
+const SUPA_URL_REST = SUPA_URL + '/rest/v1/' + TABLE_SCHOOLS;
+const SUPA_AUTH_KEY = SUPA_KEY;
 const SUPA_SELECT = 'npsn,nama,provinsi,kabupaten_kota,status_sekolah,status_koding_ka,profil_pm,profil_kka,skor_pm,skor_kka,pm_1_1_1,pm_1_1_2,pm_1_1_3,pm_1_1_4,pm_1_1_5,pm_1_1_6,pm_2_1_1,pm_2_1_2,pm_2_1_3,pm_2_2_1,pm_2_2_2,pm_2_3_1,pm_2_3_2,pm_3_1_1,pm_3_1_2,pm_3_1_3,pm_3_1_4,pm_3_2_1,pm_3_2_2,pm_3_2_3,pm_3_3_1,pm_3_3_2,pm_3_4_1,pm_3_4_2,kka_1_1_1,kka_2_1_1,kka_2_1_2,kka_2_2_1,kka_3_1_1,kka_3_1_2,kka_3_2_1,kka_3_2_2,kka_3_3_1,kka_3_4_1,kka_3_4_2';
 const PAGE_SIZE = 20;
 let ALL_SCHOOLS  = [];
 let baselinePage = 1;
 let activeCharts = {};
 
-const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
-
-// ── BPMP multi-provinsi mapping ───────────────────────────────────────────────
-const BPMP_PROVINSI_MAP = {
-  'Papua'       : ['Papua','Papua Pegunungan','Papua Selatan','Papua Tengah'],
-  'Papua Barat' : ['Papua Barat','Papua Barat Daya'],
-};
-
-// Kabkot Papua yang disimpan di kolom provinsi (untuk filter Dinas Papua)
-const PAPUA_KABKOT_SET = new Set([
-  'Kota Jayapura','Kab. Fak Fak','Kota Sorong',
-  'Kab. Jayawijaya','Kab. Merauke','Kab. Nabire'
-]);
-
-// profil user login (diisi saat init)
+// ROLE_LABEL, BPMP_CAKUPAN, PAPUA_KABKOT_SET → auth.js
 let USER_PROFILE = null;
 
 // ── Sidebar / Codebook ────────────────────────────────────────────────────────
-function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+// openSidebar / closeSidebar → sidebar.js
 function toggleCodebook() { document.getElementById('codebookWrap').classList.toggle('open'); }
 function switchCodebookTab(tab, btn) {
   document.querySelectorAll('.codebook-tab').forEach(t => t.classList.remove('active'));
@@ -766,63 +702,7 @@ function switchCodebookTab(tab, btn) {
   document.getElementById('cb-tab-' + tab).classList.add('active');
 }
 
-// ── Admin nav visibility ──────────────────────────────────────────────────────
-function updateAdminNav() {
-  const raw  = localStorage.getItem('sb_user');
-  const sess = raw ? JSON.parse(raw) : {};
-  const role = sess.role || '';
-  const bpmp = sess.bpmp || '';
-  const show = (role === 'superadmin' || role === 'admin' || bpmp);
-  document.querySelectorAll('.nav-admin-only').forEach(el => {
-    el.style.display = show ? (el.tagName === 'A' ? 'flex' : 'block') : 'none';
-  });
-}
-
-// ── Logout ───────────────────────────────────────────────────────────────────
-function toggleBadgeMenu() {
-  document.getElementById('badgeUser').classList.toggle('open');
-}
-document.addEventListener('click', e => {
-  const wrap = document.getElementById('badgeUser');
-  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
-});
-
-function doLogout() {
-  localStorage.removeItem('sb_user');
-  window.location.href = 'login.html';
-}
-
-// ── Update badge (desktop + mobile) ─────────────────────────────────────────
-function updateBadge() {
-  const raw      = localStorage.getItem('sb_user');
-  const loggedIn = !!raw;
-  const sess     = loggedIn ? JSON.parse(raw) : null;
-
-  document.getElementById('badgeGuest').style.display = loggedIn ? 'none' : '';
-  const badgeUser = document.getElementById('badgeUser');
-  badgeUser.style.display = loggedIn ? 'flex' : 'none';
-  if (loggedIn) {
-    const nama = sess.nama || sess.email;
-    document.getElementById('badgeEmail').textContent = nama;
-    document.getElementById('badgeRole').textContent  = sess.unsur || ROLE_LABEL[sess.role] || sess.role;
-    const parts = nama.trim().split(' ');
-    const initial = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : nama[0].toUpperCase();
-    const av = document.getElementById('badgeAvatar');
-    if (av) av.textContent = initial;
-    const mn = document.getElementById('menuName');
-    const me = document.getElementById('menuEmail');
-    if (mn) mn.textContent = nama;
-    if (me) me.textContent = sess.email;
-  }
-
-  document.getElementById('mobileBtnMasuk').style.display  = loggedIn ? 'none' : '';
-  document.getElementById('mobileBtnKeluar').style.display = loggedIn ? ''     : 'none';
-  const mName = document.getElementById('mobileUserName');
-  mName.style.display = loggedIn ? '' : 'none';
-  if (loggedIn) mName.textContent = (sess.nama || sess.email || '').split('@')[0];
-
-  updateAdminNav();
-}
+// updateAdminNav / toggleBadgeMenu / doLogout / updateBadge → sidebar.js
 
 // ── Pie charts (data statis) ──────────────────────────────────────────────────
 function renderSummaryCharts() {
@@ -1048,18 +928,15 @@ function closeModal() {
 function closeModalOutside(e) { if (e.target === document.getElementById('modalBackdrop')) closeModal(); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// ── Fetch profil user dari Supabase ──────────────────────────────────────────
-function fetchUserProfile(email) {
-  // Baca dari localStorage yang sudah diisi saat login
-  const raw = localStorage.getItem('sb_user');
-  if (!raw) return null;
-  const sess = JSON.parse(raw);
-  if (sess.email !== email) return null;
+// ── Fetch profil user — pakai getUser() dari auth.js ─────────────────────────
+function fetchUserProfile() {
+  const u = getUser();
+  if (!u) return null;
   return {
-    unsur   : sess.unsur    || '',
-    provinsi: sess.provinsi || '',
-    bpmp    : sess.bpmp     || '',
-    npsn    : sess.npsn     || '',
+    unsur   : u.unsur    || '',
+    provinsi: u.provinsi || '',
+    npsn    : u.npsn     || '',
+    role    : u.role     || '',
   };
 }
 
@@ -1077,8 +954,8 @@ function showGuest() {
 async function loadData() {
   try {
     const res = await fetch(
-      `${SUPA_URL}?select=${SUPA_SELECT}&order=nama.asc`,
-      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+      `${SUPA_URL_REST}?select=${SUPA_SELECT}&order=nama.asc`,
+      { headers: { 'apikey': SUPA_AUTH_KEY, 'Authorization': 'Bearer ' + SUPA_AUTH_KEY } }
     );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const rows = await res.json();
@@ -1095,27 +972,8 @@ async function loadData() {
       status_pel: r.status_koding_ka,
     }));
 
-    // Filter berdasarkan role + unsur
-    if (role === 'viewer' && USER_PROFILE) {
-      const unsur = (USER_PROFILE.unsur || '').trim();
-      if (unsur === 'Dinas Pendidikan') {
-        const prov = USER_PROFILE.provinsi || '';
-        if (PAPUA_KABKOT_SET.has(prov)) {
-          schools = schools.filter(r => r.kabupaten_kota === prov);
-        } else {
-          schools = schools.filter(r => r.provinsi === prov);
-        }
-      } else if (unsur === 'BBPMP/BPMP') {
-        const bpmp = USER_PROFILE.bpmp || '';
-        const provList = BPMP_PROVINSI_MAP[bpmp] || [bpmp];
-        schools = schools.filter(r => provList.includes(r.provinsi));
-      } else if (unsur === 'Sekolah') {
-        const npsn = String(USER_PROFILE.npsn || '');
-        schools = schools.filter(r => String(r.npsn) === npsn);
-      }
-      // unsur Direktorat: tampil semua
-    }
-    // role superadmin / admin: tampil semua
+    // Filter berdasarkan role — pakai filterSchoolsByRole() dari auth.js
+    schools = filterSchoolsByRole(schools);
 
     ALL_SCHOOLS = schools;
     populateFilters();
@@ -1128,13 +986,8 @@ async function loadData() {
 }
 
 function populateFilters() {
-  const raw  = localStorage.getItem('sb_user');
-  const role = raw ? (JSON.parse(raw).role || '') : '';
-  const unsur = USER_PROFILE ? (USER_PROFILE.unsur || '').trim() : '';
-
-  // Sembunyikan filter provinsi untuk viewer dinas/bpmp (sudah otomatis terfilter)
-  const isFiltered = role === 'viewer' && (unsur === 'Dinas Pendidikan' || unsur === 'BBPMP/BPMP' || unsur === 'Sekolah');
-  document.getElementById('baselineProvFilter').style.display = isFiltered ? 'none' : '';
+  // Sembunyikan filter provinsi kalau user sudah otomatis terfilter per wilayah
+  document.getElementById('baselineProvFilter').style.display = canViewAll() ? '' : 'none';
 
   // Populate dropdown provinsi dari data yang sudah terfilter
   const provs = [...new Set(ALL_SCHOOLS.map(r => r.provinsi).filter(Boolean))].sort();
@@ -1240,21 +1093,18 @@ function renderPager(containerId, current, total, onClick) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 (async function init() {
   renderSummaryCharts();
-  updateBadge();
+  renderSidebar('baseline');
+  renderBadge();
 
-  const raw  = localStorage.getItem('sb_user');
-  const sess = raw ? JSON.parse(raw) : null;
+  const sess = getUser();
 
   if (!sess) {
-    // Belum login — tampilkan blur placeholder
     showGuest();
     return;
   }
 
-  // Sudah login — fetch profil user kalau viewer
-  if (sess.role === 'viewer') {
-    USER_PROFILE = fetchUserProfile(sess.email);
-  }
+  // Fetch profil untuk semua role (bukan hanya viewer)
+  USER_PROFILE = fetchUserProfile();
 
   showTable();
   loadData();

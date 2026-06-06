@@ -503,64 +503,13 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
   .user-badge-info { display: none; }
 }
 </style>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script src="sidebar.js"></script>
 </head>
 <body>
 
-<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
-
-<div class="mobile-topbar">
-  <button class="hamburger" onclick="openSidebar()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-  <span class="mobile-topbar-title">Daftar Sekolah Model SMA 2026</span>
-  <a class="mobile-user-name" id="mobileUserName" href="profil.html" style="display:none"></a>
-  <button class="mobile-auth-btn" id="mobileBtnMasuk" onclick="window.location.href='login.html'">Masuk</button>
-  <button class="mobile-auth-btn" id="mobileBtnKeluar" onclick="doLogout()" style="display:none;background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85)">Keluar</button>
-</div>
-
-<aside id="sidebar">
-  <div class="sidebar-logo">
-    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo Kemendikdasmen">
-    <button class="sidebar-close" onclick="closeSidebar()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-  </div>
-  <nav>
-
-    <div class="nav-divider">Program</div>
-    <a href="beranda.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Beranda
-    </a>
-    <a href="surat-dukungan.html" class="active">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Surat Dukungan
-    </a>
-    <a href="baseline.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Baseline Sekolah
-    </a>
-    <div class="nav-divider">Intervensi</div>
-    <a href="intervensi-direktorat.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Direktorat SMA
-    </a>
-    <a href="intervensi-upt.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-      BBPMP/BPMP
-    </a>
-    <a href="intervensi-dinas.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
-      Dinas Pendidikan
-    </a>
-    <div class="nav-divider nav-admin-only">Sistem</div>
-    <a href="kelola-pengguna.html" class="nav-admin-only">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Kelola Pengguna
-    </a>
-  </nav>
-  <div class="sidebar-footer">Data diperbarui<br>30 Mei 2026 · 20:05</div>
-</aside>
+<div id="sidebar-root"></div>
 
 <main>
   <div id="page-surat-dukungan">
@@ -730,8 +679,7 @@ function dasharray(pct, circ) {
   return `${filled.toFixed(1)} ${(circ - filled).toFixed(1)}`;
 }
 
-function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+// openSidebar / closeSidebar → sidebar.js
 
 function loadData() {
   ALL_SCHOOLS = BERANDA_SCHOOLS;
@@ -929,74 +877,9 @@ function resetBaselineFilter() {
   renderBaselineTable();
 }
 
-// ── Auth constants ──────────────────────────────────────────────────────────
-const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
-
-const PROVINSI_ALL = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Papua Barat Daya','Papua Pegunungan','Papua Selatan','Papua Tengah','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
-const PROVINSI_UPT = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
-
-// ── Admin nav visibility ──────────────────────────────────────────────────────
-function updateAdminNav() {
-  const raw  = localStorage.getItem('sb_user');
-  const sess = raw ? JSON.parse(raw) : {};
-  const role = sess.role || '';
-  const bpmp = sess.bpmp || '';
-  const show = (role === 'superadmin' || role === 'admin' || bpmp);
-  document.querySelectorAll('.nav-admin-only').forEach(el => {
-    el.style.display = show ? (el.tagName === 'A' ? 'flex' : 'block') : 'none';
-  });
-}
-
-// ── Logout ───────────────────────────────────────────────────────────────────
-function toggleBadgeMenu() {
-  document.getElementById('badgeUser').classList.toggle('open');
-}
-document.addEventListener('click', e => {
-  const wrap = document.getElementById('badgeUser');
-  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
-});
-
-function doLogout() {
-  localStorage.removeItem('sb_user');
-  window.location.href = 'login.html';
-}
-
-// ── Update badge (desktop + mobile) ─────────────────────────────────────────
-function updateBadge() {
-  const raw      = localStorage.getItem('sb_user');
-  const loggedIn = !!raw;
-  const sess     = loggedIn ? JSON.parse(raw) : null;
-
-  // Desktop
-  document.getElementById('badgeGuest').style.display = loggedIn ? 'none' : '';
-  const badgeUser = document.getElementById('badgeUser');
-  badgeUser.style.display = loggedIn ? 'flex' : 'none';
-  if (loggedIn) {
-    const nama = sess.nama || sess.email;
-    document.getElementById('badgeEmail').textContent = nama;
-    document.getElementById('badgeRole').textContent  = sess.unsur || ROLE_LABEL[sess.role] || sess.role;
-    const parts = nama.trim().split(' ');
-    const initial = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : nama[0].toUpperCase();
-    const av = document.getElementById('badgeAvatar');
-    if (av) av.textContent = initial;
-    const mn = document.getElementById('menuName');
-    const me = document.getElementById('menuEmail');
-    if (mn) mn.textContent = nama;
-    if (me) me.textContent = sess.email;
-  }
-
-  // Mobile
-  document.getElementById('mobileBtnMasuk').style.display  = loggedIn ? 'none' : '';
-  document.getElementById('mobileBtnKeluar').style.display = loggedIn ? ''     : 'none';
-  const mName = document.getElementById('mobileUserName');
-  mName.style.display = loggedIn ? '' : 'none';
-  if (loggedIn) mName.textContent = (sess.nama || sess.email || '').split('@')[0];
-
-  updateAdminNav();
-}
-
-// ── Init auth badge on load ───────────────────────────────────────────────────
-updateBadge();
+// ── Init sidebar & badge ─────────────────────────────────────────────────────
+renderSidebar('surat-dukungan');
+renderBadge();
 
 window.addEventListener('load', () => { loadData(); });
 </script>

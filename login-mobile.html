@@ -197,14 +197,7 @@ body {
         </button>
       </div>
     </div>
-    <div class="row-meta">
-      <label class="check-label">
-        <input type="checkbox" id="rememberMe" checked>
-        <div class="check-box"></div>
-        Ingat saya
-      </label>
-      <button class="link-forgot" onclick="showPanel('panelForgot')">Lupa password?</button>
-    </div>
+    <div style="text-align:right;margin-bottom:16px"><button class="link-forgot" onclick="showPanel('panelForgot')">Lupa password?</button></div>
     <button class="btn-primary" id="btnLogin" onclick="doLogin()">
       Masuk
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
@@ -261,7 +254,6 @@ body {
           <option>Dinas Pendidikan</option>
           <option>BBPMP/BPMP</option>
           <option>Sekolah</option>
-          <option>Direktorat SMA</option>
         </select>
         <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
       </div>
@@ -272,13 +264,6 @@ body {
       <div class="input-wrap">
         <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
         <input type="text" id="daftarInstansi" placeholder="Nama instansi">
-      </div>
-    </div>
-    <div class="field" id="fieldJabatan" style="display:none">
-      <label>Jabatan</label>
-      <div class="input-wrap">
-        <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
-        <input type="text" id="daftarJabatan" placeholder="Jabatan Anda">
       </div>
     </div>
     <div class="field" id="fieldProvinsi" style="display:none">
@@ -319,6 +304,14 @@ body {
       </div>
     </div>
 
+    <div class="field">
+      <label>Jabatan</label>
+      <div class="input-wrap">
+        <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+        <input type="text" id="daftarJabatan" placeholder="Jabatan Anda">
+      </div>
+    </div>
+
     <button class="btn-primary" id="btnDaftar" onclick="doDaftar()">
       Daftar
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
@@ -327,6 +320,30 @@ body {
   </div>
 
   <!-- Panel Lupa Password -->
+
+  <!-- Panel Sukses Daftar -->
+  <div id="panelDaftarOk" class="panel">
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 20px;gap:14px">
+      <div style="width:56px;height:56px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="#16a34a" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+      </div>
+      <div style="font-size:18px;font-weight:800;color:#0d1f38">Pendaftaran Berhasil!</div>
+      <div style="font-size:13px;color:#6b83a4;line-height:1.6">Data Anda telah kami terima dan sedang menunggu persetujuan admin. Anda akan dihubungi jika akun telah diaktifkan.</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#eef4ff;border-radius:20px;font-size:12px;font-weight:600;color:#2b72d8">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        Menunggu persetujuan admin
+      </div>
+      <button class="btn-primary" onclick="showPanel('panelLogin')" style="width:100%;margin-top:8px">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+        Kembali ke Login
+      </button>
+      <button class="btn-ghost" onclick="window.location.href='beranda.html'" style="width:100%">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c-.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+        Jelajahi Dasbor Dulu
+      </button>
+    </div>
+  </div>
+
   <div id="panelForgot" class="panel">
     <button class="back-link" onclick="showPanel('panelLogin')">
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
@@ -366,16 +383,46 @@ function getSb() {
   document.head.appendChild(s);
 })();
 
-const PROVINSI = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Papua Barat Daya','Papua Pegunungan','Papua Selatan','Papua Tengah','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
-const BPMP_PROV = ['Aceh','Bali','Banten','Bengkulu','D.I. Yogyakarta','DKI Jakarta','Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat','Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara','Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara','Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Riau','Sulawesi Barat','Sulawesi Selatan','Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat','Sumatera Selatan','Sumatera Utara'];
-const PAPUA_KABKOT = {
-  'Papua':            ['Kota Jayapura'],
-  'Papua Barat':      ['Kab. Fak Fak'],
-  'Papua Barat Daya': ['Kota Sorong'],
-  'Papua Pegunungan': ['Kab. Jayawijaya'],
-  'Papua Selatan':    ['Kab. Merauke'],
-  'Papua Tengah':     ['Kab. Nabire']
-};
+const DINAS_LIST = [
+  {label:'Dinas Pendidikan Prov. Aceh',value:'Aceh'},{label:'Dinas Pendidikan Prov. Bali',value:'Bali'},
+  {label:'Dinas Pendidikan Prov. Banten',value:'Banten'},{label:'Dinas Pendidikan Prov. Bengkulu',value:'Bengkulu'},
+  {label:'Dinas Pendidikan Prov. D.I. Yogyakarta',value:'D.I. Yogyakarta'},{label:'Dinas Pendidikan Prov. D.K.I. Jakarta',value:'D.K.I. Jakarta'},
+  {label:'Dinas Pendidikan Prov. Gorontalo',value:'Gorontalo'},{label:'Dinas Pendidikan Prov. Jambi',value:'Jambi'},
+  {label:'Dinas Pendidikan Prov. Jawa Barat',value:'Jawa Barat'},{label:'Dinas Pendidikan Prov. Jawa Tengah',value:'Jawa Tengah'},
+  {label:'Dinas Pendidikan Prov. Jawa Timur',value:'Jawa Timur'},{label:'Dinas Pendidikan Prov. Kalimantan Barat',value:'Kalimantan Barat'},
+  {label:'Dinas Pendidikan Prov. Kalimantan Selatan',value:'Kalimantan Selatan'},{label:'Dinas Pendidikan Prov. Kalimantan Tengah',value:'Kalimantan Tengah'},
+  {label:'Dinas Pendidikan Prov. Kalimantan Timur',value:'Kalimantan Timur'},{label:'Dinas Pendidikan Prov. Kalimantan Utara',value:'Kalimantan Utara'},
+  {label:'Dinas Pendidikan Prov. Kepulauan Bangka Belitung',value:'Kepulauan Bangka Belitung'},{label:'Dinas Pendidikan Prov. Kepulauan Riau',value:'Kepulauan Riau'},
+  {label:'Dinas Pendidikan Prov. Lampung',value:'Lampung'},{label:'Dinas Pendidikan Prov. Maluku',value:'Maluku'},
+  {label:'Dinas Pendidikan Prov. Maluku Utara',value:'Maluku Utara'},{label:'Dinas Pendidikan Prov. Nusa Tenggara Barat',value:'Nusa Tenggara Barat'},
+  {label:'Dinas Pendidikan Prov. Nusa Tenggara Timur',value:'Nusa Tenggara Timur'},{label:'Dinas Pendidikan Prov. Riau',value:'Riau'},
+  {label:'Dinas Pendidikan Prov. Sulawesi Barat',value:'Sulawesi Barat'},{label:'Dinas Pendidikan Prov. Sulawesi Selatan',value:'Sulawesi Selatan'},
+  {label:'Dinas Pendidikan Prov. Sulawesi Tengah',value:'Sulawesi Tengah'},{label:'Dinas Pendidikan Prov. Sulawesi Tenggara',value:'Sulawesi Tenggara'},
+  {label:'Dinas Pendidikan Prov. Sulawesi Utara',value:'Sulawesi Utara'},{label:'Dinas Pendidikan Prov. Sumatera Barat',value:'Sumatera Barat'},
+  {label:'Dinas Pendidikan Prov. Sumatera Selatan',value:'Sumatera Selatan'},{label:'Dinas Pendidikan Prov. Sumatera Utara',value:'Sumatera Utara'},
+  {label:'Dinas Pendidikan Kota Jayapura',value:'Kota Jayapura'},{label:'Dinas Pendidikan Kab. Fak Fak',value:'Kab. Fak Fak'},
+  {label:'Dinas Pendidikan Kota Sorong',value:'Kota Sorong'},{label:'Dinas Pendidikan Kab. Jayawijaya',value:'Kab. Jayawijaya'},
+  {label:'Dinas Pendidikan Kab. Merauke',value:'Kab. Merauke'},{label:'Dinas Pendidikan Kab. Nabire',value:'Kab. Nabire'},
+];
+const BPMP_LIST = [
+  {label:'BPMP Prov. Aceh',value:'Aceh'},{label:'BPMP Prov. Bali',value:'Bali'},
+  {label:'BPMP Prov. Banten',value:'Banten'},{label:'BPMP Prov. Bengkulu',value:'Bengkulu'},
+  {label:'BPMP Prov. D.I. Yogyakarta',value:'D.I. Yogyakarta'},{label:'BPMP Prov. D.K.I. Jakarta',value:'D.K.I. Jakarta'},
+  {label:'BPMP Prov. Gorontalo',value:'Gorontalo'},{label:'BPMP Prov. Jambi',value:'Jambi'},
+  {label:'BBPMP Prov. Jawa Barat',value:'Jawa Barat'},{label:'BBPMP Prov. Jawa Tengah',value:'Jawa Tengah'},
+  {label:'BBPMP Prov. Jawa Timur',value:'Jawa Timur'},{label:'BPMP Prov. Kalimantan Barat',value:'Kalimantan Barat'},
+  {label:'BPMP Prov. Kalimantan Selatan',value:'Kalimantan Selatan'},{label:'BPMP Prov. Kalimantan Tengah',value:'Kalimantan Tengah'},
+  {label:'BPMP Prov. Kalimantan Timur',value:'Kalimantan Timur'},{label:'BPMP Prov. Kalimantan Utara',value:'Kalimantan Utara'},
+  {label:'BPMP Prov. Kepulauan Bangka Belitung',value:'Kepulauan Bangka Belitung'},{label:'BPMP Prov. Kepulauan Riau',value:'Kepulauan Riau'},
+  {label:'BPMP Prov. Lampung',value:'Lampung'},{label:'BPMP Prov. Maluku',value:'Maluku'},
+  {label:'BPMP Prov. Maluku Utara',value:'Maluku Utara'},{label:'BPMP Prov. Nusa Tenggara Barat',value:'Nusa Tenggara Barat'},
+  {label:'BPMP Prov. Nusa Tenggara Timur',value:'Nusa Tenggara Timur'},{label:'BPMP Prov. Papua',value:'Papua'},
+  {label:'BPMP Prov. Papua Barat',value:'Papua Barat'},{label:'BPMP Prov. Riau',value:'Riau'},
+  {label:'BPMP Prov. Sulawesi Barat',value:'Sulawesi Barat'},{label:'BBPMP Prov. Sulawesi Selatan',value:'Sulawesi Selatan'},
+  {label:'BPMP Prov. Sulawesi Tengah',value:'Sulawesi Tengah'},{label:'BPMP Prov. Sulawesi Tenggara',value:'Sulawesi Tenggara'},
+  {label:'BPMP Prov. Sulawesi Utara',value:'Sulawesi Utara'},{label:'BBPMP Prov. Sumatera Barat',value:'Sumatera Barat'},
+  {label:'BPMP Prov. Sumatera Selatan',value:'Sumatera Selatan'},{label:'BPMP Prov. Sumatera Utara',value:'Sumatera Utara'},
+];
 
 function showPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -397,38 +444,25 @@ function togglePw(id, btn) {
 function setBtn(btn, disabled, html) { btn.disabled = disabled; btn.innerHTML = html; }
 
 function initDropdowns() {
-  const selProv = document.getElementById('daftarProvinsi');
-  const selBpmp = document.getElementById('daftarBpmp');
-  if (selProv) PROVINSI.forEach(p => selProv.innerHTML += `<option value="${p}">${p}</option>`);
-  if (selBpmp) BPMP_PROV.forEach(p => selBpmp.innerHTML += `<option value="${p}">${p}</option>`);
-  if (selProv) selProv.addEventListener('change', onProvinsiChange);
+  const selDinas = document.getElementById('daftarProvinsi'); // reuse id lama
+  const selBpmp  = document.getElementById('daftarBpmp');
+  if (selDinas) DINAS_LIST.forEach(d => selDinas.innerHTML += `<option value="${d.value}">${d.label}</option>`);
+  if (selBpmp)  BPMP_LIST.forEach(b  => selBpmp.innerHTML  += `<option value="${b.value}">${b.label}</option>`);
 }
 initDropdowns();
 
-function onProvinsiChange() {
-  const prov = document.getElementById('daftarProvinsi').value;
-  const fieldKabkot = document.getElementById('fieldKabkot');
-  const selKabkot = document.getElementById('daftarKabkot');
-  selKabkot.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
-  if (PAPUA_KABKOT[prov]) {
-    PAPUA_KABKOT[prov].forEach(k => selKabkot.innerHTML += `<option value="${k}">${k}</option>`);
-    fieldKabkot.style.display = 'block';
-  } else {
-    fieldKabkot.style.display = 'none';
-  }
-}
-
 function onUnsurChange() {
   const unsur = document.getElementById('daftarUnsur').value;
-  const show  = id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; };
-  const hide  = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
-  ['fieldInstansi','fieldJabatan','fieldProvinsi','fieldKabkot','fieldBpmp','fieldNpsn'].forEach(hide);
-  document.getElementById('daftarProvinsi').value = '';
-  document.getElementById('daftarKabkot').innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
-  if (unsur === 'Dinas Pendidikan') { show('fieldInstansi'); show('fieldJabatan'); show('fieldProvinsi'); }
-  else if (unsur === 'BBPMP/BPMP')  { show('fieldInstansi'); show('fieldJabatan'); show('fieldBpmp'); }
-  else if (unsur === 'Sekolah')     { show('fieldNpsn'); show('fieldJabatan'); }
-  else if (unsur === 'Direktorat SMA') { show('fieldInstansi'); show('fieldJabatan'); }
+  const show = id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; };
+  const hide = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
+  ['fieldInstansi','fieldProvinsi','fieldKabkot','fieldBpmp','fieldNpsn'].forEach(hide);
+  const selDinas = document.getElementById('daftarProvinsi');
+  const selBpmp  = document.getElementById('daftarBpmp');
+  if (selDinas) selDinas.value = '';
+  if (selBpmp)  selBpmp.value  = '';
+  if (unsur === 'Dinas Pendidikan')  { show('fieldProvinsi'); }
+  else if (unsur === 'BBPMP/BPMP')   { show('fieldBpmp'); }
+  else if (unsur === 'Sekolah')      { show('fieldNpsn'); }
 }
 
 async function doLogin() {
@@ -444,8 +478,8 @@ async function doLogin() {
     const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
     if (error) throw error;
     const { data: profil, error: ep } = await sb
-      .from('user_dasbor_sekolah_model')
-      .select('status,nama,role,unsur,provinsi,bpmp,npsn')
+      .from('user_db_sekmodel')
+      .select('status,nama,role,unsur,provinsi,npsn,nama_sekolah')
       .eq('user_id', data.user.id)
       .single();
     if (ep || !profil) { await sb.auth.signOut(); throw new Error('Akun tidak ditemukan. Hubungi administrator.'); }
@@ -454,7 +488,7 @@ async function doLogin() {
     localStorage.setItem('sb_user', JSON.stringify({
       email, nama: profil.nama, id: data.user.id, role: profil.role,
       unsur: profil.unsur || '', provinsi: profil.provinsi || '',
-      bpmp: profil.bpmp || '', npsn: profil.npsn || ''
+      npsn: profil.npsn || '', nama_sekolah: profil.nama_sekolah || ''
     }));
     window.location.href = 'beranda.html';
   } catch(e) {
@@ -475,13 +509,11 @@ async function doDaftar() {
   if (!email) { showErr(err, 'Email wajib diisi.'); return; }
   if (pw.length < 6) { showErr(err, 'Password minimal 6 karakter.'); return; }
   if (!unsur) { showErr(err, 'Pilih unsur terlebih dahulu.'); return; }
-  const provinsi = document.getElementById('daftarProvinsi')?.value || '';
-  const kabkot   = document.getElementById('daftarKabkot')?.value || '';
-  const bpmp     = document.getElementById('daftarBpmp')?.value || '';
+  const dinasVal = document.getElementById('daftarProvinsi')?.value || '';
+  const bpmpVal  = document.getElementById('daftarBpmp')?.value || '';
   const npsn     = document.getElementById('daftarNpsn')?.value || '';
-  if (unsur === 'Dinas Pendidikan' && !provinsi) { showErr(err, 'Pilih provinsi terlebih dahulu.'); return; }
-  if (unsur === 'Dinas Pendidikan' && PAPUA_KABKOT[provinsi] && !kabkot) { showErr(err, 'Pilih kabupaten/kota terlebih dahulu.'); return; }
-  if (unsur === 'BBPMP/BPMP' && !bpmp) { showErr(err, 'Pilih BBPMP/BPMP terlebih dahulu.'); return; }
+  if (unsur === 'Dinas Pendidikan' && !dinasVal) { showErr(err, 'Pilih instansi Dinas Pendidikan.'); return; }
+  if (unsur === 'BBPMP/BPMP'       && !bpmpVal)  { showErr(err, 'Pilih instansi BBPMP/BPMP.'); return; }
   const btn = document.getElementById('btnDaftar');
   setBtn(btn, true, 'Mendaftar...');
   try {
@@ -490,14 +522,20 @@ async function doDaftar() {
     if (error) throw error;
     const userId = data.user?.id;
     if (!userId) throw new Error('Gagal membuat akun. Coba lagi.');
-    const instansi = document.getElementById('daftarInstansi')?.value.trim() || '';
-    const jabatan  = document.getElementById('daftarJabatan')?.value.trim() || '';
-    let provSimpan = null, npsn_sekolah = null, nama_sekolah = null;
-    if (unsur === 'Dinas Pendidikan') provSimpan = PAPUA_KABKOT[provinsi] ? kabkot : provinsi;
-    const { error: ie } = await sb.from('user_dasbor_sekolah_model').insert({
-      user_id: userId, nama, email, instansi, jabatan, unsur,
-      provinsi: provSimpan, bpmp: bpmp || null,
-      npsn: npsn || null, nama_sekolah, status: 'pending', role: 'viewer'
+    const jabatan = document.getElementById('daftarJabatan')?.value.trim() || '';
+    const roleMap = {'Dinas Pendidikan':'dinas','BBPMP/BPMP':'bpmp','Sekolah':'sekolah'};
+    const role = roleMap[unsur] || 'admin';
+    let provinsi = null, instansi = '', nama_sekolah = null;
+    if (unsur === 'Dinas Pendidikan') {
+      provinsi = dinasVal;
+      instansi = DINAS_LIST.find(d => d.value === dinasVal)?.label || dinasVal;
+    } else if (unsur === 'BBPMP/BPMP') {
+      provinsi = bpmpVal;
+      instansi = BPMP_LIST.find(b => b.value === bpmpVal)?.label || bpmpVal;
+    }
+    const { error: ie } = await sb.from('user_db_sekmodel').insert({
+      user_id: userId, nama, email, instansi, jabatan, unsur, role,
+      provinsi, npsn: npsn || null, nama_sekolah, status: 'pending'
     });
     if (ie) throw ie;
     showPanel('panelDaftarOk');

@@ -345,54 +345,13 @@ tr:hover td { background: #fafcff; }
   table { min-width: 640px; }
 }
 </style>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script src="sidebar.js"></script>
 </head>
 <body>
 
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-<!-- ── SIDEBAR ── -->
-<aside id="sidebar">
-  <div class="sidebar-logo">
-    <img src="https://raw.githubusercontent.com/kurikulumsma/image/main/logo.png" alt="Logo" onerror="this.style.display='none'">
-    <button class="sidebar-close" onclick="closeSidebar()">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-  </div>
-  <nav>
-    <div class="nav-divider">Program</div>
-    <a href="beranda.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Beranda
-    </a>
-    <a href="surat-dukungan.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Surat Dukungan
-    </a>
-    <a href="baseline.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Baseline Sekolah
-    </a>
-    <div class="nav-divider">Intervensi</div>
-    <a href="intervensi-direktorat.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Direktorat SMA
-    </a>
-    <a href="intervensi-upt.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-      BBPMP/BPMP
-    </a>
-    <a href="intervensi-dinas.html">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V12M18 22V12M2 22h20M2 12l10-9 10 9M9 22v-5h6v5"/></svg>
-      Dinas Pendidikan
-    </a>
-    <div class="nav-divider">Sistem</div>
-    <a href="kelola-pengguna.html" class="active">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Kelola Pengguna
-    </a>
-  </nav>
-  <div class="sidebar-footer" id="sidebarFooter">Direktorat SMA · Kemendikdasmen 2026</div>
-</aside>
+<div id="sidebar-root"></div>
 
 <!-- ── MOBILE TOPBAR ── -->
 <div class="mobile-topbar">
@@ -686,15 +645,7 @@ tr:hover td { background: #fafcff; }
 <div class="toast" id="toast"></div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────
-const SUPA_URL = 'https://lusytejskqevwyyffeue.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
-let _sb = null;
-function getSb() {
-  if (_sb) return _sb;
-  _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-  return _sb;
-}
+// ── CONFIG → config.js ──────────────────────────────────
 
 // ── STATE ─────────────────────────────────────────────────
 let currentUser = null;
@@ -718,37 +669,36 @@ let filterDeactivatedQ = '';
 })();
 
 async function init() {
-  // Cek auth dari localStorage
-  const raw = localStorage.getItem('sb_user');
-  if (!raw) { window.location.href = 'login.html'; return; }
-  currentUser = JSON.parse(raw);
+  requireLogin();                        // → auth.js
+  currentUser = getUser();              // → auth.js
 
-  // Guard: hanya superadmin, admin, dan UPT (BBPMP/BPMP)
-  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
-  if (!['superadmin','admin'].includes(currentUser.role) && !isUPT) {
+  // Guard: hanya superadmin, admin, bpmp
+  if (!canManageUsers()) {
     document.body.innerHTML = `<div class="access-denied">
       <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#b91c1c" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
       <div style="font-size:18px;font-weight:800;color:#0d1f38">Akses Ditolak</div>
-      <div style="font-size:13px;color:#6b83a4">Halaman ini hanya dapat diakses oleh admin atau UPT (BBPMP/BPMP).</div>
+      <div style="font-size:13px;color:#6b83a4">Halaman ini hanya dapat diakses oleh admin atau BBPMP/BPMP.</div>
       <a href="beranda.html" style="margin-top:8px;color:#2b72d8;font-weight:600;font-size:13px">Kembali ke Beranda</a>
     </div>`;
     return;
   }
 
-  updateBadge();
+  renderSidebar('kelola-pengguna');     // → sidebar.js
+  renderBadge();                         // → sidebar.js
 
-  // Sembunyikan tombol Tambah Admin & Export untuk non-superadmin / UPT
-  if (currentUser.role !== 'superadmin') {
+  // Sembunyikan tombol Tambah Admin untuk non-superadmin
+  if (!isSuperadmin()) {
     const btn = document.getElementById('btnTambahAdmin');
     if (btn) btn.style.display = 'none';
   }
-  if (isUPT) {
+
+  // Untuk bpmp: sembunyikan export, tampilkan info wilayah
+  if (isBpmp()) {
     const btnExport = document.querySelector('.btn-export');
     if (btnExport) btnExport.style.display = 'none';
-    // Tambahkan info wilayah UPT di bawah judul
     const topbarLeft = document.querySelector('.topbar-left p');
     if (topbarLeft) {
-      topbarLeft.innerHTML = `Kelola persetujuan akun sekolah di wilayah <strong>BPMP ${esc(currentUser.bpmp || '—')}</strong>`;
+      topbarLeft.innerHTML = `Kelola persetujuan akun di wilayah <strong>${esc(currentUser.unsur || currentUser.provinsi || '—')}</strong>`;
     }
   }
 
@@ -757,29 +707,28 @@ async function init() {
 
 async function loadAll() {
   const sb = getSb();
-
-  // Re-init sesi dari localStorage agar tidak tergantung sesi Supabase aktif
-  const raw = localStorage.getItem('sb_user');
-  if (raw) currentUser = JSON.parse(raw);
+  currentUser = getUser();  // refresh dari localStorage
 
   const { data, error } = await sb
-    .from('user_dasbor_sekolah_model')
+    .from(TABLE_USERS)
     .select('*')
     .order('created_at', { ascending: false });
 
   if (error) { showToast('Gagal memuat data: ' + error.message, 'error'); return; }
 
-  // UPT hanya bisa lihat & kelola sekolah di provinsinya
-  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
-  const uptProvinsi = currentUser.bpmp || '';
-  function uptFilter(rows) {
-    if (!isUPT) return rows;
-    return rows.filter(u => u.unsur === 'Sekolah' && (u.provinsi || '') === uptProvinsi);
+  // BPMP hanya bisa lihat & kelola dinas+sekolah di cakupan wilayahnya
+  function bpmpFilter(rows) {
+    if (!isBpmp()) return rows;
+    const cakupan = BPMP_CAKUPAN[currentUser.provinsi] || [currentUser.provinsi];
+    return rows.filter(u =>
+      (u.role === 'dinas' || u.role === 'sekolah') &&
+      cakupan.includes(u.provinsi || '')
+    );
   }
 
-  allPending     = uptFilter(data.filter(u => u.status === 'pending'));
-  allApproved    = uptFilter(data.filter(u => u.status === 'approved'));
-  allDeactivated = uptFilter(data.filter(u => u.status === 'deactivated'));
+  allPending     = bpmpFilter(data.filter(u => u.status === 'pending'));
+  allApproved    = bpmpFilter(data.filter(u => u.status === 'approved'));
+  allDeactivated = bpmpFilter(data.filter(u => u.status === 'deactivated'));
 
   updateStats(data);
   renderPending();
@@ -788,10 +737,9 @@ async function loadAll() {
 }
 
 function updateStats(data) {
-  // Untuk UPT, stats hanya menghitung sekolah di wilayahnya
-  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
-  const statsData = isUPT
-    ? data.filter(u => u.unsur === 'Sekolah' && (u.provinsi || '') === (currentUser.bpmp || ''))
+  // BPMP stats hanya wilayahnya, superadmin/admin semua
+  const statsData = isBpmp()
+    ? [...allPending, ...allApproved, ...allDeactivated]
     : data;
   const pending     = statsData.filter(u => u.status === 'pending').length;
   const approved    = statsData.filter(u => u.status === 'approved').length;
@@ -877,13 +825,18 @@ function renderApproved() {
     return;
   }
 
-  // Superadmin hanya bisa ubah role user lain; tidak bisa nonaktifkan diri sendiri
-  // UPT tidak bisa ubah role atau nonaktifkan
-  const isUPT_render = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
+  // Superadmin bisa ubah role semua (kecuali dirinya & sesama superadmin)
+  // Admin bisa ubah role bpmp/dinas/sekolah
+  // BPMP tidak bisa ubah role
   tbody.innerHTML = data.map(u => {
-    const isSelf = u.email === currentUser.email;
-    const canChangeRole = currentUser.role === 'superadmin' && !isUPT_render;
-    const roleOptions = ['superadmin','admin','viewer'].map(r =>
+    const isSelf     = u.email === currentUser.email;
+    const isSuperTarget = u.role === 'superadmin';
+    const canChangeRole = !isSelf && !isBpmp() &&
+      (isSuperadmin() || (isAdmin() && !isSuperTarget));
+    const availableRoles = isSuperadmin()
+      ? ['superadmin','admin','bpmp','dinas','sekolah']
+      : ['bpmp','dinas','sekolah'];
+    const roleOptions = availableRoles.map(r =>
       `<option value="${r}" ${u.role===r?'selected':''}>${r}</option>`).join('');
     return `
     <tr>
@@ -898,12 +851,12 @@ function renderApproved() {
       <td><span class="badge badge-approved">${esc(u.unsur)}</span></td>
       <td style="font-size:12px;color:var(--muted)">${wilayahLabel(u)}</td>
       <td>
-        ${canChangeRole && !isSelf
+        ${canChangeRole
           ? `<select class="role-select" onchange="updateRole(${u.id}, this.value, '${esc(u.nama)}')">${roleOptions}</select>`
           : `<span class="badge badge-${u.role}">${u.role}</span>`}
       </td>
       <td>
-        ${!isSelf && currentUser.role === 'superadmin' && !isUPT_render ? `
+        ${!isSelf && isSuperadmin() ? `
         <button class="btn-icon danger" title="Nonaktifkan" onclick="openNonaktif(${u.id}, '${esc(u.nama)}')">
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>
         </button>` : '<span style="font-size:11px;color:var(--muted)">—</span>'}
@@ -914,17 +867,17 @@ function renderApproved() {
 
 // ── ACTIONS ───────────────────────────────────────────────
 async function doApprove(id, nama) {
-  // UPT hanya bisa approve sekolah di provinsinya
-  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
-  if (isUPT) {
+  // BPMP hanya bisa approve dinas+sekolah di wilayahnya
+  if (isBpmp()) {
     const target = allPending.find(u => u.id === id);
-    if (!target || target.unsur !== 'Sekolah' || (target.provinsi || '') !== (currentUser.bpmp || '')) {
-      showToast('Anda hanya bisa menyetujui sekolah di wilayah Anda', 'error'); return;
+    const cakupan = BPMP_CAKUPAN[currentUser.provinsi] || [currentUser.provinsi];
+    if (!target || !['dinas','sekolah'].includes(target.role) || !cakupan.includes(target.provinsi || '')) {
+      showToast('Anda hanya bisa menyetujui akun di wilayah Anda', 'error'); return;
     }
   }
 
   const { error } = await getSb()
-    .from('user_dasbor_sekolah_model')
+    .from(TABLE_USERS)
     .update({ status: 'approved', approved_by: currentUser.email, approved_at: new Date().toISOString() })
     .eq('id', id);
 
@@ -934,11 +887,11 @@ async function doApprove(id, nama) {
 }
 
 function openTolak(id, nama) {
-  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
-  if (isUPT) {
+  if (isBpmp()) {
     const target = allPending.find(u => u.id === id);
-    if (!target || target.unsur !== 'Sekolah' || (target.provinsi || '') !== (currentUser.bpmp || '')) {
-      showToast('Anda hanya bisa menolak sekolah di wilayah Anda', 'error'); return;
+    const cakupan = BPMP_CAKUPAN[currentUser.provinsi] || [currentUser.provinsi];
+    if (!target || !['dinas','sekolah'].includes(target.role) || !cakupan.includes(target.provinsi || '')) {
+      showToast('Anda hanya bisa menolak akun di wilayah Anda', 'error'); return;
     }
   }
   actionId = id;
@@ -950,7 +903,7 @@ function openTolak(id, nama) {
 async function confirmTolak() {
   const catatan = document.getElementById('modalTolakCatatan').value.trim();
   const { error } = await getSb()
-    .from('user_dasbor_sekolah_model')
+    .from(TABLE_USERS)
     .update({ status: 'rejected', catatan_admin: catatan || null, approved_by: currentUser.email, approved_at: new Date().toISOString() })
     .eq('id', actionId);
 
@@ -961,8 +914,7 @@ async function confirmTolak() {
 }
 
 function openNonaktif(id, nama) {
-  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
-  if (isUPT) { showToast('UPT tidak memiliki akses untuk menonaktifkan pengguna', 'error'); return; }
+  if (!isSuperadmin()) { showToast('Hanya superadmin yang bisa menonaktifkan pengguna', 'error'); return; }
   actionId = id;
   document.getElementById('modalNonaktifNama').textContent = nama;
   openModal('modalNonaktif');
@@ -970,7 +922,7 @@ function openNonaktif(id, nama) {
 
 async function confirmNonaktif() {
   const { error } = await getSb()
-    .from('user_dasbor_sekolah_model')
+    .from(TABLE_USERS)
     .update({ status: 'deactivated' })
     .eq('id', actionId);
 
@@ -981,10 +933,9 @@ async function confirmNonaktif() {
 }
 
 async function updateRole(id, role, nama) {
-  const isUPT = currentUser.role === 'viewer' && currentUser.unsur === 'BBPMP/BPMP';
-  if (isUPT) { showToast('UPT tidak memiliki akses untuk mengubah role', 'error'); await loadAll(); return; }
+  if (isBpmp()) { showToast('BPMP tidak memiliki akses untuk mengubah role', 'error'); await loadAll(); return; }
   const { error } = await getSb()
-    .from('user_dasbor_sekolah_model')
+    .from(TABLE_USERS)
     .update({ role })
     .eq('id', id);
 
@@ -1046,7 +997,7 @@ function openHapus(id, nama) {
 
 async function confirmHapus() {
   const { error } = await getSb()
-    .from('user_dasbor_sekolah_model')
+    .from(TABLE_USERS)
     .delete()
     .eq('id', actionId);
 
@@ -1096,9 +1047,9 @@ function showToast(msg, type = '') {
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function wilayahLabel(u) {
-  if (u.unsur === 'Sekolah')           return (u.nama_sekolah || '') + (u.npsn ? ' <span style="font-size:10.5px">(' + u.npsn + ')</span>' : '');
-  if (u.unsur === 'BBPMP/BPMP')        return 'BPMP ' + (u.bpmp || '—');
-  if (u.unsur === 'Dinas Pendidikan')  return u.provinsi || '—';
+  if (u.role === 'sekolah') return (u.nama_sekolah || '') + (u.npsn ? ' <span style="font-size:10.5px">(' + u.npsn + ')</span>' : '');
+  if (u.role === 'bpmp')    return BPMP_LIST.find(b => b.value === u.provinsi)?.label || u.provinsi || '—';
+  if (u.role === 'dinas')   return DINAS_LIST.find(d => d.value === u.provinsi)?.label || u.provinsi || '—';
   return '—';
 }
 
@@ -1153,10 +1104,10 @@ async function confirmTambahAdmin() {
     if (!userId) throw new Error('Gagal mendapatkan ID pengguna.');
 
     // 2. Insert profil langsung approved
-    const { error: insertErr } = await sb.from('user_dasbor_sekolah_model').insert({
+    const { error: insertErr } = await sb.from(TABLE_USERS).insert({
       user_id: userId, nama, email, instansi,
       jabatan: 'Administrator',
-      unsur: 'Direktorat',
+      unsur: 'Direktorat SMA',
       status: 'approved',
       role,
       approved_by: currentUser.email,
@@ -1212,58 +1163,7 @@ function exportExcel() {
   showToast('File berhasil diunduh', 'success');
 }
 
-// ── USER BADGE ────────────────────────────────────────────
-const ROLE_LABEL = { superadmin: 'Super Admin', admin: 'Admin', viewer: 'Pengguna' };
-
-function getUserRoleLabel(user) {
-  if (user.role === 'viewer' && user.unsur === 'BBPMP/BPMP') return 'UPT (BPMP)';
-  return ROLE_LABEL[user.role] || user.role;
-}
-
-function updateBadge() {
-  const raw = localStorage.getItem('sb_user');
-  const loggedIn = !!raw;
-  document.getElementById('badgeGuest').style.display = loggedIn ? 'none' : '';
-  const badgeUser = document.getElementById('badgeUser');
-  badgeUser.style.display = loggedIn ? 'flex' : 'none';
-  if (loggedIn) {
-    const sess = JSON.parse(raw);
-    const nama = sess.nama || sess.email;
-    document.getElementById('badgeEmail').textContent = nama;
-    document.getElementById('badgeRole').textContent  = sess.unsur || getUserRoleLabel(sess);
-    const parts = nama.trim().split(' ');
-    const initial = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : nama[0].toUpperCase();
-    const av = document.getElementById('badgeAvatar');
-    if (av) av.textContent = initial;
-    const mn = document.getElementById('menuName');
-    const me = document.getElementById('menuEmail');
-    if (mn) mn.textContent = nama;
-    if (me) me.textContent = sess.email;
-  }
-  document.getElementById('mobileBtnMasuk').style.display  = loggedIn ? 'none' : '';
-  document.getElementById('mobileBtnKeluar').style.display = loggedIn ? ''     : 'none';
-  const mName = document.getElementById('mobileUserName');
-  mName.style.display = loggedIn ? '' : 'none';
-  if (loggedIn) mName.textContent = (JSON.parse(raw).nama || JSON.parse(raw).email || '').split('@')[0];
-}
-
-function toggleBadgeMenu() {
-  document.getElementById('badgeUser').classList.toggle('open');
-}
-document.addEventListener('click', e => {
-  const wrap = document.getElementById('badgeUser');
-  if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
-});
-
-async function doLogout() {
-  try { await getSb().auth.signOut(); } catch(e) {}
-  localStorage.removeItem('sb_user');
-  window.location.href = 'login.html';
-}
-
-// ── SIDEBAR MOBILE ────────────────────────────────────────
-function openSidebar()  { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('show'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+// badge, sidebar, logout → sidebar.js
 </script>
 </body>
 </html>
