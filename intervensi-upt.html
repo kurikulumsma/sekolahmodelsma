@@ -444,6 +444,8 @@ td.c-bln{white-space:nowrap;font-size:12px}
 .flbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .finput{padding:8px 11px;border-radius:8px;border:1.5px solid var(--border);font-size:12.5px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s;width:100%}
 .finput:focus{border-color:var(--blue-lt)}
+input[type=text].finput{background:var(--surface)}
+.finput:disabled{cursor:not-allowed}
 textarea.finput{resize:vertical;min-height:68px}
 select.finput{appearance:none}
 .modal-ft{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
@@ -777,8 +779,8 @@ select.finput{appearance:none}
       <div class="frow">
         <div class="fgrp"><label class="flbl">Penanggung Jawab</label><input type="text" class="finput" id="mPJ" placeholder="Nama/jabatan PJ"></div>
         <div class="fgrp" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end">
-          <div><label class="flbl">Bulan Mulai</label><select class="finput" id="mMulai"><option value="">—</option><option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option><option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option></select></div>
-          <div><label class="flbl">Bulan Selesai</label><select class="finput" id="mSelesai"><option value="">—</option><option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option><option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option></select></div>
+          <div><label class="flbl">Bulan Mulai</label><select class="finput" id="mMulai" onchange="syncBulan('mulai')"><option value="">—</option><option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option><option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option></select></div>
+          <div><label class="flbl">Bulan Selesai</label><select class="finput" id="mSelesai" onchange="syncBulan('selesai')"><option value="">—</option><option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option><option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option></select></div>
         </div>
       </div>
     </div>
@@ -1280,6 +1282,15 @@ async function saveLinkModal() {
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
+const MONTHS_ORDER=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+function syncBulan(src){
+  const mm=document.getElementById('mMulai'), ms=document.getElementById('mSelesai');
+  const im=MONTHS_ORDER.indexOf(mm.value), is=MONTHS_ORDER.indexOf(ms.value);
+  if(im>=0 && is>=0 && is<im){
+    if(src==='mulai') ms.value=mm.value;   // mulai digeser maju → selesai ikut
+    else              mm.value=ms.value;   // selesai digeser mundur → mulai ikut
+  }
+}
 function openModal(mode, id) {
   document.getElementById('modalTitle').textContent = mode==='add'?'Tambah Intervensi':'Edit Data';
   document.getElementById('mId').value = mode==='add'?'':id;
@@ -1298,20 +1309,19 @@ function openModal(mode, id) {
   } else {
     ['mRencana','mDesk','mIndik','mPJ'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('mKat').value=''; document.getElementById('mMulai').value=''; document.getElementById('mSelesai').value='';
-    // Auto-fill provinsi dari session
-    const sess=getSess();
-    const sessRole=sess?.role||'';
-    const sessProv=sess?.provinsi||'';
-    let autoFillProv='';
-    if(sessRole==='upt'){
-      autoFillProv = sessProv;
-    }
-    const mProvEl=document.getElementById('mProv');
-    mProvEl.value=autoFillProv;
-    // Disable jika upt (provinsinya sudah fixed)
-    mProvEl.disabled=(sessRole==='upt'&&!!autoFillProv);
-    mProvEl.style.opacity=mProvEl.disabled?'0.6':'1';
+    document.getElementById('mProv').value='';
   }
+  // Lock provinsi sesuai role akun: akun terikat 1 provinsi (bukan superadmin/admin) tidak bisa ubah
+  (function(){
+    const sess=getSess();
+    const sessProv=sess?.provinsi||'';
+    const canAll=(typeof canViewAll==='function')?canViewAll():false;
+    const mProvEl=document.getElementById('mProv');
+    if(mode==='add' && !canAll && sessProv) mProvEl.value=sessProv;
+    const lock = !canAll && !!mProvEl.value;
+    mProvEl.disabled=lock;
+    mProvEl.style.opacity=lock?'0.6':'1';
+  })();
   syncChips();
   document.getElementById('modalOv').classList.add('open');
 }
@@ -1332,6 +1342,9 @@ async function saveModal() {
     updated_at:            new Date().toISOString()
   };
   if (!obj.provinsi||!obj.rencana_kegiatan) { showToast('Provinsi dan Rencana Kegiatan wajib diisi','err'); return; }
+  if (obj.bulan_mulai && obj.bulan_selesai && MONTHS_ORDER.indexOf(obj.bulan_selesai) < MONTHS_ORDER.indexOf(obj.bulan_mulai)) {
+    showToast('Bulan selesai tidak boleh sebelum bulan mulai','err'); return;
+  }
   try {
     if (!id) {
       const res = await sbFetch(`${TABLE}`, { method:'POST', body: JSON.stringify({...obj, status:'Direncanakan'}) });
