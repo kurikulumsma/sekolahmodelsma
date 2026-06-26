@@ -348,6 +348,7 @@ tr:hover td { background: #fafcff; }
 <script src="config.js"></script>
 <script src="auth.js"></script>
 <script src="sidebar.js"></script>
+<script src="datasm.js"></script>
 </head>
 <body>
 
@@ -449,6 +450,9 @@ tr:hover td { background: #fafcff; }
     <button class="tab-btn" onclick="switchTab('deactivated')" id="tabBtnDeactivated">
       Dinonaktifkan
       <span class="tab-badge red" id="tabBadgeDeactivated">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('cakupan')" id="tabBtnCakupan">
+      Cakupan
     </button>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding-bottom:1px">
       <button class="btn-export" onclick="exportExcel()">
@@ -561,6 +565,85 @@ tr:hover td { background: #fafcff; }
           <tr class="loading-row"><td colspan="6"><span class="spinner"></span>Memuat data...</td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- TAB: CAKUPAN -->
+  <div class="tab-panel" id="tabCakupan">
+    <!-- sub-tab -->
+    <div style="display:flex;gap:0;border-bottom:1.5px solid var(--border);margin-bottom:16px">
+      <button class="cakupan-subtab active" id="cstDinas" onclick="switchCakupan('dinas')" style="background:none;border:none;border-bottom:2.5px solid transparent;padding:9px 18px;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:-1.5px;transition:color .15s,border-color .15s">Dinas Pendidikan</button>
+      <button class="cakupan-subtab" id="cstBpmp"  onclick="switchCakupan('bpmp')"  style="background:none;border:none;border-bottom:2.5px solid transparent;padding:9px 18px;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:-1.5px;transition:color .15s,border-color .15s">BBPMP/BPMP</button>
+      <button class="cakupan-subtab" id="cstSekolah" onclick="switchCakupan('sekolah')" style="background:none;border:none;border-bottom:2.5px solid transparent;padding:9px 18px;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:-1.5px;transition:color .15s,border-color .15s">Sekolah</button>
+    </div>
+
+    <!-- sub-panel dinas -->
+    <div id="cakupanDinas">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" placeholder="Cari instansi..." oninput="filterCakupan('dinas',this.value)" id="searchCakupanDinas">
+        </div>
+        <select class="filter-select" onchange="filterCakupanStatus('dinas',this.value)" id="filterStatusDinas">
+          <option value="">Semua Status</option>
+          <option value="sudah">Sudah Daftar</option>
+          <option value="belum">Belum Daftar</option>
+        </select>
+        <span class="toolbar-right" id="countCakupanDinas"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instansi Dinas Pendidikan</th><th>Jumlah Akun</th><th>Status</th></tr></thead>
+          <tbody id="tbodyCakupanDinas"><tr class="loading-row"><td colspan="3"><span class="spinner"></span>Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- sub-panel bpmp -->
+    <div id="cakupanBpmp" style="display:none">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" placeholder="Cari instansi..." oninput="filterCakupan('bpmp',this.value)" id="searchCakupanBpmp">
+        </div>
+        <select class="filter-select" onchange="filterCakupanStatus('bpmp',this.value)" id="filterStatusBpmp">
+          <option value="">Semua Status</option>
+          <option value="sudah">Sudah Daftar</option>
+          <option value="belum">Belum Daftar</option>
+        </select>
+        <span class="toolbar-right" id="countCakupanBpmp"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instansi BBPMP/BPMP</th><th>Jumlah Akun</th><th>Status</th></tr></thead>
+          <tbody id="tbodyCakupanBpmp"><tr class="loading-row"><td colspan="3"><span class="spinner"></span>Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- sub-panel sekolah -->
+    <div id="cakupanSekolah" style="display:none">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" placeholder="Cari nama atau NPSN sekolah..." oninput="filterCakupan('sekolah',this.value)" id="searchCakupanSekolah">
+        </div>
+        <select class="filter-select" onchange="filterCakupanStatus('sekolah',this.value)" id="filterStatusSekolah">
+          <option value="">Semua Status</option>
+          <option value="sudah">Sudah Daftar</option>
+          <option value="belum">Belum Daftar</option>
+        </select>
+        <select class="filter-select" onchange="filterCakupanProv('sekolah',this.value)" id="filterProvSekolah">
+          <option value="">Semua Provinsi</option>
+        </select>
+        <span class="toolbar-right" id="countCakupanSekolah"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Sekolah Model</th><th>Provinsi</th><th>Jumlah Akun</th><th>Status</th></tr></thead>
+          <tbody id="tbodyCakupanSekolah"><tr class="loading-row"><td colspan="4"><span class="spinner"></span>Memuat...</td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </main>
@@ -686,6 +769,12 @@ async function init() {
   if (!isSuperadmin()) {
     const btn = document.getElementById('btnTambahAdmin');
     if (btn) btn.style.display = 'none';
+  }
+
+  // Tab Cakupan hanya untuk superadmin/admin (bukan bpmp)
+  if (!isSuperadmin() && !isAdmin()) {
+    const tabCakupanBtn = document.getElementById('tabBtnCakupan');
+    if (tabCakupanBtn) tabCakupanBtn.style.display = 'none';
   }
 
   // Untuk bpmp: sembunyikan export, tampilkan info wilayah
@@ -1004,14 +1093,167 @@ function filterDeactivated(q)    { filterDeactivatedQ = q.toLowerCase(); renderD
 
 // ── TABS ──────────────────────────────────────────────────
 function switchTab(tab) {
-  ['pending','approved','deactivated'].forEach(t => {
+  if (tab === 'cakupan' && !isSuperadmin() && !isAdmin()) return;
+  ['pending','approved','deactivated','cakupan'].forEach(t => {
     document.getElementById('tab' + cap(t))?.classList.remove('active');
     document.getElementById('tabBtn' + cap(t))?.classList.remove('active');
   });
   document.getElementById('tab' + cap(tab)).classList.add('active');
   document.getElementById('tabBtn' + cap(tab)).classList.add('active');
+  if (tab === 'cakupan') renderCakupanAll();
 }
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ── CAKUPAN ───────────────────────────────────────────────
+let activeCakupan = 'dinas';
+let cakupanFilter = { dinas: '', bpmp: '', sekolah: '' };
+let cakupanStatusFilter = { dinas: '', bpmp: '', sekolah: '' };
+let cakupanProvFilter = '';
+let cakupanRendered = false;
+
+function switchCakupan(type) {
+  activeCakupan = type;
+  ['dinas','bpmp','sekolah'].forEach(t => {
+    document.getElementById('cakupan' + cap(t)).style.display = (t === type) ? '' : 'none';
+    const btn = document.getElementById('cst' + cap(t));
+    btn.style.color = t === type ? 'var(--blue)' : 'var(--muted)';
+    btn.style.borderBottomColor = t === type ? 'var(--blue)' : 'transparent';
+    btn.style.fontWeight = t === type ? '700' : '600';
+  });
+}
+
+function filterCakupan(type, val) {
+  cakupanFilter[type] = val.toLowerCase();
+  renderCakupan(type);
+}
+
+function filterCakupanStatus(type, val) {
+  cakupanStatusFilter[type] = val;
+  renderCakupan(type);
+}
+
+function filterCakupanProv(type, val) {
+  cakupanProvFilter = val;
+  renderCakupan('sekolah');
+}
+
+function renderCakupanAll() {
+  if (!cakupanRendered) {
+    // Isi dropdown provinsi sekolah
+    const provs = [...new Set((BERANDA_SCHOOLS || []).map(s => s.provinsi))].sort();
+    const sel = document.getElementById('filterProvSekolah');
+    provs.forEach(p => { sel.innerHTML += `<option value="${p}">${p}</option>`; });
+    cakupanRendered = true;
+  }
+  renderCakupan('dinas');
+  renderCakupan('bpmp');
+  renderCakupan('sekolah');
+  // init active subtab style
+  switchCakupan(activeCakupan);
+}
+
+function renderCakupan(type) {
+  if (type === 'dinas') renderCakupanDinas();
+  else if (type === 'bpmp') renderCakupanBpmp();
+  else if (type === 'sekolah') renderCakupanSekolah();
+}
+
+function cakupanBadge(jumlah) {
+  if (jumlah > 0) return `<span class="badge badge-approved" style="font-size:11px">Sudah Daftar</span>`;
+  return `<span class="badge badge-rejected" style="font-size:11px">Belum Daftar</span>`;
+}
+
+function renderCakupanDinas() {
+  const q      = cakupanFilter.dinas;
+  const st     = cakupanStatusFilter.dinas;
+  // build map: provinsi → jumlah akun (pending+approved) dari user_db
+  const allUsers = [...allPending, ...allApproved, ...allDeactivated];
+  const dinasUsers = allUsers.filter(u => u.unsur === 'Dinas Pendidikan');
+  const countMap = {};
+  dinasUsers.forEach(u => {
+    const key = u.provinsi || '';
+    countMap[key] = (countMap[key] || 0) + 1;
+  });
+
+  let rows = DINAS_LIST.map(d => ({ label: d.label, value: d.value, jumlah: countMap[d.value] || 0 }));
+  if (q)  rows = rows.filter(r => r.label.toLowerCase().includes(q));
+  if (st === 'sudah') rows = rows.filter(r => r.jumlah > 0);
+  if (st === 'belum') rows = rows.filter(r => r.jumlah === 0);
+
+  document.getElementById('countCakupanDinas').textContent = rows.length + ' instansi';
+  const sudah = rows.filter(r => r.jumlah > 0).length;
+  const tbody = document.getElementById('tbodyCakupanDinas');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="empty-title">Tidak ada data</div></div></td></tr>`; return;
+  }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td><div class="user-name">${esc(r.label)}</div></td>
+      <td style="font-weight:600;color:var(--text)">${r.jumlah} akun</td>
+      <td>${cakupanBadge(r.jumlah)}</td>
+    </tr>`).join('');
+}
+
+function renderCakupanBpmp() {
+  const q  = cakupanFilter.bpmp;
+  const st = cakupanStatusFilter.bpmp;
+  const allUsers = [...allPending, ...allApproved, ...allDeactivated];
+  const bpmpUsers = allUsers.filter(u => u.unsur === 'BBPMP/BPMP');
+  const countMap = {};
+  bpmpUsers.forEach(u => { const key = u.provinsi || ''; countMap[key] = (countMap[key] || 0) + 1; });
+
+  let rows = BPMP_LIST.map(b => ({ label: b.label, value: b.value, jumlah: countMap[b.value] || 0 }));
+  if (q)  rows = rows.filter(r => r.label.toLowerCase().includes(q));
+  if (st === 'sudah') rows = rows.filter(r => r.jumlah > 0);
+  if (st === 'belum') rows = rows.filter(r => r.jumlah === 0);
+
+  document.getElementById('countCakupanBpmp').textContent = rows.length + ' instansi';
+  const tbody = document.getElementById('tbodyCakupanBpmp');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="empty-title">Tidak ada data</div></div></td></tr>`; return;
+  }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td><div class="user-name">${esc(r.label)}</div></td>
+      <td style="font-weight:600;color:var(--text)">${r.jumlah} akun</td>
+      <td>${cakupanBadge(r.jumlah)}</td>
+    </tr>`).join('');
+}
+
+function renderCakupanSekolah() {
+  const q    = cakupanFilter.sekolah;
+  const st   = cakupanStatusFilter.sekolah;
+  const prov = cakupanProvFilter;
+  const allUsers = [...allPending, ...allApproved, ...allDeactivated];
+  const sekolahUsers = allUsers.filter(u => u.unsur === 'Sekolah');
+  const countMap = {};
+  sekolahUsers.forEach(u => { if (u.npsn) countMap[u.npsn] = (countMap[u.npsn] || 0) + 1; });
+
+  let rows = (BERANDA_SCHOOLS || []).map(s => ({
+    npsn: s.npsn, nama: s.nama, provinsi: s.provinsi,
+    jumlah: countMap[s.npsn] || 0
+  }));
+  if (q)    rows = rows.filter(r => r.nama.toLowerCase().includes(q) || r.npsn.includes(q));
+  if (st === 'sudah') rows = rows.filter(r => r.jumlah > 0);
+  if (st === 'belum') rows = rows.filter(r => r.jumlah === 0);
+  if (prov) rows = rows.filter(r => r.provinsi === prov);
+
+  document.getElementById('countCakupanSekolah').textContent = rows.length + ' sekolah';
+  const tbody = document.getElementById('tbodyCakupanSekolah');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><div class="empty-title">Tidak ada data</div></div></td></tr>`; return;
+  }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>
+        <div class="user-name">${esc(r.nama)}</div>
+        <div class="user-email">${r.npsn}</div>
+      </td>
+      <td style="font-size:12px;color:var(--muted)">${esc(r.provinsi)}</td>
+      <td style="font-weight:600;color:var(--text)">${r.jumlah} akun</td>
+      <td>${cakupanBadge(r.jumlah)}</td>
+    </tr>`).join('');
+}
 
 // ── MODAL ─────────────────────────────────────────────────
 function openModal(id)  { document.getElementById(id).classList.add('show'); }
