@@ -568,15 +568,11 @@ tr:hover td { background: #fafcff; }
 <!-- ── MODAL TOLAK ── -->
 <div class="modal-overlay" id="modalTolak">
   <div class="modal">
-    <div class="modal-title">Tolak Pendaftaran</div>
-    <div class="modal-desc" id="modalTolakDesc">Pendaftaran dari <strong id="modalTolakNama"></strong> akan ditolak.</div>
-    <div class="modal-field">
-      <label>Catatan untuk pendaftar (opsional)</label>
-      <textarea id="modalTolakCatatan" placeholder="Alasan penolakan..."></textarea>
-    </div>
+    <div class="modal-title">Tolak &amp; Hapus Pendaftaran</div>
+    <div class="modal-desc">Pendaftaran dari <strong id="modalTolakNama"></strong> akan dihapus permanen. Email mereka bebas digunakan untuk daftar ulang dengan data yang benar.</div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modalTolak')">Batal</button>
-      <button class="btn-confirm red" onclick="confirmTolak()">Tolak Pendaftaran</button>
+      <button class="btn-confirm red" onclick="confirmTolak()">Tolak &amp; Hapus</button>
     </div>
   </div>
 </div>
@@ -901,15 +897,10 @@ function openTolak(id, nama) {
 }
 
 async function confirmTolak() {
-  const catatan = document.getElementById('modalTolakCatatan').value.trim();
-  const { error } = await getSb()
-    .from(TABLE_USERS)
-    .update({ status: 'rejected', catatan_admin: catatan || null, approved_by: currentUser.email, approved_at: new Date().toISOString() })
-    .eq('id', actionId);
-
+  const { error } = await getSb().rpc('hapus_user_ditolak', { target_row_id: actionId });
   closeModal('modalTolak');
   if (error) { showToast('Gagal menolak: ' + error.message, 'error'); return; }
-  showToast('Pendaftaran ditolak', 'success');
+  showToast('Pendaftaran ditolak & akun dihapus', 'success');
   await loadAll();
 }
 
@@ -996,11 +987,7 @@ function openHapus(id, nama) {
 }
 
 async function confirmHapus() {
-  const { error } = await getSb()
-    .from(TABLE_USERS)
-    .delete()
-    .eq('id', actionId);
-
+  const { error } = await getSb().rpc('hapus_user_ditolak', { target_row_id: actionId });
   closeModal('modalHapus');
   if (error) { showToast('Gagal menghapus: ' + error.message, 'error'); return; }
   showToast('Pengguna dihapus permanen', 'success');
