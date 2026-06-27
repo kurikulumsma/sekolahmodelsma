@@ -454,6 +454,9 @@ tr:hover td { background: #fafcff; }
     <button class="tab-btn" onclick="switchTab('cakupan')" id="tabBtnCakupan">
       Cakupan
     </button>
+    <button class="tab-btn" onclick="switchTab('aktivitas')" id="tabBtnAktivitas">
+      Aktivitas Login
+    </button>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding-bottom:1px">
       <button class="btn-export" onclick="exportExcel()">
         <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
@@ -646,7 +649,54 @@ tr:hover td { background: #fafcff; }
       </div>
     </div>
   </div>
+
+  <!-- TAB: AKTIVITAS LOGIN -->
+  <div class="tab-panel" id="tabAktivitas">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <input type="text" placeholder="Cari nama atau email..." oninput="filterAktivitas(this.value)" id="searchAktivitas">
+      </div>
+      <select class="filter-select" onchange="filterAktivitasRange(this.value)" id="filterAktivitasRange">
+        <option value="">Semua Waktu</option>
+        <option value="today">Hari Ini</option>
+        <option value="7">7 Hari Terakhir</option>
+        <option value="30">30 Hari Terakhir</option>
+      </select>
+      <span class="toolbar-right" id="countAktivitas"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pengguna</th>
+            <th>Instansi / Wilayah</th>
+            <th>Total Login</th>
+            <th>Login Terakhir</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyAktivitas">
+          <tr class="loading-row"><td colspan="5"><span class="spinner"></span>Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </main>
+
+<!-- ── MODAL RIWAYAT LOGIN ── -->
+<div class="modal-overlay" id="modalRiwayat">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">Riwayat Login</div>
+    <div class="modal-desc"><strong id="modalRiwayatNama"></strong></div>
+    <div id="modalRiwayatBody" style="max-height:360px;overflow-y:auto;margin-top:8px">
+      <div class="loading-row" style="padding:20px;text-align:center"><span class="spinner"></span>Memuat...</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalRiwayat')">Tutup</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── MODAL TOLAK ── -->
 <div class="modal-overlay" id="modalTolak">
@@ -771,10 +821,12 @@ async function init() {
     if (btn) btn.style.display = 'none';
   }
 
-  // Tab Cakupan hanya untuk superadmin/admin (bukan bpmp)
+  // Tab Cakupan & Aktivitas Login hanya untuk superadmin/admin (bukan bpmp)
   if (!isSuperadmin() && !isAdmin()) {
-    const tabCakupanBtn = document.getElementById('tabBtnCakupan');
-    if (tabCakupanBtn) tabCakupanBtn.style.display = 'none';
+    const tc = document.getElementById('tabBtnCakupan');
+    if (tc) tc.style.display = 'none';
+    const ta = document.getElementById('tabBtnAktivitas');
+    if (ta) ta.style.display = 'none';
   }
 
   // Untuk bpmp: sembunyikan export, tampilkan info wilayah
@@ -1093,16 +1145,103 @@ function filterDeactivated(q)    { filterDeactivatedQ = q.toLowerCase(); renderD
 
 // ── TABS ──────────────────────────────────────────────────
 function switchTab(tab) {
-  if (tab === 'cakupan' && !isSuperadmin() && !isAdmin()) return;
-  ['pending','approved','deactivated','cakupan'].forEach(t => {
+  if ((tab === 'cakupan' || tab === 'aktivitas') && !isSuperadmin() && !isAdmin()) return;
+  ['pending','approved','deactivated','cakupan','aktivitas'].forEach(t => {
     document.getElementById('tab' + cap(t))?.classList.remove('active');
     document.getElementById('tabBtn' + cap(t))?.classList.remove('active');
   });
   document.getElementById('tab' + cap(tab)).classList.add('active');
   document.getElementById('tabBtn' + cap(tab)).classList.add('active');
-  if (tab === 'cakupan') renderCakupanAll();
+  if (tab === 'cakupan')   renderCakupanAll();
+  if (tab === 'aktivitas') loadAktivitas();
 }
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ── AKTIVITAS LOGIN ───────────────────────────────────────
+let aktivitasData = [];
+let aktivitasFilterQ = '';
+let aktivitasRange = '';
+let aktivitasLoaded = false;
+
+async function loadAktivitas() {
+  if (aktivitasLoaded) { renderAktivitas(); return; }
+  const tbody = document.getElementById('tbodyAktivitas');
+  const { data, error } = await getSb()
+    .from(TABLE_USERS)
+    .select('user_id,nama,email,unsur,provinsi,nama_sekolah,login_count,last_login')
+    .not('last_login', 'is', null)
+    .order('last_login', { ascending: false });
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-title">Gagal memuat: ${esc(error.message)}</div></div></td></tr>`;
+    return;
+  }
+  aktivitasData = data || [];
+  aktivitasLoaded = true;
+  renderAktivitas();
+}
+
+function filterAktivitas(q)       { aktivitasFilterQ = q.toLowerCase(); renderAktivitas(); }
+function filterAktivitasRange(v)  { aktivitasRange = v; renderAktivitas(); }
+
+function fmtTanggal(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('id-ID', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function renderAktivitas() {
+  let data = aktivitasData.slice();
+  if (aktivitasFilterQ) data = data.filter(u =>
+    u.nama?.toLowerCase().includes(aktivitasFilterQ) ||
+    u.email?.toLowerCase().includes(aktivitasFilterQ));
+  if (aktivitasRange) {
+    const now = Date.now();
+    let batas;
+    if (aktivitasRange === 'today') {
+      const t = new Date(); t.setHours(0,0,0,0); batas = t.getTime();
+    } else {
+      batas = now - parseInt(aktivitasRange) * 86400000;
+    }
+    data = data.filter(u => u.last_login && new Date(u.last_login).getTime() >= batas);
+  }
+  document.getElementById('countAktivitas').textContent = data.length + ' pengguna';
+  const tbody = document.getElementById('tbodyAktivitas');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-title">Belum ada aktivitas login</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map(u => `
+    <tr>
+      <td>
+        <div class="user-name">${esc(u.nama || '—')}</div>
+        <div class="user-email">${esc(u.email || '')}</div>
+      </td>
+      <td style="font-size:12px;color:var(--muted)">${esc(u.nama_sekolah || u.provinsi || u.unsur || '—')}</td>
+      <td style="font-weight:700;color:var(--text)">${u.login_count || 0}<span style="font-weight:500;color:var(--muted)">x</span></td>
+      <td style="font-size:12px;color:var(--muted)">${fmtTanggal(u.last_login)}</td>
+      <td><button class="btn-export" style="padding:5px 10px" onclick="lihatRiwayat('${u.user_id}','${esc((u.nama||'').replace(/'/g,"\\'"))}')">Riwayat</button></td>
+    </tr>`).join('');
+}
+
+async function lihatRiwayat(userId, nama) {
+  document.getElementById('modalRiwayatNama').textContent = nama || '—';
+  const body = document.getElementById('modalRiwayatBody');
+  body.innerHTML = `<div class="loading-row" style="padding:20px;text-align:center"><span class="spinner"></span>Memuat...</div>`;
+  openModal('modalRiwayat');
+  const { data, error } = await getSb()
+    .from('login_log')
+    .select('login_at')
+    .eq('user_id', userId)
+    .order('login_at', { ascending: false })
+    .limit(100);
+  if (error) { body.innerHTML = `<div style="padding:16px;color:var(--muted);font-size:13px">Gagal memuat riwayat.</div>`; return; }
+  if (!data || !data.length) { body.innerHTML = `<div style="padding:16px;color:var(--muted);font-size:13px">Belum ada riwayat.</div>`; return; }
+  body.innerHTML = data.map((r,i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border)">
+      <div style="width:22px;height:22px;border-radius:50%;background:#eef3fb;color:var(--blue);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+      <div style="font-size:12.5px;color:var(--text)">${fmtTanggal(r.login_at)}</div>
+    </div>`).join('');
+}
 
 // ── CAKUPAN ───────────────────────────────────────────────
 let activeCakupan = 'dinas';

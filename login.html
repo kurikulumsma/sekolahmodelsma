@@ -858,6 +858,7 @@ async function doLogin() {
       unsur: profil.unsur || '', provinsi: profil.provinsi || '',
       npsn: profil.npsn || '', nama_sekolah: profil.nama_sekolah || ''
     }));
+    try { await sb.rpc('catat_login'); } catch(_) {}
     window.location.href = 'beranda.html';
   } catch(e) {
     showErr(err, e.message === 'Invalid login credentials' ? 'Email atau password salah.' : e.message);
