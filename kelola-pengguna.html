@@ -793,7 +793,12 @@ let filterDeactivatedQ = '';
 (function() {
   const s = document.createElement('script');
   s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-  s.onload = init;
+  s.onload = () => {
+    const x = document.createElement('script');
+    x.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+    x.onload = init;
+    document.head.appendChild(x);
+  };
   document.head.appendChild(s);
 })();
 
@@ -1505,30 +1510,88 @@ async function confirmTambahAdmin() {
 
 // ── EXPORT EXCEL ──────────────────────────────────────────
 function exportExcel() {
-  const allData = [...allPending, ...allApproved];
+  const allData = [...allPending, ...allApproved, ...allDeactivated];
   if (!allData.length) { showToast('Tidak ada data untuk diekspor', ''); return; }
 
-  const rows = [['Nama', 'Email', 'Instansi', 'Jabatan', 'Unsur', 'Wilayah/Sekolah', 'NPSN', 'Status']];
-  allData.forEach(u => {
+  const wb = XLSX.utils.book_new();
+
+  // ── Sheet 1: Seluruh Akun ──
+  const akunRows = allData.map(u => {
     let wilayah = '';
     if (u.unsur === 'Sekolah')          wilayah = u.nama_sekolah || '';
     else if (u.unsur === 'BBPMP/BPMP') wilayah = 'BPMP ' + (u.bpmp || '');
     else                                wilayah = u.provinsi || '';
-    rows.push([
-      u.nama || '', u.email || '', u.instansi || '', u.jabatan || '',
-      u.unsur || '', wilayah, u.npsn || '', u.status || ''
-    ]);
+    return {
+      'Nama':              u.nama || '',
+      'Email':             u.email || '',
+      'Instansi':          u.instansi || '',
+      'Jabatan':           u.jabatan || '',
+      'Unsur':             u.unsur || '',
+      'Wilayah/Sekolah':   wilayah,
+      'NPSN':              u.npsn || '',
+      'Status':            u.status || '',
+      'Role':              u.role || '',
+      'Tanggal Daftar':    u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID') : ''
+    };
   });
+  const ws1 = XLSX.utils.json_to_sheet(akunRows);
+  autoWidth(ws1, akunRows);
+  XLSX.utils.book_append_sheet(wb, ws1, 'Seluruh Akun');
 
-  // Buat CSV dengan BOM UTF-8 agar Excel baca benar
-  const bom = '﻿';
-  const csv = bom + rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'pengguna-sekolah-model-2026.csv';
-  a.click(); URL.revokeObjectURL(url);
-  showToast('File berhasil diunduh', 'success');
+  // ── Sheet 2: Cakupan Dinas ──
+  const dinasUsers = allData.filter(u => u.unsur === 'Dinas Pendidikan');
+  const dinasMap = {};
+  dinasUsers.forEach(u => { const k = u.provinsi || ''; dinasMap[k] = (dinasMap[k] || 0) + 1; });
+  const dinasRows = DINAS_LIST.map(d => ({
+    'Instansi Dinas Pendidikan': d.label,
+    'Jumlah Akun':               dinasMap[d.value] || 0,
+    'Status':                    (dinasMap[d.value] || 0) > 0 ? 'Sudah Daftar' : 'Belum Daftar'
+  }));
+  const ws2 = XLSX.utils.json_to_sheet(dinasRows);
+  autoWidth(ws2, dinasRows);
+  XLSX.utils.book_append_sheet(wb, ws2, 'Cakupan Dinas');
+
+  // ── Sheet 3: Cakupan BPMP ──
+  const bpmpUsers = allData.filter(u => u.unsur === 'BBPMP/BPMP');
+  const bpmpMap = {};
+  bpmpUsers.forEach(u => { const k = u.provinsi || ''; bpmpMap[k] = (bpmpMap[k] || 0) + 1; });
+  const bpmpRows = BPMP_LIST.map(b => ({
+    'Instansi BBPMP/BPMP': b.label,
+    'Jumlah Akun':         bpmpMap[b.value] || 0,
+    'Status':              (bpmpMap[b.value] || 0) > 0 ? 'Sudah Daftar' : 'Belum Daftar'
+  }));
+  const ws3 = XLSX.utils.json_to_sheet(bpmpRows);
+  autoWidth(ws3, bpmpRows);
+  XLSX.utils.book_append_sheet(wb, ws3, 'Cakupan BPMP');
+
+  // ── Sheet 4: Cakupan Sekolah ──
+  const sekolahUsers = allData.filter(u => u.unsur === 'Sekolah');
+  const sekolahMap = {};
+  sekolahUsers.forEach(u => { if (u.npsn) sekolahMap[u.npsn] = (sekolahMap[u.npsn] || 0) + 1; });
+  const sekolahRows = (BERANDA_SCHOOLS || []).map(s => ({
+    'Nama Sekolah': s.nama,
+    'NPSN':         s.npsn,
+    'Provinsi':     s.provinsi,
+    'Jumlah Akun':  sekolahMap[s.npsn] || 0,
+    'Status':       (sekolahMap[s.npsn] || 0) > 0 ? 'Sudah Daftar' : 'Belum Daftar'
+  }));
+  const ws4 = XLSX.utils.json_to_sheet(sekolahRows);
+  autoWidth(ws4, sekolahRows);
+  XLSX.utils.book_append_sheet(wb, ws4, 'Cakupan Sekolah');
+
+  // ── Download ──
+  XLSX.writeFile(wb, 'pengguna-sekolah-model-2026.xlsx');
+  showToast('File Excel berhasil diunduh', 'success');
+}
+
+function autoWidth(ws, data) {
+  if (!data.length) return;
+  const cols = Object.keys(data[0]);
+  ws['!cols'] = cols.map(k => {
+    let max = k.length;
+    data.forEach(r => { const v = String(r[k] ?? ''); if (v.length > max) max = v.length; });
+    return { wch: Math.min(max + 2, 50) };
+  });
 }
 
 // badge, sidebar, logout → sidebar.js
