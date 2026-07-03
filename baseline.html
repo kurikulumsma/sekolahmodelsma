@@ -505,6 +505,9 @@ td.td-nama { font-weight: 600; color: var(--navy); }
       <select class="filter-select" id="baselineProvFilter" onchange="filterBaseline()">
         <option value="">Semua Provinsi</option>
       </select>
+      <select class="filter-select" id="baselineMitraFilter" onchange="filterBaseline()">
+        <option value="">Semua Mitra</option>
+      </select>
       <select class="filter-select" id="baselineMapelKKAFilter" onchange="filterBaseline()">
         <option value="">Semua Mapel KKA</option>
         <option value="sudah">Sudah</option>
@@ -683,7 +686,7 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 // SUPA_URL/KEY → config.js
 const SUPA_URL_REST = SUPA_URL + '/rest/v1/' + TABLE_SCHOOLS;
 const SUPA_AUTH_KEY = SUPA_KEY;
-const SUPA_SELECT = 'npsn,nama,provinsi,kabupaten_kota,status_sekolah,status_koding_ka,profil_pm,profil_kka,skor_pm,skor_kka,pm_1_1_1,pm_1_1_2,pm_1_1_3,pm_1_1_4,pm_1_1_5,pm_1_1_6,pm_2_1_1,pm_2_1_2,pm_2_1_3,pm_2_2_1,pm_2_2_2,pm_2_3_1,pm_2_3_2,pm_3_1_1,pm_3_1_2,pm_3_1_3,pm_3_1_4,pm_3_2_1,pm_3_2_2,pm_3_2_3,pm_3_3_1,pm_3_3_2,pm_3_4_1,pm_3_4_2,kka_1_1_1,kka_2_1_1,kka_2_1_2,kka_2_2_1,kka_3_1_1,kka_3_1_2,kka_3_2_1,kka_3_2_2,kka_3_3_1,kka_3_4_1,kka_3_4_2';
+const SUPA_SELECT = 'npsn,nama,mitra,provinsi,kabupaten_kota,status_sekolah,status_koding_ka,profil_pm,profil_kka,skor_pm,skor_kka,pm_1_1_1,pm_1_1_2,pm_1_1_3,pm_1_1_4,pm_1_1_5,pm_1_1_6,pm_2_1_1,pm_2_1_2,pm_2_1_3,pm_2_2_1,pm_2_2_2,pm_2_3_1,pm_2_3_2,pm_3_1_1,pm_3_1_2,pm_3_1_3,pm_3_1_4,pm_3_2_1,pm_3_2_2,pm_3_2_3,pm_3_3_1,pm_3_3_2,pm_3_4_1,pm_3_4_2,kka_1_1_1,kka_2_1_1,kka_2_1_2,kka_2_2_1,kka_3_1_1,kka_3_1_2,kka_3_2_1,kka_3_2_2,kka_3_3_1,kka_3_4_1,kka_3_4_2';
 const PAGE_SIZE = 20;
 let ALL_SCHOOLS  = [];
 let baselinePage = 1;
@@ -994,6 +997,16 @@ function populateFilters() {
   const sel = document.getElementById('baselineProvFilter');
   sel.innerHTML = '<option value="">Semua Provinsi</option>' +
     provs.map(v => `<option value="${v}">${v}</option>`).join('');
+
+  // Filter mitra: tampil hanya untuk yang boleh lihat semua (admin/superadmin),
+  // dan disembunyikan kalau yang login adalah role mitra (sudah auto-terfilter).
+  const selMitra = document.getElementById('baselineMitraFilter');
+  if (selMitra) {
+    selMitra.style.display = canViewAll() ? '' : 'none';
+    const mitras = [...new Set(ALL_SCHOOLS.map(r => r.mitra).filter(Boolean))].sort();
+    selMitra.innerHTML = '<option value="">Semua Mitra</option>' +
+      mitras.map(v => `<option value="${v}">${v}</option>`).join('');
+  }
 }
 
 function matchProfil(val, filterVal) {
@@ -1005,12 +1018,14 @@ function matchProfil(val, filterVal) {
 function getBaselineFiltered() {
   const q      = (document.getElementById('baselineSearch')?.value || '').toLowerCase();
   const prov   = document.getElementById('baselineProvFilter')?.value || '';
+  const mitra  = document.getElementById('baselineMitraFilter')?.value || '';
   const fPM    = document.getElementById('baselineProfilPMFilter')?.value || '';
   const fKKA   = document.getElementById('baselineProfilKKAFilter')?.value || '';
   const fMapel = document.getElementById('baselineMapelKKAFilter')?.value || '';
   return ALL_SCHOOLS.filter(r =>
     (!q      || r.nama.toLowerCase().includes(q) || String(r.npsn).includes(q)) &&
     (!prov   || r.provinsi === prov) &&
+    (!mitra  || r.mitra === mitra) &&
     matchProfil(r.profil_pm, fPM) &&
     matchProfil(r.profil_kka, fKKA) &&
     (!fMapel || (r.status_pel||'').toLowerCase().trim() === fMapel)
@@ -1059,9 +1074,11 @@ function filterBaseline()      { baselinePage=1; renderBaselineTable(); }
 function resetBaselineFilter() {
   document.getElementById('baselineSearch').value = '';
   document.getElementById('baselineProvFilter').value = '';
+  const fMitra = document.getElementById('baselineMitraFilter');
   const fPM = document.getElementById('baselineProfilPMFilter');
   const fKKA = document.getElementById('baselineProfilKKAFilter');
   const fMapel = document.getElementById('baselineMapelKKAFilter');
+  if (fMitra) fMitra.value = '';
   if (fPM) fPM.value = '';
   if (fKKA) fKKA.value = '';
   if (fMapel) fMapel.value = '';

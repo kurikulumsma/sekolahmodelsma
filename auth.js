@@ -8,6 +8,7 @@
  *   bpmp        — view wilayahnya + approve dinas/sekolah wilayahnya
  *   dinas       — view sesuai provinsi/kabkot-nya (kolom: provinsi)
  *   sekolah     — view data sekolahnya saja (kolom: npsn)
+ *   mitra       — view sekolah naungannya saja (kolom: mitra), view only
  *
  * localStorage key: 'sb_user'
  * {
@@ -16,6 +17,7 @@
  *   provinsi,  // diisi untuk role: dinas, bpmp
  *   npsn,      // diisi untuk role: sekolah
  *   nama_sekolah, // diisi untuk role: sekolah
+ *   mitra,     // diisi untuk role: mitra (nama mitra, harus cocok kolom `mitra` di tabel sekolah)
  * }
  *
  * Kolom `bpmp` TIDAK ADA lagi — sudah digabung ke `provinsi`.
@@ -176,6 +178,20 @@ const BPMP_CAKUPAN = {
   'Sumatera Utara':          ['Sumatera Utara'],
 };
 
+/**
+ * Daftar mitra pembina (organisasi mitra yang mengusulkan sekolah).
+ * value = yang harus sama persis dengan isi kolom `mitra` di tabel
+ *   sekolah_model_2026 DAN kolom `mitra` di tabel user_db_sekmodel.
+ */
+const MITRA_LIST = [
+  'Majelis Pendidikan Kristen Indonesia (MPKI)',
+  'PGRI',
+  "LP Darul Ma'arif NU",
+  'JSIT',
+  'Muhammadiyah',
+  'Majelis Nasional Pendidikan Katolik (MNPK)',
+];
+
 /** Label display per role (untuk badge sidebar) */
 const ROLE_LABEL = {
   superadmin: 'Super Admin',
@@ -183,6 +199,7 @@ const ROLE_LABEL = {
   bpmp:       'BBPMP/BPMP',
   dinas:      'Dinas Pendidikan',
   sekolah:    'Sekolah',
+  mitra:      'Mitra Pembina',
 };
 
 // ─── Session ──────────────────────────────────────────────────────────────────
@@ -215,6 +232,7 @@ function isAdmin()      { return getRole() === 'admin'; }
 function isBpmp()       { return getRole() === 'bpmp'; }
 function isDinas()      { return getRole() === 'dinas'; }
 function isSekolah()    { return getRole() === 'sekolah'; }
+function isMitra()      { return getRole() === 'mitra'; }
 
 /**
  * Boleh akses halaman kelola pengguna.
@@ -243,7 +261,7 @@ function canEdit() {
 
 /**
  * Filter array sekolah sesuai role & wilayah user.
- * @param {Array}  schools — minimal punya: { provinsi, kabupaten_kota, npsn }
+ * @param {Array}  schools — minimal punya: { provinsi, kabupaten_kota, npsn, mitra }
  * @param {Object} [user]  — opsional, default: getUser()
  * @returns {Array}
  */
@@ -271,6 +289,11 @@ function filterSchoolsByRole(schools, user) {
   if (role === 'sekolah') {
     const npsn = String(u.npsn || '');
     return schools.filter(s => String(s.npsn) === npsn);
+  }
+
+  if (role === 'mitra') {
+    const mitra = u.mitra || '';
+    return schools.filter(s => s.mitra === mitra);
   }
 
   return [];

@@ -552,6 +552,7 @@ html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-si
             <option value="Dinas Pendidikan">Dinas Pendidikan</option>
             <option value="BBPMP/BPMP">BBPMP/BPMP</option>
             <option value="Sekolah">Sekolah</option>
+            <option value="Mitra">Mitra</option>
           </select>
           <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
         </div>
@@ -607,6 +608,24 @@ html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-si
         <input type="hidden" id="daftarNamaSekolah">
         <input type="hidden" id="daftarProvinsiSekolah">
         <div id="sekolahTerpilih" style="display:none; margin-top:6px; padding:8px 10px; background:#eef4ff; border-radius:8px; font-size:12px; color:var(--blue-lt); font-weight:600;"></div>
+      </div>
+
+      <!-- 5e. Nama Mitra -->
+      <div class="field" id="fieldMitra" style="display:none">
+        <label>Nama Mitra</label>
+        <div class="input-wrap">
+          <svg class="il" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+          <select id="daftarMitra">
+            <option value="">-- Pilih Mitra --</option>
+            <option value="Majelis Pendidikan Kristen Indonesia (MPKI)">Majelis Pendidikan Kristen Indonesia (MPKI)</option>
+            <option value="PGRI">PGRI</option>
+            <option value="LP Darul Ma'arif NU">LP Darul Ma'arif NU</option>
+            <option value="JSIT">JSIT</option>
+            <option value="Muhammadiyah">Muhammadiyah</option>
+            <option value="Majelis Nasional Pendidikan Katolik (MNPK)">Majelis Nasional Pendidikan Katolik (MNPK)</option>
+          </select>
+          <svg class="select-arrow" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+        </div>
       </div>
 
       <!-- 6. Jabatan -->
@@ -790,6 +809,16 @@ const BPMP_LIST = [
   { label: 'BPMP Prov. Sumatera Utara',            value: 'Sumatera Utara' },
 ];
 
+// Mitra pembina — value harus sama persis dgn kolom `mitra` di tabel
+const MITRA_LIST = [
+  'JSIT',
+  "LP Darul Ma'arif NU",
+  'Majelis Nasional Pendidikan Katolik (MNPK)',
+  'Majelis Pendidikan Kristen Indonesia (MPKI)',
+  'Muhammadiyah',
+  'PGRI',
+];
+
 // ── Supabase (lazy-load) ──────────────────────────────────
 const SUPA_URL = 'https://lusytejskqevwyyffeue.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1c3l0ZWpza3Fldnd5eWZmZXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzUyODksImV4cCI6MjA5MTcxMTI4OX0.LKCfdnlB8TQTeB7NuZ1DXwSkCI9DK3WlD4xk-jzUTPU';
@@ -845,7 +874,7 @@ async function doLogin() {
 
     const { data: profil, error: ep } = await sb
       .from('user_db_sekmodel')
-      .select('status,nama,role,unsur,provinsi,npsn,nama_sekolah')
+      .select('status,nama,role,unsur,provinsi,npsn,nama_sekolah,mitra')
       .eq('user_id', data.user.id)
       .single();
 
@@ -856,7 +885,8 @@ async function doLogin() {
     localStorage.setItem('sb_user', JSON.stringify({
       email, nama: profil.nama, id: data.user.id, role: profil.role,
       unsur: profil.unsur || '', provinsi: profil.provinsi || '',
-      npsn: profil.npsn || '', nama_sekolah: profil.nama_sekolah || ''
+      npsn: profil.npsn || '', nama_sekolah: profil.nama_sekolah || '',
+      mitra: profil.mitra || ''
     }));
     try { await sb.rpc('catat_login'); } catch(_) {}
     window.location.href = 'beranda.html';
@@ -908,11 +938,14 @@ function onUnsurChange() {
   document.getElementById('fieldBpmp').style.display         = unsur === 'BBPMP/BPMP'       ? 'block' : 'none';
   document.getElementById('fieldProvSekolah').style.display  = unsur === 'Sekolah'           ? 'block' : 'none';
   document.getElementById('fieldPilihSekolah').style.display = 'none';
+  document.getElementById('fieldMitra').style.display        = unsur === 'Mitra'             ? 'block' : 'none';
   // Reset nilai saat ganti unsur
   const selDinas = document.getElementById('daftarDinas');
   const selBpmp  = document.getElementById('daftarBpmp');
+  const selMitra = document.getElementById('daftarMitra');
   if (selDinas) selDinas.value = '';
   if (selBpmp)  selBpmp.value  = '';
+  if (selMitra) selMitra.value = '';
   if (unsur === 'Sekolah') loadProvinsiSekolah();
   clearNpsn();
 }
@@ -1006,6 +1039,7 @@ async function doDaftar() {
   const npsn     = document.getElementById('daftarNpsn')?.value   || '';
   const namaSekolah     = document.getElementById('daftarNamaSekolah')?.value    || '';
   const provinsiSekolah = document.getElementById('daftarProvinsiSekolah')?.value || '';
+  const mitraVal = document.getElementById('daftarMitra')?.value || '';
 
   // Validasi wajib
   if (!nama || !email || !pw || !jabatan || !unsur) { showErr(err, 'Semua field wajib diisi.'); return; }
@@ -1013,6 +1047,7 @@ async function doDaftar() {
   if (unsur === 'Dinas Pendidikan' && !dinasVal)    { showErr(err, 'Pilih instansi Dinas Pendidikan.'); return; }
   if (unsur === 'BBPMP/BPMP'       && !bpmpVal)     { showErr(err, 'Pilih instansi BBPMP/BPMP.'); return; }
   if (unsur === 'Sekolah'          && !npsn)        { showErr(err, 'Pilih sekolah terlebih dahulu.'); return; }
+  if (unsur === 'Mitra'            && !mitraVal)    { showErr(err, 'Pilih nama mitra terlebih dahulu.'); return; }
 
   // Tentukan nilai kolom provinsi & instansi (untuk display badge)
   let provinsi = null;
@@ -1026,6 +1061,8 @@ async function doDaftar() {
   } else if (unsur === 'Sekolah') {
     provinsi = provinsiSekolah;
     instansi = namaSekolah;
+  } else if (unsur === 'Mitra') {
+    instansi = mitraVal;
   }
 
   // Tentukan role v2
@@ -1034,6 +1071,7 @@ async function doDaftar() {
     'Dinas Pendidikan':'dinas',
     'BBPMP/BPMP':      'bpmp',
     'Sekolah':         'sekolah',
+    'Mitra':           'mitra',
   };
   const role = roleMap[unsur] || 'direktorat';
 
@@ -1052,6 +1090,7 @@ async function doDaftar() {
       nama, email, instansi, jabatan, unsur, role, provinsi,
       npsn:         unsur === 'Sekolah' ? npsn      : null,
       nama_sekolah: unsur === 'Sekolah' ? namaSekolah : null,
+      mitra:        unsur === 'Mitra'   ? mitraVal   : null,
       status: 'pending',
     });
     if (insertErr) throw insertErr;

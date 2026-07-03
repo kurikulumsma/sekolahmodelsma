@@ -931,7 +931,7 @@ async function loadData() {
 
   try {
     const provFilter = loggedIn ? getProvFilter() : null;
-    let url = `${TABLE}?select=*&order=id.asc`;
+    let url = `${TABLE}?select=*&order=provinsi.asc`;
     if (provFilter) url += `&provinsi=eq.${encodeURIComponent(provFilter)}`;
     ALL = await sbFetch(url);
     if (!ALL) ALL = [];
@@ -967,7 +967,7 @@ function applyRoleUI() {
   const thAksi = document.getElementById('thAksi');
   if (thAksi) thAksi.style.display = add ? '' : 'none';
   const fltProvEl = document.getElementById('fltProv');
-  if (fltProvEl && !canViewAll()) fltProvEl.closest('.fg').style.display = 'none';
+  if (fltProvEl && !canViewAll() && !isMitra()) fltProvEl.closest('.fg').style.display = 'none';
 }
 
 // ── SAMPLE DATA (fallback 5 baris) ───────────────────────────────────────────

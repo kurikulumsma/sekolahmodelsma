@@ -964,7 +964,7 @@ function applyRoleUI() {
   const thAksi = document.getElementById('thAksi');
   if (thAksi) thAksi.style.display = add ? '' : 'none';
   const fltProvEl = document.getElementById('fltProv');
-  if (fltProvEl && !canViewAll()) fltProvEl.closest('.fg').style.display = 'none';
+  if (fltProvEl && !canViewAll() && !isMitra()) fltProvEl.closest('.fg').style.display = 'none';
 }
 
 // ── SAMPLE DATA (fallback 5 baris) ───────────────────────────────────────────
