@@ -957,7 +957,7 @@ function showGuest() {
 async function loadData() {
   try {
     const res = await fetch(
-      `${SUPA_URL_REST}?select=${SUPA_SELECT}&order=nama.asc`,
+      `${SUPA_URL_REST}?select=${SUPA_SELECT}&order=provinsi.asc,nama.asc`,
       { headers: { 'apikey': SUPA_AUTH_KEY, 'Authorization': 'Bearer ' + SUPA_AUTH_KEY } }
     );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -998,11 +998,10 @@ function populateFilters() {
   sel.innerHTML = '<option value="">Semua Provinsi</option>' +
     provs.map(v => `<option value="${v}">${v}</option>`).join('');
 
-  // Filter mitra: tampil hanya untuk yang boleh lihat semua (admin/superadmin),
-  // dan disembunyikan kalau yang login adalah role mitra (sudah auto-terfilter).
+  // Filter mitra: selalu disembunyikan (termasuk untuk admin/superadmin).
   const selMitra = document.getElementById('baselineMitraFilter');
   if (selMitra) {
-    selMitra.style.display = canViewAll() ? '' : 'none';
+    selMitra.style.display = 'none';
     const mitras = [...new Set(ALL_SCHOOLS.map(r => r.mitra).filter(Boolean))].sort();
     selMitra.innerHTML = '<option value="">Semua Mitra</option>' +
       mitras.map(v => `<option value="${v}">${v}</option>`).join('');
