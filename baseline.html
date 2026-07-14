@@ -92,7 +92,8 @@ main { margin-left: var(--sidebar-w); flex: 1; padding: 26px 28px 40px; overflow
 
 /* ── SUMMARY CHARTS ── */
 .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-.summary-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 18px 20px; animation: fadeUp 0.35s ease both; }
+.summary-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 18px 20px; animation: fadeUp 0.35s ease both; transition: border-color 0.15s; }
+.summary-card:hover { border-color: var(--blue-lt); }
 .summary-card-title { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
 .summary-card-sub   { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
 .summary-card-icon  { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-bottom: 12px; }
@@ -116,7 +117,8 @@ main { margin-left: var(--sidebar-w); flex: 1; padding: 26px 28px 40px; overflow
 .pie-tooltip.show { opacity: 1; }
 
 /* ── MAIN TABLE ── */
-.panel { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; animation: fadeUp 0.35s ease both; }
+.panel { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; animation: fadeUp 0.35s ease both; transition: border-color 0.15s; }
+.panel:hover { border-color: var(--blue-lt); }
 .panel-header { padding: 14px 16px 0; }
 .panel-title { font-size: 13px; font-weight: 700; color: var(--navy); }
 .panel-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
@@ -155,22 +157,20 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 .pager button.cur { background: var(--blue); color: #fff; border-color: var(--blue); }
 .pager button:disabled { opacity: 0.35; cursor: default; }
 
-/* ── MODAL ── */
-.modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(10,31,60,0.55); z-index: 500; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
-.modal-backdrop.open { display: flex; }
-.modal { background: var(--surface); border-radius: 16px; width: 100%; max-width: 860px; box-shadow: 0 20px 60px rgba(10,31,60,0.25); animation: fadeUp 0.2s ease both; margin: auto; }
-.modal-head { background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%); border-radius: 16px 16px 0 0; padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.modal-head-info { flex: 1; }
-.modal-head-npsn { font-size: 11px; font-family: monospace; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
-.modal-head-nama { font-size: 16px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 6px; }
-.modal-head-meta { display: flex; gap: 8px; flex-wrap: wrap; }
-.modal-meta-tag { font-size: 11px; padding: 2px 10px; border-radius: 20px; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); font-weight: 500; }
-.modal-close { background: rgba(255,255,255,0.12); border: none; border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; flex-shrink: 0; transition: background 0.15s; }
-.modal-close:hover { background: rgba(255,255,255,0.22); }
-.modal-body { padding: 20px 24px 24px; }
+/* ── DETAIL VIEW — muncul di bawah tabel (drill-down), bukan popup ── */
+/* Selalu biru navy, sama untuk drill-down admin maupun akun sekolah — sama seperti hero-school-badge di rtl.html */
+.detail-header { margin: 14px 16px 0; padding: 16px 18px; border-radius: 14px; background: linear-gradient(115deg, var(--navy-mid) 0%, #1a4a8f 60%, #1e5fbb 100%); position: relative; overflow: hidden; }
+.detail-header::before { content: ''; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.05); pointer-events: none; }
+.detail-header-info { min-width: 200px; }
+.detail-hero-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-lt); margin-bottom: 5px; }
+.detail-npsn { font-size: 11px; font-family: monospace; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+.detail-nama { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 8px; }
+.detail-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.detail-meta-tag { font-size: 11px; padding: 2px 10px; border-radius: 20px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); font-weight: 600; }
+.detail-body { padding: 20px 24px 24px; }
 
 /* Profil cards */
-.skor-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.skor-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
 .skor-card { border-radius: 10px; padding: 16px 18px; border: 1.5px solid var(--border); }
 .skor-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
 .skor-card-profil { margin-bottom: 8px; }
@@ -179,16 +179,8 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 .skor-card-skor-label { font-size: 10px; color: var(--muted); font-weight: 600; }
 .skor-card-skor-val { font-size: 13px; font-weight: 800; color: var(--blue-lt); }
 
-/* Modal tabs */
-.modal-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
-.modal-tab { padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); font-family: inherit; transition: all 0.15s; }
-.modal-tab:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
-.modal-tab.active { background: var(--blue-lt); border-color: var(--blue-lt); color: #fff; }
-.modal-pane { display: none; }
-.modal-pane.active { display: block; }
-
-/* L1 section */
-.l1-section { margin-bottom: 20px; }
+/* L1 section — baris per peran (Murid/Guru/Kasek), PM & KKA disandingkan */
+.l1-section { margin-bottom: 22px; }
 .l1-header { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; }
 .l1-header-murid { background: #e8f0fb; }
 .l1-header-guru  { background: #e0f0e9; }
@@ -201,16 +193,35 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 .l1-title-murid { color: #1a4a8a; }
 .l1-title-guru  { color: #1a6b3e; }
 .l1-title-kasek { color: #8a5c00; }
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.role-col-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+.role-col-tag-pm  { background: #e8f0fb; color: #1a4a8a; }
+.role-col-tag-kka { background: #fef3d7; color: #8a5c00; }
 .l2-labels { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .l2-label-pill { font-size: 10px; font-weight: 600; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; text-transform: uppercase; letter-spacing: 0.05em; }
-.radar-wrap { width: 100%; max-width: 420px; margin: 0 auto; aspect-ratio: 1; position: relative; }
+.radar-wrap { width: 100%; max-width: 340px; margin: 0 auto; aspect-ratio: 1; position: relative; }
 .radar-wrap canvas { width: 100% !important; height: 100% !important; }
 .single-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; display: inline-block; }
 .single-box .l3-code { font-size: 9.5px; font-family: monospace; color: var(--muted); margin-bottom: 3px; }
 .single-box .l3-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
-.radar-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; font-size: 10px; color: var(--muted); }
+.radar-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 4px; font-size: 10px; color: var(--muted); }
 .radar-legend-item { display: flex; align-items: center; gap: 4px; }
 .radar-legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── REKOMENDASI TINDAK LANJUT ── */
+.rekom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px; }
+.rekom-card { border: 1.5px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+.rekom-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.rekom-card-icons { display: flex; gap: 6px; flex-shrink: 0; }
+.rekom-card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.rekom-card-title { font-size: 12.5px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.rekom-block { margin-bottom: 14px; padding-left: 12px; border-left: 3px solid var(--rekom-accent, var(--border)); }
+.rekom-block:last-child { margin-bottom: 0; }
+.rekom-block-label { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rekom-accent, var(--muted)); margin-bottom: 7px; }
+.rekom-block-label svg { flex-shrink: 0; }
+.rekom-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.rekom-list li { font-size: 12px; color: var(--text); line-height: 1.5; padding-left: 14px; position: relative; }
+.rekom-list li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
 
 /* ── USER BADGE ── */
 .user-badge { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
@@ -240,6 +251,7 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 /* skeleton */
 @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
 .skel { background: linear-gradient(90deg, #e8f0fb 25%, #dce6f5 50%, #e8f0fb 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite linear; border-radius: 6px; }
+.skel-light { background: linear-gradient(90deg, rgba(255,255,255,0.14) 25%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.14) 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite linear; border-radius: 6px; }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -253,10 +265,11 @@ td.td-nama { font-weight: 600; color: var(--navy); }
   .topbar { display: none; }
   .table-filters { flex-direction: column; }
   .skor-row { grid-template-columns: 1fr; }
-  .modal-backdrop { padding: 0; align-items: flex-end; }
-  .modal { border-radius: 16px 16px 0 0; max-width: 100%; max-height: calc(100dvh - 60px); overflow-y: auto; }
-  .modal-backdrop.open { padding-top: 60px; align-items: flex-end; }
-  .radar-wrap { max-width: 100%; }
+  .role-grid { grid-template-columns: 1fr; gap: 14px; }
+  .rekom-grid { grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+  .detail-header { margin: 10px 10px 0; }
+  .detail-body { padding: 16px 14px 20px; }
+  .radar-wrap { max-width: 260px; }
   .summary-grid { grid-template-columns: 1fr; }
   .pie-svg-area { width: 110px; height: 110px; }
   .user-badge-info { display: none; }
@@ -554,27 +567,48 @@ td.td-nama { font-weight: 600; color: var(--navy); }
         </tbody>
       </table>
     </div>
-    <div class="table-footer">
+    <div class="table-footer" id="tableFooter">
       <div class="info" id="baselineInfo">Memuat...</div>
       <div class="pager" id="baselinePager"></div>
     </div>
   </div>
-</main>
 
-<!-- MODAL DETAIL -->
-<div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
-  <div class="modal" id="modalBox">
-    <div class="modal-head">
-      <div class="modal-head-info">
-        <div class="modal-head-npsn" id="mNpsn"></div>
-        <div class="modal-head-nama" id="mNama"></div>
-        <div class="modal-head-meta" id="mMeta"></div>
+  <!-- SKELETON — tampil sekilas saat baseline sekolah masih dimuat (khusus akun sekolah, mengisi jeda loading) -->
+  <div class="panel" id="detailSkeleton" style="display:none;margin-top:16px">
+    <div class="detail-header">
+      <div class="detail-header-info">
+        <div class="skel skel-light" style="width:100px;height:10px;margin-bottom:8px"></div>
+        <div class="skel skel-light" style="width:240px;height:18px;margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px">
+          <div class="skel skel-light" style="width:70px;height:20px;border-radius:20px"></div>
+          <div class="skel skel-light" style="width:90px;height:20px;border-radius:20px"></div>
+          <div class="skel skel-light" style="width:60px;height:20px;border-radius:20px"></div>
+          <div class="skel skel-light" style="width:150px;height:20px;border-radius:20px"></div>
+        </div>
       </div>
-      <button class="modal-close" onclick="closeModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
     </div>
-    <div class="modal-body">
+    <div class="detail-body">
+      <div class="skor-row">
+        <div class="skor-card"><div class="skel" style="width:70px;height:10px;margin-bottom:10px"></div><div class="skel" style="width:100px;height:24px;border-radius:8px"></div></div>
+        <div class="skor-card"><div class="skel" style="width:70px;height:10px;margin-bottom:10px"></div><div class="skel" style="width:100px;height:24px;border-radius:8px"></div></div>
+      </div>
+      <div class="skel" style="width:100%;height:200px;border-radius:12px;margin-bottom:18px"></div>
+      <div class="skel" style="width:100%;height:200px;border-radius:12px;margin-bottom:18px"></div>
+      <div class="skel" style="width:100%;height:200px;border-radius:12px"></div>
+    </div>
+  </div>
+
+  <!-- DETAIL SEKOLAH — muncul di bawah tabel (drill-down), bukan popup -->
+  <div class="panel" id="detailPanel" style="display:none;margin-top:16px">
+    <div class="detail-header">
+      <div class="detail-header-info">
+        <div class="detail-hero-label" id="mHeroLabel" style="display:none">Baseline Sekolah Anda</div>
+        <div class="detail-npsn" id="mNpsn"></div>
+        <div class="detail-nama" id="mNama"></div>
+        <div class="detail-meta" id="mMeta"></div>
+      </div>
+    </div>
+    <div class="detail-body">
       <div class="skor-row">
         <div class="skor-card">
           <div class="skor-card-label">Profil PM</div>
@@ -587,110 +621,116 @@ td.td-nama { font-weight: 600; color: var(--navy); }
           <div class="skor-card-skor-wrap"><span class="skor-card-skor-label">Skor:</span><span class="skor-card-skor-val" id="mSkorKKA">—</span></div>
         </div>
       </div>
-      <div class="modal-tabs">
-        <button class="modal-tab active" onclick="switchModalTab('pm',this)">Pembelajaran Mendalam (PM)</button>
-        <button class="modal-tab" onclick="switchModalTab('kka',this)">Koding &amp; KA (KKA)</button>
-      </div>
-      <!-- PM pane -->
-      <div class="modal-pane active" id="mpane-pm">
-        <div class="l1-section">
-          <div class="l1-header l1-header-murid">
-            <span class="l1-badge l1-badge-murid">1</span>
-            <span class="l1-title l1-title-murid">Murid</span>
-          </div>
-          <div class="l2-labels"><span class="l2-label-pill">1.1 — Budaya Belajar</span></div>
-          <div class="radar-wrap"><canvas id="rc-pm-murid"></canvas></div>
+
+      <!-- Murid -->
+      <div class="l1-section">
+        <div class="l1-header l1-header-murid">
+          <span class="l1-badge l1-badge-murid">1</span>
+          <span class="l1-title l1-title-murid">Murid</span>
         </div>
-        <div class="l1-section">
-          <div class="l1-header l1-header-guru">
-            <span class="l1-badge l1-badge-guru">2</span>
-            <span class="l1-title l1-title-guru">Guru</span>
+        <div class="role-grid">
+          <div class="role-col">
+            <span class="role-col-tag role-col-tag-pm">Pembelajaran Mendalam (PM)</span>
+            <div class="l2-labels"><span class="l2-label-pill">1.1 — Budaya Belajar</span></div>
+            <div class="radar-wrap"><canvas id="rc-pm-murid"></canvas></div>
           </div>
-          <div class="l2-labels">
-            <span class="l2-label-pill">2.1 — Mengajar secara Efektif</span>
-            <span class="l2-label-pill">2.2 — Asesmen Otentik</span>
-            <span class="l2-label-pill">2.3 — Pengembangan Diri</span>
+          <div class="role-col">
+            <span class="role-col-tag role-col-tag-kka">Koding &amp; KA (KKA)</span>
+            <div class="l2-labels"><span class="l2-label-pill">1.1 — Budaya Belajar</span></div>
+            <div id="kka-murid-box"></div>
           </div>
-          <div class="radar-wrap"><canvas id="rc-pm-guru"></canvas></div>
-        </div>
-        <div class="l1-section">
-          <div class="l1-header l1-header-kasek">
-            <span class="l1-badge l1-badge-kasek">3</span>
-            <span class="l1-title l1-title-kasek">Kepala Satpen</span>
-          </div>
-          <div class="l2-labels">
-            <span class="l2-label-pill">3.1 — Kepemimpinan PM</span>
-            <span class="l2-label-pill">3.2 — Pengelolaan SDM</span>
-            <span class="l2-label-pill">3.3 — Kemitraan</span>
-            <span class="l2-label-pill">3.4 — Pemanfaatan Teknologi</span>
-          </div>
-          <div class="radar-wrap"><canvas id="rc-pm-kasek"></canvas></div>
-        </div>
-        <div class="radar-legend">
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8896a8"></div>Tidak Terkategori (0)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#d97706"></div>Pra Berkembang (1)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#2b72d8"></div>Berkembang (2)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#1a6b3e"></div>Maju (3)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8a5c00"></div>Unggul (4)</div>
         </div>
       </div>
-      <!-- KKA pane -->
-      <div class="modal-pane" id="mpane-kka">
-        <div id="mMapelKKA" style="margin-bottom:14px"></div>
-        <div class="l1-section">
-          <div class="l1-header l1-header-murid">
-            <span class="l1-badge l1-badge-murid">1</span>
-            <span class="l1-title l1-title-murid">Murid</span>
-          </div>
-          <div class="l2-labels"><span class="l2-label-pill">1.1 — Budaya Belajar</span></div>
-          <div id="kka-murid-box"></div>
+
+      <!-- Guru -->
+      <div class="l1-section">
+        <div class="l1-header l1-header-guru">
+          <span class="l1-badge l1-badge-guru">2</span>
+          <span class="l1-title l1-title-guru">Guru</span>
         </div>
-        <div class="l1-section">
-          <div class="l1-header l1-header-guru">
-            <span class="l1-badge l1-badge-guru">2</span>
-            <span class="l1-title l1-title-guru">Guru</span>
+        <div class="role-grid">
+          <div class="role-col">
+            <span class="role-col-tag role-col-tag-pm">Pembelajaran Mendalam (PM)</span>
+            <div class="l2-labels">
+              <span class="l2-label-pill">2.1 — Mengajar secara Efektif</span>
+              <span class="l2-label-pill">2.2 — Asesmen Otentik</span>
+              <span class="l2-label-pill">2.3 — Pengembangan Diri</span>
+            </div>
+            <div class="radar-wrap"><canvas id="rc-pm-guru"></canvas></div>
           </div>
-          <div class="l2-labels">
-            <span class="l2-label-pill">2.1 — Mengajar secara Efektif</span>
-            <span class="l2-label-pill">2.2 — Asesmen Otentik</span>
+          <div class="role-col">
+            <span class="role-col-tag role-col-tag-kka">Koding &amp; KA (KKA)</span>
+            <div class="l2-labels">
+              <span class="l2-label-pill">2.1 — Mengajar secara Efektif</span>
+              <span class="l2-label-pill">2.2 — Asesmen Otentik</span>
+            </div>
+            <div class="radar-wrap"><canvas id="rc-kka-guru"></canvas></div>
           </div>
-          <div class="radar-wrap"><canvas id="rc-kka-guru"></canvas></div>
         </div>
-        <div class="l1-section">
-          <div class="l1-header l1-header-kasek">
-            <span class="l1-badge l1-badge-kasek">3</span>
-            <span class="l1-title l1-title-kasek">Kepala Satpen</span>
-          </div>
-          <div class="l2-labels">
-            <span class="l2-label-pill">3.1 — Kepemimpinan KKA</span>
-            <span class="l2-label-pill">3.2 — Pengelolaan SDM</span>
-            <span class="l2-label-pill">3.3 — Kemitraan</span>
-            <span class="l2-label-pill">3.4 — Pemanfaatan Teknologi</span>
-          </div>
-          <div class="radar-wrap"><canvas id="rc-kka-kasek"></canvas></div>
+      </div>
+
+      <!-- Kepala Satpen -->
+      <div class="l1-section">
+        <div class="l1-header l1-header-kasek">
+          <span class="l1-badge l1-badge-kasek">3</span>
+          <span class="l1-title l1-title-kasek">Kepala Satpen</span>
         </div>
-        <div class="radar-legend">
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8896a8"></div>Tidak Terkategori (0)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#d97706"></div>Pra Berkembang (1)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#2b72d8"></div>Berkembang (2)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#1a6b3e"></div>Maju (3)</div>
-          <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8a5c00"></div>Unggul (4)</div>
+        <div class="role-grid">
+          <div class="role-col">
+            <span class="role-col-tag role-col-tag-pm">Pembelajaran Mendalam (PM)</span>
+            <div class="l2-labels">
+              <span class="l2-label-pill">3.1 — Kepemimpinan PM</span>
+              <span class="l2-label-pill">3.2 — Pengelolaan SDM</span>
+              <span class="l2-label-pill">3.3 — Kemitraan</span>
+              <span class="l2-label-pill">3.4 — Pemanfaatan Teknologi</span>
+            </div>
+            <div class="radar-wrap"><canvas id="rc-pm-kasek"></canvas></div>
+          </div>
+          <div class="role-col">
+            <span class="role-col-tag role-col-tag-kka">Koding &amp; KA (KKA)</span>
+            <div class="l2-labels">
+              <span class="l2-label-pill">3.1 — Kepemimpinan KKA</span>
+              <span class="l2-label-pill">3.2 — Pengelolaan SDM</span>
+              <span class="l2-label-pill">3.3 — Kemitraan</span>
+              <span class="l2-label-pill">3.4 — Pemanfaatan Teknologi</span>
+            </div>
+            <div class="radar-wrap"><canvas id="rc-kka-kasek"></canvas></div>
+          </div>
         </div>
+      </div>
+
+      <div class="radar-legend">
+        <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8896a8"></div>Tidak Terkategori (0)</div>
+        <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#d97706"></div>Pra Berkembang (1)</div>
+        <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#2b72d8"></div>Berkembang (2)</div>
+        <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#1a6b3e"></div>Maju (3)</div>
+        <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#8a5c00"></div>Unggul (4)</div>
       </div>
     </div>
   </div>
-</div>
+
+  <!-- REKOMENDASI TINDAK LANJUT — turunan dari Profil PM & KKA (isi masih placeholder, dibahas lanjutan) -->
+  <div class="panel" id="rekomendasiPanel" style="display:none;margin-top:16px">
+    <div class="panel-header" style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
+      <div class="panel-title">Rekomendasi Tindak Lanjut</div>
+      <div class="panel-sub">Rekomendasi di bawah ini mengacu pada buku &ldquo;Panduan Penyelenggaraan Sekolah Model&rdquo; sehingga tetap perlu disesuaikan dengan konteks dan kondisi masing-masing sekolah.</div>
+    </div>
+    <div class="rekom-grid" id="rekomendasiBody"></div>
+  </div>
+</main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="rekomendasi-data.js"></script>
 <script>
 // SUPA_URL/KEY → config.js
 const SUPA_URL_REST = SUPA_URL + '/rest/v1/' + TABLE_SCHOOLS;
 const SUPA_AUTH_KEY = SUPA_KEY;
 const SUPA_SELECT = 'npsn,nama,mitra,provinsi,kabupaten_kota,status_sekolah,status_koding_ka,profil_pm,profil_kka,skor_pm,skor_kka,pm_1_1_1,pm_1_1_2,pm_1_1_3,pm_1_1_4,pm_1_1_5,pm_1_1_6,pm_2_1_1,pm_2_1_2,pm_2_1_3,pm_2_2_1,pm_2_2_2,pm_2_3_1,pm_2_3_2,pm_3_1_1,pm_3_1_2,pm_3_1_3,pm_3_1_4,pm_3_2_1,pm_3_2_2,pm_3_2_3,pm_3_3_1,pm_3_3_2,pm_3_4_1,pm_3_4_2,kka_1_1_1,kka_2_1_1,kka_2_1_2,kka_2_2_1,kka_3_1_1,kka_3_1_2,kka_3_2_1,kka_3_2_2,kka_3_3_1,kka_3_4_1,kka_3_4_2';
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 let ALL_SCHOOLS  = [];
 let baselinePage = 1;
 let activeCharts = {};
+let selectedNpsn = '';
 
 // ROLE_LABEL, BPMP_CAKUPAN, PAPUA_KABKOT_SET → auth.js
 let USER_PROFILE = null;
@@ -861,38 +901,33 @@ function drawRadar(canvasId, labels, rawVals, color) {
   });
 }
 
-// ── Modal detail ──────────────────────────────────────────────────────────────
-function switchModalTab(tab, btn) {
-  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.modal-pane').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('mpane-' + tab).classList.add('active');
-}
+// ── Detail sekolah — tampil di bawah tabel (drill-down), bukan popup ────────
 function fill(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
+let IS_SEKOLAH_ROLE = false;
 
-function openModal(r) {
+function openDetail(r, opts) {
+  const scroll = !opts || opts.scroll !== false;
+  const hero   = !!(opts && opts.hero);
+  selectedNpsn = r.npsn;
+
+  document.getElementById('detailSkeleton').style.display = 'none';
+
+  const heroLabel = document.getElementById('mHeroLabel');
+  if (heroLabel) heroLabel.style.display = hero ? 'block' : 'none';
+
   fill('mNpsn', r.npsn);
   fill('mNama', r.nama);
+  const sudahKKA = r.status_pel && r.status_pel.toLowerCase().trim() === 'sudah';
   fill('mMeta',
-    `<span class="modal-meta-tag">${r.provinsi||'—'}</span>` +
-    `<span class="modal-meta-tag">${r.kabkota||'—'}</span>` +
-    `<span class="modal-meta-tag">${r.status_sek||'—'}</span>`
+    `<span class="detail-meta-tag">${r.provinsi||'—'}</span>` +
+    `<span class="detail-meta-tag">${r.kabkota||'—'}</span>` +
+    `<span class="detail-meta-tag">${r.status_sek||'—'}</span>` +
+    `<span class="detail-meta-tag" style="background:${sudahKKA?'#e0f0e9':'#fef9e7'};border-color:${sudahKKA?'#a3d4b5':'#f5d97a'};color:${sudahKKA?'#1a6b3e':'#8a5c00'}">${mapel_kka_label(r.status_pel)}</span>`
   );
   fill('mProfilPM',  profil_tag(r.profil_pm));
   fill('mProfilKKA', profil_tag(r.profil_kka));
   fill('mSkorPM',  r.skor_pm  || '—');
   fill('mSkorKKA', r.skor_kka || '—');
-
-  const sudahKKA = r.status_pel && r.status_pel.toLowerCase().trim() === 'sudah';
-  fill('mMapelKKA', `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:9px;background:${sudahKKA?'#e0f0e9':'#fef9e7'};border:1.5px solid ${sudahKKA?'#a3d4b5':'#f5d97a'}">
-    <div style="width:28px;height:28px;border-radius:7px;background:${sudahKKA?'#1a6b3e':'#b07c00'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
-      ${sudahKKA
-        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
-        : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-      }
-    </div>
-    <span style="font-size:12.5px;font-weight:700;color:${sudahKKA?'#1a6b3e':'#8a5c00'}">${mapel_kka_label(r.status_pel)}</span>
-  </div>`);
 
   fill('kka-murid-box', `<div class="single-box">
     <div class="l3-code">1.1.1</div>
@@ -900,10 +935,9 @@ function openModal(r) {
     ${profil_tag(r.kka_1_1_1)}
   </div>`);
 
-  document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', i===0));
-  document.querySelectorAll('.modal-pane').forEach((p,i) => p.classList.toggle('active', i===0));
-  document.getElementById('modalBackdrop').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.getElementById('detailPanel').style.display = 'block';
+  renderRekomendasi(r);
+  renderBaselineTable();   // drill-down: tabel menyempit jadi 1 baris terpilih
 
   requestAnimationFrame(() => {
     drawRadar('rc-pm-murid',
@@ -921,15 +955,90 @@ function openModal(r) {
     drawRadar('rc-kka-kasek',
       ['Memimpin Impl. KKA','Supervisi KKA','Kapasitas Komunitas','Sumber Belajar KKA','Kemitraan KKA','Sarpras Digital','Pemanfaatan Teknologi'],
       [r.kka_3_1_1,r.kka_3_1_2,r.kka_3_2_1,r.kka_3_2_2,r.kka_3_3_1,r.kka_3_4_1,r.kka_3_4_2], '#8a5c00');
+    if (scroll) document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
 
-function closeModal() {
-  document.getElementById('modalBackdrop').classList.remove('open');
-  document.body.style.overflow = '';
+// Batalkan drill-down (role selain 'sekolah'), kembali ke tabel penuh — dipanggil dari tombol Reset
+function closeDetail() {
+  selectedNpsn = '';
+  document.getElementById('detailPanel').style.display = 'none';
+  document.getElementById('rekomendasiPanel').style.display = 'none';
+  baselinePage = 1;
+  renderBaselineTable();
 }
-function closeModalOutside(e) { if (e.target === document.getElementById('modalBackdrop')) closeModal(); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !IS_SEKOLAH_ROLE && document.getElementById('detailPanel').style.display === 'block') closeDetail();
+});
+
+// Data Rekomendasi Tindak Lanjut → rekomendasi-data.js
+
+function normalizeLevel(v) {
+  if (!v) return null;
+  const l = v.toLowerCase().trim();
+  if (l.includes('unggul'))     return 'Unggul';
+  if (l.includes('maju'))       return 'Maju';
+  if (l.startsWith('pra') || l.includes('pra-')) return 'Pra Berkembang';
+  if (l.includes('berkembang')) return 'Berkembang';
+  return null;
+}
+function getRekomendasi(level) { return REKOMENDASI_DATA[level] || { fokus: ['-'], rencana: ['-'], evaluasi: ['-'] }; }
+function escapeHtml(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Aksen warna per level — samakan dengan warna tag Profil PM/KKA yang sudah ada
+const LEVEL_ACCENT = { 'Pra Berkembang': '#8a3000', 'Berkembang': '#1a4a8a', 'Maju': '#1a6b3e', 'Unggul': '#8a5c00' };
+function levelAccent(level) { return LEVEL_ACCENT[level] || '#8896a8'; }
+
+// Ikon PM/KKA — sama persis dengan ikon di kartu "Profil PM/KKA Nasional"
+const REKOM_ICON_PM  = { bg: '#e8f0fb', svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' };
+const REKOM_ICON_KKA = { bg: '#e0f0e9', svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>' };
+
+// Ikon per jenis sub-kotak (Fokus/Rencana/Evaluasi) — warnanya ikut aksen level lewat currentColor
+const REKOM_BLOCK_ICON = {
+  fokus:    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>',
+  rencana:  '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+  evaluasi: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>',
+};
+
+function rekomBlockHtml(key, label, items, accent) {
+  return `<div class="rekom-block" style="--rekom-accent:${accent}">
+    <div class="rekom-block-label">${REKOM_BLOCK_ICON[key]}<span>${label}</span></div>
+    <ul class="rekom-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
+  </div>`;
+}
+function rekomCardHtml(icons, title, levelRaw, data) {
+  const accent = levelAccent(normalizeLevel(levelRaw));
+  return `<div class="rekom-card">
+    <div class="rekom-card-head">
+      <div class="rekom-card-icons">${icons.map(ic => `<div class="rekom-card-icon" style="background:${ic.bg}">${ic.svg}</div>`).join('')}</div>
+      <div>
+        <div class="rekom-card-title">${title}</div>
+        ${profil_tag(levelRaw)}
+      </div>
+    </div>
+    ${rekomBlockHtml('fokus', 'Fokus Pengembangan', data.fokus, accent)}
+    ${rekomBlockHtml('rencana', 'Rencana Aksi', data.rencana, accent)}
+    ${rekomBlockHtml('evaluasi', 'Evaluasi', data.evaluasi, accent)}
+  </div>`;
+}
+function renderRekomendasi(r) {
+  const body = document.getElementById('rekomendasiBody');
+  if (!body) return;
+  const pmLevel  = normalizeLevel(r.profil_pm);
+  const kkaLevel = normalizeLevel(r.profil_kka);
+
+  if (pmLevel && kkaLevel && pmLevel === kkaLevel) {
+    // Profil PM & KKA sama persis → satu kotak saja (2 ikon berjejer), teksnya tidak diduplikasi
+    body.style.gridTemplateColumns = '1fr';
+    body.innerHTML = rekomCardHtml([REKOM_ICON_PM, REKOM_ICON_KKA], 'Pembelajaran Mendalam &amp; Koding dan Kecerdasan Artifisial', r.profil_pm, getRekomendasi(pmLevel));
+  } else {
+    body.style.gridTemplateColumns = '';
+    body.innerHTML =
+      rekomCardHtml([REKOM_ICON_PM], 'Pembelajaran Mendalam', r.profil_pm, getRekomendasi(pmLevel)) +
+      rekomCardHtml([REKOM_ICON_KKA], 'Koding dan Kecerdasan Artifisial', r.profil_kka, getRekomendasi(kkaLevel));
+  }
+  document.getElementById('rekomendasiPanel').style.display = 'block';
+}
 
 // ── Fetch profil user — pakai getUser() dari auth.js ─────────────────────────
 function fetchUserProfile() {
@@ -1015,6 +1124,7 @@ function matchProfil(val, filterVal) {
 }
 
 function getBaselineFiltered() {
+  if (selectedNpsn) return ALL_SCHOOLS.filter(r => String(r.npsn) === String(selectedNpsn));
   const q      = (document.getElementById('baselineSearch')?.value || '').toLowerCase();
   const prov   = document.getElementById('baselineProvFilter')?.value || '';
   const mitra  = document.getElementById('baselineMitraFilter')?.value || '';
@@ -1032,20 +1142,23 @@ function getBaselineFiltered() {
 }
 
 function renderBaselineTable() {
+  const filtersBar = document.querySelector('#tablePanel .table-filters');
+  if (filtersBar) filtersBar.querySelectorAll('input, select').forEach(el => { el.disabled = !!selectedNpsn; });
+
   const filtered = getBaselineFiltered();
   const total    = filtered.length;
   const pages    = Math.max(1, Math.ceil(total / PAGE_SIZE));
   baselinePage   = Math.min(baselinePage, pages);
-  const slice    = filtered.slice((baselinePage-1)*PAGE_SIZE, baselinePage*PAGE_SIZE);
+  const slice    = selectedNpsn ? filtered : filtered.slice((baselinePage-1)*PAGE_SIZE, baselinePage*PAGE_SIZE);
   const tbody    = document.getElementById('baselineTbody');
   if (!tbody) return;
   if (slice.length === 0) {
     tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--muted)">Tidak ada data ditemukan</td></tr>`;
   } else {
     tbody.innerHTML = slice.map((r, i) => {
-      const no  = (baselinePage-1)*PAGE_SIZE + i + 1;
+      const no  = selectedNpsn ? 1 : (baselinePage-1)*PAGE_SIZE + i + 1;
       const idx = ALL_SCHOOLS.indexOf(r);
-      return `<tr onclick="openModal(ALL_SCHOOLS[${idx}])">
+      return `<tr onclick="openDetail(ALL_SCHOOLS[${idx}])">
         <td class="td-no">${r.no||no}</td>
         <td class="td-npsn">${r.npsn}</td>
         <td class="td-nama">${r.nama}</td>
@@ -1055,18 +1168,23 @@ function renderBaselineTable() {
         <td>${mapel_kka_tag(r.status_pel)}</td>
         <td>${profil_tag(r.profil_pm)}</td>
         <td>${profil_tag(r.profil_kka)}</td>
-        <td><button class="btn-detail" onclick="event.stopPropagation();openModal(ALL_SCHOOLS[${idx}])">
+        <td><button class="btn-detail" onclick="event.stopPropagation();openDetail(ALL_SCHOOLS[${idx}])">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Detail
         </button></td>
       </tr>`;
     }).join('');
   }
-  const from = total===0 ? 0 : (baselinePage-1)*PAGE_SIZE+1;
-  const to   = Math.min(baselinePage*PAGE_SIZE, total);
-  document.getElementById('baselineCount').textContent = `${total} sekolah`;
-  document.getElementById('baselineInfo').textContent  = `${from}–${to} dari ${total} sekolah`;
-  renderPager('baselinePager', baselinePage, pages, p => { baselinePage=p; renderBaselineTable(); });
+  document.getElementById('baselineCount').textContent = selectedNpsn ? 'Menampilkan 1 sekolah terpilih' : `${total} sekolah`;
+
+  const footer = document.getElementById('tableFooter');
+  if (footer) footer.style.display = selectedNpsn ? 'none' : '';
+  if (!selectedNpsn) {
+    const from = total===0 ? 0 : (baselinePage-1)*PAGE_SIZE+1;
+    const to   = Math.min(baselinePage*PAGE_SIZE, total);
+    document.getElementById('baselineInfo').textContent = `${from}–${to} dari ${total} sekolah`;
+    renderPager('baselinePager', baselinePage, pages, p => { baselinePage=p; renderBaselineTable(); });
+  }
 }
 
 function filterBaseline()      { baselinePage=1; renderBaselineTable(); }
@@ -1081,7 +1199,9 @@ function resetBaselineFilter() {
   if (fPM) fPM.value = '';
   if (fKKA) fKKA.value = '';
   if (fMapel) fMapel.value = '';
-  baselinePage = 1; renderBaselineTable();
+  baselinePage = 1;
+  if (selectedNpsn) { closeDetail(); return; }   // "Reset" dobel fungsi jadi tombol "kembali" saat drill-down, persis rtl.html
+  renderBaselineTable();
 }
 
 function renderPager(containerId, current, total, onClick) {
@@ -1121,9 +1241,21 @@ function renderPager(containerId, current, total, onClick) {
 
   // Fetch profil untuk semua role (bukan hanya viewer)
   USER_PROFILE = fetchUserProfile();
+  IS_SEKOLAH_ROLE = USER_PROFILE.role === 'sekolah';
 
-  showTable();
-  loadData();
+  if (IS_SEKOLAH_ROLE) {
+    // Akun sekolah: tanpa tabel — langsung tampil baseline sekolahnya sendiri (codebook → data nasional → baseline sekolah)
+    document.getElementById('guestPlaceholder').style.display = 'none';
+    document.getElementById('tablePanel').style.display = 'none';
+    document.getElementById('detailSkeleton').style.display = 'block';   // isi jeda loading, bukan blank
+    await loadData();
+    const own = ALL_SCHOOLS.find(r => String(r.npsn) === String(USER_PROFILE.npsn)) || ALL_SCHOOLS[0];
+    if (own) { openDetail(own, { scroll: false, hero: true }); }
+    else document.getElementById('detailSkeleton').style.display = 'none';
+  } else {
+    showTable();
+    loadData();
+  }
 })();
 </script>
 </body>
