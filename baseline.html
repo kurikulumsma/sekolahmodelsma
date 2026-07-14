@@ -215,13 +215,13 @@ td.td-nama { font-weight: 600; color: var(--navy); }
 .rekom-card-icons { display: flex; gap: 6px; flex-shrink: 0; }
 .rekom-card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .rekom-card-title { font-size: 12.5px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
-.rekom-block { margin-bottom: 14px; padding-left: 12px; border-left: 3px solid var(--rekom-accent, var(--border)); }
+.rekom-block { margin-bottom: 12px; padding: 12px 14px; border-radius: 10px; border-left: 4px solid var(--rekom-accent, var(--border)); background: var(--rekom-accent-bg, var(--bg)); }
 .rekom-block:last-child { margin-bottom: 0; }
-.rekom-block-label { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rekom-accent, var(--muted)); margin-bottom: 7px; }
+.rekom-block-label { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rekom-accent, var(--muted)); margin-bottom: 8px; }
 .rekom-block-label svg { flex-shrink: 0; }
 .rekom-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
 .rekom-list li { font-size: 12px; color: var(--text); line-height: 1.5; padding-left: 14px; position: relative; }
-.rekom-list li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+.rekom-list li::before { content: '–'; position: absolute; left: 0; color: var(--rekom-accent, var(--muted)); }
 
 /* ── USER BADGE ── */
 .user-badge { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
@@ -985,9 +985,14 @@ function normalizeLevel(v) {
 function getRekomendasi(level) { return REKOMENDASI_DATA[level] || { fokus: ['-'], rencana: ['-'], evaluasi: ['-'] }; }
 function escapeHtml(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// Aksen warna per level — samakan dengan warna tag Profil PM/KKA yang sudah ada
-const LEVEL_ACCENT = { 'Pra Berkembang': '#8a3000', 'Berkembang': '#1a4a8a', 'Maju': '#1a6b3e', 'Unggul': '#8a5c00' };
-function levelAccent(level) { return LEVEL_ACCENT[level] || '#8896a8'; }
+// Aksen warna per level — samakan persis dengan warna tag Profil PM/KKA yang sudah ada (tag-pra/berk/maju/ung)
+const LEVEL_ACCENT = {
+  'Pra Berkembang': { color: '#8a3000', bg: '#fde8d8' },
+  'Berkembang':     { color: '#1a4a8a', bg: '#e8f0fb' },
+  'Maju':           { color: '#1a6b3e', bg: '#e0f0e9' },
+  'Unggul':         { color: '#8a5c00', bg: '#fef3d7' },
+};
+function levelAccent(level) { return LEVEL_ACCENT[level] || { color: '#8896a8', bg: '#f0f2f5' }; }
 
 // Ikon PM/KKA — sama persis dengan ikon di kartu "Profil PM/KKA Nasional"
 const REKOM_ICON_PM  = { bg: '#e8f0fb', svg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a56a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' };
@@ -1001,7 +1006,7 @@ const REKOM_BLOCK_ICON = {
 };
 
 function rekomBlockHtml(key, label, items, accent) {
-  return `<div class="rekom-block" style="--rekom-accent:${accent}">
+  return `<div class="rekom-block" style="--rekom-accent:${accent.color};--rekom-accent-bg:${accent.bg}">
     <div class="rekom-block-label">${REKOM_BLOCK_ICON[key]}<span>${label}</span></div>
     <ul class="rekom-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
   </div>`;
