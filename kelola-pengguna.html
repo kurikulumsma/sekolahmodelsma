@@ -474,7 +474,7 @@ tr:hover td { background: #fafcff; }
     <div class="toolbar">
       <div class="search-wrap">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-        <input type="text" placeholder="Cari nama atau email..." oninput="filterPending(this.value)" id="searchPending">
+        <input type="text" placeholder="Cari nama, sekolah, atau email..." oninput="filterPending(this.value)" id="searchPending">
       </div>
       <select class="filter-select" onchange="filterPendingUnsur(this.value)">
         <option value="">Semua Unsur</option>
@@ -508,7 +508,7 @@ tr:hover td { background: #fafcff; }
     <div class="toolbar">
       <div class="search-wrap">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-        <input type="text" placeholder="Cari nama atau email..." oninput="filterApproved(this.value)" id="searchApproved">
+        <input type="text" placeholder="Cari nama, sekolah, atau email..." oninput="filterApproved(this.value)" id="searchApproved">
       </div>
       <select class="filter-select" onchange="filterApprovedUnsur(this.value)">
         <option value="">Semua Unsur</option>
@@ -548,7 +548,7 @@ tr:hover td { background: #fafcff; }
     <div class="toolbar">
       <div class="search-wrap">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-        <input type="text" placeholder="Cari nama atau email..." oninput="filterDeactivated(this.value)" id="searchDeactivated">
+        <input type="text" placeholder="Cari nama, sekolah, atau email..." oninput="filterDeactivated(this.value)" id="searchDeactivated">
       </div>
       <span class="toolbar-right" id="countDeactivated"></span>
     </div>
@@ -655,7 +655,7 @@ tr:hover td { background: #fafcff; }
     <div class="toolbar">
       <div class="search-wrap">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-        <input type="text" placeholder="Cari nama atau email..." oninput="filterAktivitas(this.value)" id="searchAktivitas">
+        <input type="text" placeholder="Cari nama, sekolah, atau email..." oninput="filterAktivitas(this.value)" id="searchAktivitas">
       </div>
       <select class="filter-select" onchange="filterAktivitasRange(this.value)" id="filterAktivitasRange">
         <option value="">Semua Waktu</option>
@@ -899,7 +899,8 @@ function renderPending() {
   let data = allPending;
   if (filterPendingQ) data = data.filter(u =>
     u.nama?.toLowerCase().includes(filterPendingQ) ||
-    u.email?.toLowerCase().includes(filterPendingQ));
+    u.email?.toLowerCase().includes(filterPendingQ) ||
+    u.instansi?.toLowerCase().includes(filterPendingQ));
   if (filterPendingU) data = data.filter(u => u.unsur === filterPendingU);
 
   document.getElementById('countPending').textContent = data.length + ' pendaftar';
@@ -949,7 +950,8 @@ function renderApproved() {
   let data = allApproved;
   if (filterApprovedQ) data = data.filter(u =>
     u.nama?.toLowerCase().includes(filterApprovedQ) ||
-    u.email?.toLowerCase().includes(filterApprovedQ));
+    u.email?.toLowerCase().includes(filterApprovedQ) ||
+    u.instansi?.toLowerCase().includes(filterApprovedQ));
   if (filterApprovedU) data = data.filter(u => u.unsur === filterApprovedU);
   if (filterApprovedR) data = data.filter(u => u.role === filterApprovedR);
 
@@ -1087,7 +1089,8 @@ function renderDeactivated() {
   let data = allDeactivated;
   if (filterDeactivatedQ) data = data.filter(u =>
     u.nama?.toLowerCase().includes(filterDeactivatedQ) ||
-    u.email?.toLowerCase().includes(filterDeactivatedQ));
+    u.email?.toLowerCase().includes(filterDeactivatedQ) ||
+    u.instansi?.toLowerCase().includes(filterDeactivatedQ));
 
   document.getElementById('countDeactivated').textContent = data.length + ' pengguna';
   const tbody = document.getElementById('tbodyDeactivated');
@@ -1197,7 +1200,8 @@ function renderAktivitas() {
   let data = aktivitasData.slice();
   if (aktivitasFilterQ) data = data.filter(u =>
     u.nama?.toLowerCase().includes(aktivitasFilterQ) ||
-    u.email?.toLowerCase().includes(aktivitasFilterQ));
+    u.email?.toLowerCase().includes(aktivitasFilterQ) ||
+    u.instansi?.toLowerCase().includes(aktivitasFilterQ));
   if (aktivitasRange) {
     const now = Date.now();
     let batas;
