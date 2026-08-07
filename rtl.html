@@ -1055,7 +1055,7 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
       <div class="panel-body">
         <div class="rtl-note">
           <strong>Catatan Teknis &amp; Regulasi:</strong> Pengisian instrumen ini mengacu pada rencana aksi bertahap dalam <em>Panduan Penyelenggaraan Sekolah Model Implementasi PM dan KKA (Pusat Kurikulum dan Pembelajaran, 2026)</em>. Data Baseline wajib disesuaikan dengan realitas Profil PSKP masing-masing satuan pendidikan.<br><br>
-          <span class="warn-inline">Cetak PDF:</span> tombol Cetak PDF aktif setelah <strong>seluruh 37 indikator terisi lengkap</strong>. <span class="warn-inline">Unduh Excel:</span> dapat diunduh kapan saja selama minimal satu indikator sudah terisi lengkap. Seluruh isian tersimpan otomatis.
+          <span class="warn-inline">Unduh/Cetak PDF:</span> dan <span class="warn-inline">Unduh Excel:</span> dapat diunduh kapan saja selama minimal satu indikator sudah terisi lengkap. Seluruh isian tersimpan otomatis.
         </div>
       </div>
     </div>
@@ -2250,7 +2250,7 @@ function updateProgress(){
 
   // Tombol Cetak PDF nonaktif visual sampai semua 37 lengkap; Unduh Excel cukup 1
   const btnPrint = document.getElementById("btnPrint");
-  if(btnPrint) btnPrint.disabled = c.lengkap < 37;
+  if(btnPrint) btnPrint.disabled = c.lengkap < 1;
   const btnExport = document.getElementById("btnExport");
   if(btnExport) btnExport.disabled = c.lengkap < 1;
 }
@@ -2272,11 +2272,11 @@ function validateHasOne(){
   return true;
 }
 
-// Cetak PDF: wajib seluruh 37 indikator lengkap (beda dgn unduh CSV yg cukup 1)
+// Cetak PDF: cukup minimal 1 indikator lengkap (disamakan dgn syarat unduh CSV)
 function validateAllComplete(){
   const c = computeCounts();
-  if(c.lengkap < 37){
-    showToast(`❌ Cetak PDF baru bisa dipakai setelah semua 37 indikator lengkap (saat ini ${c.lengkap}/37).`);
+  if(c.lengkap < 1){
+    showToast("❌ Minimal 1 indikator harus terisi lengkap untuk mencetak.");
     return false;
   }
   return true;

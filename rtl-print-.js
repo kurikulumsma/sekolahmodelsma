@@ -10,7 +10,7 @@
  *
  * Bergantung pada global milik rtl.html (tersedia saat runtime):
  *   INDICATORS, state, normalizeEntry, effectivePrio, tahapCfg, escapeHtml,
- *   getRefDesc, SEKOLAH_MAP, selectedNpsn, isFaktorPristine
+ *   getRefDesc, SEKOLAH_MAP, selectedNpsn
  * ============================================================ */
 
 /* ── Body CSS cetak (TANPA wrapper @media print) — dipisah ke variabel
@@ -202,39 +202,10 @@ function toneClass(areaKey, isPrio){
   return areaKey === "KKA" ? "tone-kka" : "tone-pm";
 }
 
-// hasAnyInput() (global rtl.html) TIDAK dipakai di sini krn ketipu auto-fill:
-// baseline & faktor bisa keisi OTOMATIS dari data profil sekolah begitu
-// sekolah dipilih (lihat applyBaselineFromSekolah di rtl.html), sebelum user
-// sempat mengetik apa pun. Kalau dipakai, SEMUA 37 indikator selalu "ada
-// isi" walau baru pilih sekolah, jadi filter kosong tidak pernah efektif.
-// Fungsi khusus print ini cuma menghitung isian yang BENERAN dari user:
-// - baseline hanya dihitung kalau bukan hasil auto-fill (e._baselineAuto)
-// - faktor hanya dihitung kalau bukan teks referensi otomatis (isFaktorPristine,
-//   global rtl.html — sama persis yg dipakai rtl.html sendiri utk cek itu)
-// - field lain (target/fokus/aksi/waktu/bukti/pj/prioritas/kuadran) tidak
-//   pernah diisi otomatis, jadi dihitung apa adanya.
-function hasRealPrintInput(ind, e){
-  return !!(
-    (e.baseline && !e._baselineAuto) ||
-    (e.faktor && e.faktor.trim() && !isFaktorPristine(ind.id, e.faktor)) ||
-    e.target ||
-    (e.fokus && e.fokus.length) || (e.fokusCustom && e.fokusCustom.length) ||
-    (e.aksi && e.aksi.length) || (e.aksiCustom && e.aksiCustom.length) ||
-    e.waktu ||
-    (e.bukti && e.bukti.length) || (e.buktiCustom && e.buktiCustom.length) ||
-    (e.pj && e.pj.trim()) ||
-    e.prioritas || e.kuadran
-  );
-}
-
 function buildPrintGroups(){
   const groups = {};
   INDICATORS.forEach(ind=>{
     const e = normalizeEntry(state[ind.id]);
-    // Lewati indikator yang belum ada isian ASLI dari user (lihat penjelasan
-    // hasRealPrintInput di atas) — supaya print hanya menampilkan baris yang
-    // sudah diisi (sebagian atau lengkap), sesuai permintaan Arso.
-    if(!hasRealPrintInput(ind, e)) return;
     if(!groups[ind.area]) groups[ind.area] = {prio:[], lain:[]};
     (effectivePrio(e) ? groups[ind.area].prio : groups[ind.area].lain).push({ind, e});
   });
