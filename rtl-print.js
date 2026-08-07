@@ -13,10 +13,14 @@
  *   getRefDesc, SEKOLAH_MAP, selectedNpsn
  * ============================================================ */
 
-/* ── CSS cetak: diinjeksi ke <head> saat file ini dimuat ── */
-(function injectPrintStyles(){
-  const css = `
-@media print {
+/* ── Body CSS cetak (TANPA wrapper @media print) — dipisah ke variabel
+      top-level supaya bisa dipakai 2 tempat: (a) di-wrap @media print lalu
+      diinjeksi ke <head> rtl.html seperti semula, (b) dipakai apa adanya
+      (tanpa media query) di dokumen tab baru pas printToNewTab(), karena di
+      situ dia BUKAN konten selain-print yang perlu disembunyikan — seluruh
+      halaman baru ITU SENDIRI ya konten cetaknya. Isi CSS di bawah ini
+      sama persis, cuma dicabut dari wrapper-nya. ── */
+const PRINT_CSS_BODY = `
   @page { size: landscape; margin: 12mm; }
 
   /* Paksa warna latar (section header biru/abu, header kolom) ikut tercetak —
@@ -155,10 +159,15 @@
   #printRoot .p-sign-role { margin-top: 2px; }
   #printRoot .p-sign-space { height: 46px; }
   #printRoot .p-sign-name { border-top: 1px solid #333; padding-top: 2px; font-weight: 700; }
-}`;
+`;
+
+/* ── Inject CSS di atas (dibungkus @media print) ke <head> rtl.html —
+      perilaku ini SAMA PERSIS seperti sebelumnya, cuma sumber CSS-nya
+      sekarang dari PRINT_CSS_BODY. ── */
+(function injectPrintStyles(){
   const style = document.createElement("style");
   style.id = "rtlPrintStyles";
-  style.textContent = css;
+  style.textContent = `@media print {\n${PRINT_CSS_BODY}\n}`;
   document.head.appendChild(style);
 })();
 
@@ -340,11 +349,11 @@ function sectionTableHtml(items, areaKey, tone){
   return html;
 }
 
-/* ── Bangun seluruh dokumen cetak ke #printRoot.
-      Dipanggil tombol "Cetak PDF" tepat sebelum window.print(). ── */
-function buildPrintRoot(){
-  const root = document.getElementById("printRoot");
-  if(!root) return;
+/* ── Bangun HTML dokumen cetak sebagai STRING (tidak menyentuh DOM).
+      Dipakai oleh buildPrintRoot() (isi #printRoot di halaman yang sama)
+      maupun printToNewTab() (isi dokumen di tab baru). Logikanya sama
+      persis dengan yang sebelumnya langsung ditulis ke root.innerHTML. ── */
+function buildPrintContentHtml(){
   const row = SEKOLAH_MAP[selectedNpsn] || {};
   const namaSekolah = (document.getElementById("i_sekolah")||{}).value || row.nama || "-";
   const namaKS = (document.getElementById("i_ks")||{}).value || "";
@@ -352,7 +361,7 @@ function buildPrintRoot(){
   const groups = buildPrintGroups();
   const sections = ["PM", "KKA"].map(a => buildAreaSectionHtml(a, groups[a])).join("");
 
-  root.innerHTML = `
+  return `
     <div class="p-header">
       <div class="p-title">Rencana Tindak Lanjut (RTL) Sekolah Model SMA</div>
       <div class="p-subtitle">Implementasi Pembelajaran Mendalam dan Koding &amp; Kecerdasan Artifisial</div>
@@ -373,4 +382,50 @@ function buildPrintRoot(){
       </div>
     </div>
   `;
+}
+
+/* ── Bangun seluruh dokumen cetak ke #printRoot (dipakai kalau rtl.html
+      masih mau print di halaman yang sama — dibiarkan ada, tidak dihapus).
+      Dipanggil tombol "Cetak PDF" tepat sebelum window.print(). ── */
+function buildPrintRoot(){
+  const root = document.getElementById("printRoot");
+  if(!root) return;
+  root.innerHTML = buildPrintContentHtml();
+}
+
+/* ── ALTERNATIF utk konteks iframe/sandboxed (mis. diembed di Google Sites):
+      window.print() di halaman yang sama akan di-block browser kalau
+      'allow-modals' tidak diset di sandbox iframe. Fungsi ini membuka TAB
+      BARU (top-level document, bukan turunan iframe → tidak kena sandbox),
+      menulis ulang konten cetak + CSS-nya (PRINT_CSS_BODY, TANPA wrapper
+      @media print supaya langsung tampil sebagai preview di layar tab
+      baru itu), lalu memanggil print() di sana. Dipanggil tombol cetak di
+      rtl.html (wiring HTML menyusul). ── */
+function printToNewTab(){
+  const contentHtml = buildPrintContentHtml();
+  const w = window.open("", "_blank");
+  if(!w){
+    alert("Pop-up diblokir browser. Izinkan pop-up untuk situs ini agar bisa mencetak.");
+    return;
+  }
+  w.document.open();
+  w.document.write(`<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Cetak RTL</title>
+<style>
+  body { margin: 0; }
+  ${PRINT_CSS_BODY}
+</style>
+</head>
+<body>
+  <div id="printRoot">${contentHtml}</div>
+</body>
+</html>`);
+  w.document.close();
+  w.onload = function(){
+    w.focus();
+    w.print();
+  };
 }

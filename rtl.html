@@ -1019,7 +1019,7 @@ th.th-2line { line-height: 1.3; white-space: normal; min-width: 90px; }
             <div class="field">
               <label>Cetak &amp; Unduh</label>
               <div class="print-actions">
-                <button type="button" class="btn btn-primary" id="btnPrint">Cetak PDF</button>
+                <button type="button" class="btn btn-primary" id="btnPrint">Unduh/Cetak PDF</button>
                 <button type="button" class="btn btn-ghost" id="btnExport">Unduh Excel</button>
               </div>
             </div>
@@ -1392,7 +1392,14 @@ function getRtlTableFiltered(){
   return SEKOLAH_LIST.filter(r =>
     (!q || String(r.nama||"").toLowerCase().includes(q) || String(r.npsn||"").toLowerCase().includes(q)) &&
     (!prov || r.provinsi === prov)
-  );
+  ).sort((a, b) => {
+    // Urut berdasarkan % Lengkap tertinggi ke terendah (sebelumnya ikut
+    // urutan asal data / provinsi). Pakai jml_lengkap langsung (persentase
+    // turunan dari angka yang sama, jadi hasil urutannya identik).
+    const la = (RTL_COUNTS_MAP[String(a.npsn)] || {lengkap:0}).lengkap;
+    const lb = (RTL_COUNTS_MAP[String(b.npsn)] || {lengkap:0}).lengkap;
+    return lb - la;
+  });
 }
 
 function renderRtlSchTable(){
@@ -2359,8 +2366,12 @@ document.getElementById("btnExpand").onclick = (ev) => {
 
 document.getElementById("btnPrint").onclick = () => {
   if(!validateAllComplete()) return;
-  buildPrintRoot();
-  window.print();
+  // Pakai printToNewTab() (rtl-print.js) alih-alih buildPrintRoot()+window.print()
+  // di halaman yang sama — window.print() di sini akan di-block browser kalau
+  // rtl.html sedang diembed lewat iframe sandboxed (mis. Google Sites) tanpa
+  // 'allow-modals'. printToNewTab() membuka tab baru (top-level, tidak kena
+  // sandbox) berisi konten+CSS cetak yang sama, lalu print() dari sana.
+  printToNewTab();
 };
 
 document.getElementById("btnExport").onclick = exportXLSX;
