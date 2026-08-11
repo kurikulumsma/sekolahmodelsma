@@ -694,7 +694,7 @@ async function doForgot() {
   setBtn(btn, true, 'Mengirim...');
   try {
     const sb = getSb();
-    await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/login-mobile.html' });
+    await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset-password.html' });
   } catch(e) {}
   document.querySelector('#panelForgot .field').style.display = 'none';
   btn.style.display = 'none';

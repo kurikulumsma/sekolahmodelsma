@@ -911,7 +911,7 @@ async function doForgot() {
 
   try {
     const sb = getSb();
-    if (sb) await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/login.html' });
+    if (sb) await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset-password.html' });
   } catch(e) {
     // error diabaikan — Supabase selalu "berhasil" untuk keamanan
   }
